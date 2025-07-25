@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CidadeController;
 use App\Http\Controllers\Api\ClienteController;
 use App\Http\Controllers\Api\EstadoController;
+use App\Http\Controllers\Api\FuncionarioController;
 use App\Http\Controllers\Api\GeneroController;
 use App\Http\Controllers\Api\PerfilController;
 use Illuminate\Http\Request;
@@ -38,3 +39,11 @@ Route::post('/perfis', [PerfilController::class, 'store']);
 Route::put('/perfis/{id}', [PerfilController::class, 'update']); // PUT para atualizar um perfil (substituição completa)
 Route::patch('/perfis/{id}', [PerfilController::class, 'update']); // PATCH para atualizar um perfil (atualização parcial)
 Route::delete('/perfis/{id}', [PerfilController::class, 'destroy']); // DELETE para remover um perfil
+
+// Rotas para Funcionários
+Route::get('/funcionarios', [FuncionarioController::class, 'index']);
+Route::get('/funcionarios/{id}', [FuncionarioController::class, 'show']);
+Route::post('/funcionarios', [FuncionarioController::class, 'store']);
+Route::put('/funcionarios/{id}', [FuncionarioController::class, 'update']); // PUT para atualizar (completo)
+Route::patch('/funcionarios/{id}', [FuncionarioController::class, 'update']); // PATCH para atualizar (parcial)
+Route::delete('/funcionarios/{id}', [FuncionarioController::class, 'destroy']); // DELETE para remover
