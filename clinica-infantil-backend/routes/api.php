@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\EstadoController;
 use App\Http\Controllers\Api\FuncionarioController;
 use App\Http\Controllers\Api\GeneroController;
 use App\Http\Controllers\Api\PerfilController;
+use App\Http\Controllers\Api\UsuarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,3 +48,11 @@ Route::post('/funcionarios', [FuncionarioController::class, 'store']);
 Route::put('/funcionarios/{id}', [FuncionarioController::class, 'update']); // PUT para atualizar (completo)
 Route::patch('/funcionarios/{id}', [FuncionarioController::class, 'update']); // PATCH para atualizar (parcial)
 Route::delete('/funcionarios/{id}', [FuncionarioController::class, 'destroy']); // DELETE para remover
+
+// Rotas para Usuários
+Route::get('/usuarios', [UsuarioController::class, 'index']);
+Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
+Route::post('/usuarios', [UsuarioController::class, 'store']);
+Route::put('/usuarios/{id}', [UsuarioController::class, 'update']); // PUT para atualizar (completo)
+Route::patch('/usuarios/{id}', [UsuarioController::class, 'update']); // PATCH para atualizar (parcial)
+Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']); // DELETE para remover
