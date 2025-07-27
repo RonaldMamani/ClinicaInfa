@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\EstadoController;
 use App\Http\Controllers\Api\FuncionarioController;
 use App\Http\Controllers\Api\GeneroController;
 use App\Http\Controllers\Api\PerfilController;
+use App\Http\Controllers\Api\ResponsavelController;
 use App\Http\Controllers\Api\UsuarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -59,3 +60,11 @@ Route::post('/usuarios', [UsuarioController::class, 'store']);
 Route::put('/usuarios/{id}', [UsuarioController::class, 'update']); // PUT para atualizar (completo)
 Route::patch('/usuarios/{id}', [UsuarioController::class, 'update']); // PATCH para atualizar (parcial)
 Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']); // DELETE para remover
+
+// Rotas para Responsáveis
+Route::get('/responsaveis', [ResponsavelController::class, 'index']); // GET para listar todos
+Route::get('/responsaveis/{id}', [ResponsavelController::class, 'show']); // GET para mostrar por ID
+Route::post('/responsaveis', [ResponsavelController::class, 'store']); // POST para criar
+Route::put('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PUT para atualizar (completo)
+Route::patch('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PATCH para atualizar (parcial)
+Route::delete('/responsaveis/{id}', [ResponsavelController::class, 'destroy']); // DELETE para remover (físico)
