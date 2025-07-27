@@ -62,9 +62,9 @@ Route::patch('/usuarios/{id}', [UsuarioController::class, 'update']); // PATCH p
 Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']); // DELETE para remover
 
 // Rotas para Responsáveis
-Route::get('/responsaveis', [ResponsavelController::class, 'index']); // GET para listar todos
-Route::get('/responsaveis/{id}', [ResponsavelController::class, 'show']); // GET para mostrar por ID
-Route::post('/responsaveis', [ResponsavelController::class, 'store']); // POST para criar
+Route::get('/responsaveis', [ResponsavelController::class, 'index']);
+Route::get('/responsaveis/{id}', [ResponsavelController::class, 'show']);
+Route::post('/responsaveis', [ResponsavelController::class, 'store']);
 Route::put('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PUT para atualizar (completo)
 Route::patch('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PATCH para atualizar (parcial)
 Route::delete('/responsaveis/{id}', [ResponsavelController::class, 'destroy']); // DELETE para remover (físico)
