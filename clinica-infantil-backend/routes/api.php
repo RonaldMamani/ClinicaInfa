@@ -21,6 +21,7 @@ Route::get('/estados/{estado}', [EstadoController::class, 'show']);
 // Rotas para Cidades
 Route::get('/cidades', [CidadeController::class, 'index']);
 Route::get('/cidades/{cidade}', [CidadeController::class, 'show']);
+Route::get('/estados/{estadoId}/cidades', [CidadeController::class, 'getCidadesByEstado']);
 
 // Rotas para Gêneros
 Route::get('/generos', [GeneroController::class, 'index']);
