@@ -28,11 +28,13 @@ Route::get('/generos', [GeneroController::class, 'index']);
 Route::get('/generos/{genero}', [GeneroController::class, 'show']);
 
 // Rotas para Clientes
-Route::get('/clientes', [ClienteController::class, 'index']);
-Route::get('/clientes/{cliente}', [ClienteController::class, 'show']);
-Route::post('/clientes', [ClienteController::class, 'store']);
-Route::put('/clientes/{id}', [ClienteController::class, 'update']);
-Route::patch('/clientes/{id}', [ClienteController::class, 'update']);
+Route::get('/clientes', [ClienteController::class, 'index']); // GET para listar todos os clientes ATIVOS
+Route::get('/clientes/inativos', [ClienteController::class, 'getInactiveClients']); // GET para listar clientes INATIVOS
+Route::get('/clientes/{id}', [ClienteController::class, 'show']); // GET para mostrar um cliente por ID (se ATIVO)
+Route::post('/clientes', [ClienteController::class, 'store']); // POST para criar um novo cliente
+Route::put('/clientes/{id}', [ClienteController::class, 'update']); // PUT para atualizar um cliente
+Route::patch('/clientes/{id}', [ClienteController::class, 'update']); // PATCH para atualizar um cliente
+Route::delete('/clientes/{id}', [ClienteController::class, 'destroy']);
 
 // Rotas para Perfis
 Route::get('/perfis', [PerfilController::class, 'index']);

@@ -12,21 +12,28 @@ use Illuminate\Http\Request;
 
 class ClienteController extends Controller
 {
+    /**
+     * Lista todos os clientes ATIVOS.
+     * Inclui os relacionamentos de cidade e gênero.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         try {
-            // Busca todos os clientes, carregando os relacionamentos de cidade e gênero
-            // O with(['cidade', 'genero']) garante que os dados relacionados sejam carregados
-            // para evitar o problema de N+1 queries.
-            $clientes = Cliente::with(['cidade', 'genero'])->orderBy('nome', 'ASC')->get();
+            // Busca apenas clientes ATIVOS, carregando os relacionamentos
+            $clientes = Cliente::with(['cidade', 'genero'])
+                                ->where('ativo', true) // Filtra por clientes ativos
+                                ->orderBy('nome', 'ASC')
+                                ->get();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Lista de clientes obtida com sucesso.',
+                'message' => 'Lista de clientes ativos obtida com sucesso.',
                 'clientes' => $clientes,
             ], 200);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Erro ao listar clientes: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -36,17 +43,26 @@ class ClienteController extends Controller
         }
     }
 
-    public function show(Cliente $cliente)
+    /**
+     * Exibe um cliente específico pelo seu ID (apenas se estiver ATIVO).
+     *
+     * @param int $id O ID do cliente a ser exibido.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
     {
         try {
-            // Busca o cliente pelo ID, carregando os relacionamentos
-            $cliente = Cliente::with(['cidade', 'genero'])->find($cliente->id);
+            // Busca o cliente pelo ID, carregando os relacionamentos e verificando se está ativo
+            $cliente = Cliente::with(['cidade', 'genero'])
+                                ->where('id', $id)
+                                ->where('ativo', true) // Filtra por cliente ativo
+                                ->first(); // Usa first() pois find() não permite where encadeado desta forma
 
-            // Verifica se o cliente foi encontrado
+            // Verifica se o cliente foi encontrado e está ativo
             if (!$cliente) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Cliente não encontrado.',
+                    'message' => 'Cliente não encontrado ou inativo.',
                 ], 404);
             }
 
@@ -56,7 +72,7 @@ class ClienteController extends Controller
                 'cliente' => $cliente,
             ], 200);
 
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             Log::error('Erro ao buscar cliente por ID: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -66,16 +82,23 @@ class ClienteController extends Controller
         }
     }
 
+    /**
+     * Cria um novo cliente no banco de dados.
+     *
+     * @param \App\Http\Requests\ClienteRequest $request A requisição validada.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(ClienteRequest $request)
     {
         DB::beginTransaction();
         try {
-            // Usamos $request->validated() para obter apenas os dados que passaram na validação.
-            $cliente = Cliente::create($request->validated());
+            $data = $request->validated();
 
+            // Se 'ativo' não for fornecido na requisição, ele usará o DEFAULT TRUE do banco.
+            // Se for fornecido, será validado como booleano.
+            $cliente = Cliente::create($data);
             DB::commit();
 
-            // Retorna a confirmação de criação do cliente em formato JSON com status 201 Created
             return response()->json([
                 'status' => true,
                 'message' => 'Cliente criado com sucesso!',
@@ -84,24 +107,28 @@ class ClienteController extends Controller
 
         } catch (Exception $e) {
             DB::rollBack();
-            // Em caso de erro, registra a exceção no log e retorna uma resposta de erro
             Log::error('Erro ao criar cliente: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao criar o cliente. Verifique os logs do servidor.',
                 'error_details' => $e->getMessage()
-            ], 500); // Código de status HTTP 500 para erro interno do servidor
+            ], 500);
         }
     }
 
+    /**
+     * Atualiza um cliente existente no banco de dados.
+     *
+     * @param \App\Http\Requests\ClienteRequest $request A requisição validada.
+     * @param int $id O ID do cliente a ser atualizado.
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function update(ClienteRequest $request, $id)
     {
         DB::beginTransaction();
         try {
-            // Encontra o cliente pelo ID
             $cliente = Cliente::find($id);
 
-            // Se o cliente não for encontrado, retorna 404 Not Found
             if (!$cliente) {
                 return response()->json([
                     'status' => false,
@@ -109,25 +136,92 @@ class ClienteController extends Controller
                 ], 404);
             }
 
-            // Atualiza o cliente com os dados validados
-            // O fillable no modelo Cliente garante que apenas campos permitidos sejam atualizados
             $cliente->update($request->validated());
+            DB::commit();
 
-            DB::commit(); // Confirma a transação
-
-            // Retorna a confirmação de atualização do cliente
             return response()->json([
                 'status' => true,
                 'message' => 'Cliente atualizado com sucesso!',
                 'cliente' => $cliente,
-            ], 200); // Código 200 OK para sucesso na atualização
+            ], 200);
 
         } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+            DB::rollBack();
             Log::error('Erro ao atualizar cliente: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao atualizar o cliente. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Realiza um "delete lógico" de um cliente, marcando-o como inativo.
+     *
+     * @param int $id O ID do cliente a ser "deletado" (marcado como inativo).
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+        try {
+            $cliente = Cliente::find($id);
+
+            // Verifica se o cliente foi encontrado e se já não está inativo
+            if (!$cliente || !$cliente->ativo) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cliente não encontrado ou já está inativo.',
+                ], 404);
+            }
+
+            // Marca o cliente como inativo (delete lógico)
+            $cliente->update(['ativo' => false]);
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Cliente inativado com sucesso (delete lógico)!',
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Erro ao inativar cliente: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao inativar o cliente. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Lista todos os clientes INATIVOS.
+     * Inclui os relacionamentos de cidade e gênero.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getInactiveClients()
+    {
+        try {
+            // Busca apenas clientes INATIVOS, carregando os relacionamentos
+            $clientes = Cliente::with(['cidade', 'genero'])
+                                ->where('ativo', false) // Filtra por clientes inativos
+                                ->orderBy('nome', 'ASC')
+                                ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Lista de clientes inativos obtida com sucesso.',
+                'clientes' => $clientes,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar clientes inativos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao buscar os clientes inativos. Verifique os logs do servidor.',
                 'error_details' => $e->getMessage()
             ], 500);
         }

@@ -17,8 +17,6 @@ class ClienteRequest extends FormRequest
 
     public function rules(): array
     {
-        // Obtém o ID do cliente da rota, se estiver presente (para operações de PUT/PATCH)
-        // Se for uma operação de criação (POST), $clienteId será null
         $clienteId = $this->route('id');
 
         return [
@@ -28,24 +26,25 @@ class ClienteRequest extends FormRequest
                 'required',
                 'string',
                 'max:14',
-                // A regra unique é condicional:
-                // Se estiver editando (PUT/PATCH), ignora o CPF do próprio cliente ($clienteId)
-                // Se estiver criando (POST), o CPF deve ser totalmente único
                 Rule::unique('clientes', 'cpf')->ignore($clienteId),
             ],
             'rg' => [
                 'nullable',
                 'string',
                 'max:20',
-                // A regra unique é condicional para RG também
                 Rule::unique('clientes', 'rg')->ignore($clienteId),
             ],
             'nome' => 'required|string|max:255',
             'endereco' => 'nullable|string',
-            'ativo' => 'boolean',
+            'ativo' => 'boolean', // <--- Validação para o campo 'ativo'
         ];
     }
 
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -63,6 +62,7 @@ class ClienteRequest extends FormRequest
             'nome.required' => 'O campo nome é obrigatório.',
             'nome.string' => 'O campo nome deve ser um texto.',
             'nome.max' => 'O campo nome não pode ter mais de 255 caracteres.',
+            'ativo.boolean' => 'O campo ativo deve ser verdadeiro ou falso.',
         ];
     }
 }

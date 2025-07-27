@@ -14,8 +14,8 @@ class Cliente extends Model
     public $incrementing = true;
 
     protected $fillable = [
-        'id_cidade',    
-        'id_genero',    
+        'id_cidade',
+        'id_genero',
         'cpf',
         'rg',
         'nome',
@@ -23,15 +23,13 @@ class Cliente extends Model
         'ativo',
     ];
 
-    // Se você usa nomes de colunas diferentes para os timestamps, defina-os:
-    const CREATED_AT = 'criado_em';
-    const UPDATED_AT = 'atualizado_em';
-
-    public function cidade(){
+    public function cidade()
+    {
         return $this->belongsTo(Cidade::class, 'id_cidade');
     }
 
-    public function genero(){
+    public function genero()
+    {
         return $this->belongsTo(Genero::class, 'id_genero');
     }
 }
