@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\ClienteController;
 use App\Http\Controllers\Api\EstadoController;
 use App\Http\Controllers\Api\FuncionarioController;
 use App\Http\Controllers\Api\GeneroController;
+use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\PerfilController;
 use App\Http\Controllers\Api\ResponsavelController;
 use App\Http\Controllers\Api\UsuarioController;
@@ -68,3 +69,11 @@ Route::post('/responsaveis', [ResponsavelController::class, 'store']);
 Route::put('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PUT para atualizar (completo)
 Route::patch('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PATCH para atualizar (parcial)
 Route::delete('/responsaveis/{id}', [ResponsavelController::class, 'destroy']); // DELETE para remover (físico)
+
+// Rotas para Pacientes
+Route::get('/pacientes', [PacienteController::class, 'index']); // GET para listar todos
+Route::get('/pacientes/{id}', [PacienteController::class, 'show']); // GET para mostrar por ID
+Route::post('/pacientes', [PacienteController::class, 'store']); // POST para criar
+Route::put('/pacientes/{id}', [PacienteController::class, 'update']); // PUT para atualizar (completo)
+Route::patch('/pacientes/{id}', [PacienteController::class, 'update']); // PATCH para atualizar (parcial)
+Route::delete('/pacientes/{id}', [PacienteController::class, 'destroy']); // DELETE para remover (físico)
