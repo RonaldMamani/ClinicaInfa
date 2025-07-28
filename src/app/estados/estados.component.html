@@ -1,0 +1,65 @@
+<div class="card mt-4">
+  <div class="card-header">
+    <h3>Localização: Estados e Cidades</h3>
+  </div>
+  <div class="card-body">
+
+    <div *ngIf="isLoadingEstados" class="alert alert-info" role="alert">
+      Carregando estados...
+    </div>
+
+    <div *ngIf="errorEstados" class="alert alert-danger" role="alert">
+      {{ errorEstados }}
+    </div>
+
+    <div *ngIf="!isLoadingEstados && !errorEstados && estados.length" class="mb-4">
+      <label for="estadoSelect" class="form-label">Selecione um Estado:</label>
+      <select 
+        id="estadoSelect" 
+        class="form-select" 
+        [(ngModel)]="estadoSelecionadoId" 
+        (change)="onEstadoSelecionado($event)"
+      >
+        <option [value]="null" disabled selected>Selecione um estado</option>
+        <option *ngFor="let estado of estados" [value]="estado.id">
+          {{ estado.nome_estado }}
+        </option>
+      </select>
+    </div>
+
+    <div *ngIf="estadoSelecionadoId">
+      <hr>
+      <h4>Cidades do Estado Selecionado</h4>
+
+      <div *ngIf="isLoadingCidades" class="alert alert-info" role="alert">
+        Carregando cidades...
+      </div>
+
+      <div *ngIf="errorCidades" class="alert alert-danger" role="role">
+        {{ errorCidades }}
+      </div>
+
+      <div *ngIf="!isLoadingCidades && !errorCidades && cidades.length">
+        <label for="cidadeSelect" class="form-label">Selecione uma Cidade:</label>
+        <select id="cidadeSelect" class="form-select">
+          <option [value]="null" disabled selected>Selecione uma cidade</option>
+          <option *ngFor="let cidade of cidades" [value]="cidade.id">
+            {{ cidade.nome_cidade }}
+          </option>
+        </select>
+
+        <h6 class="mt-3">Ou veja a lista completa:</h6>
+        <ul class="list-group">
+          <li *ngFor="let cidade of cidades" class="list-group-item">
+            {{ cidade.nome_cidade }}
+          </li>
+        </ul>
+      </div>
+
+      <div *ngIf="!isLoadingCidades && !errorCidades && !cidades.length" class="alert alert-warning" role="alert">
+        Nenhuma cidade encontrada para este estado.
+      </div>
+    </div>
+
+  </div>
+</div>
