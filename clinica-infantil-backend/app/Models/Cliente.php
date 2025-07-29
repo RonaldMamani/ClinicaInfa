@@ -23,6 +23,11 @@ class Cliente extends Model
         'ativo',
     ];
 
+    const CREATED_AT = 'criado_em';
+    const UPDATED_AT = 'atualizado_em';
+
+    public $timestamps = true;
+
     public function cidade()
     {
         return $this->belongsTo(Cidade::class, 'id_cidade');

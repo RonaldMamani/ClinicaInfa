@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ConsultaController;
 use App\Http\Controllers\Api\EstadoController;
 use App\Http\Controllers\Api\FuncionarioController;
 use App\Http\Controllers\Api\GeneroController;
+use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\MedicoController;
 use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\PagamentoController;
@@ -16,9 +17,16 @@ use App\Http\Controllers\Api\UsuarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+// Rotas de Autenticação (não precisam de middleware de autenticação para login)
+Route::post('/login', [LoginController::class, 'login']);
+
+// Rotas protegidas por autenticação (exigem um token válido)
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+});
 
 // Rotas para Estados
 Route::get('/estados', [EstadoController::class, 'index']);

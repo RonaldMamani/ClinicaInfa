@@ -23,7 +23,6 @@ class Funcionario extends Model
         'telefone_empresarial'
     ];
 
-    // Como a tabela 'funcionarios' não tem as colunas 'created_at' e 'updated_at',
     // desativamos o gerenciamento automático de timestamps do Eloquent.
     public $timestamps = false;
 }
