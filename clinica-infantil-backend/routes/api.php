@@ -20,14 +20,6 @@ use Illuminate\Support\Facades\Route;
 // Rotas de Autenticação (não precisam de middleware de autenticação para login)
 Route::post('/login', [LoginController::class, 'login']);
 
-// Rotas protegidas por autenticação (exigem um token válido)
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/logout', [LoginController::class, 'logout']);
-    Route::get('/user', function (Request $request) {
-        return $request->user();
-    });
-});
-
 // Rotas para Estados
 Route::get('/estados', [EstadoController::class, 'index']);
 Route::get('/estados/{estado}', [EstadoController::class, 'show']);
