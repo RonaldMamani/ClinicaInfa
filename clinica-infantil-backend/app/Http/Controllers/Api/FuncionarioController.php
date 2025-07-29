@@ -30,7 +30,7 @@ class FuncionarioController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao buscar os funcionários. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage() // Detalhes do erro para depuração (remover em produção)
+                'error_details' => $e->getMessage()
             ], 500);
         }
     }

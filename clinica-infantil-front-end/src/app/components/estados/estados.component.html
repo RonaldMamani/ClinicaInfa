@@ -43,19 +43,11 @@
             {{ cidade.nome_cidade }}
           </option>
         </select>
-
-        <h6 class="mt-3">Ou veja a lista completa:</h6>
-        <ul class="list-group">
-          <li *ngFor="let cidade of cidades" class="list-group-item">
-            {{ cidade.nome_cidade }}
-          </li>
-        </ul>
       </div>
 
       <div *ngIf="!isLoadingCidades && !errorCidades && !cidades.length" class="alert alert-warning" role="alert">
         Nenhuma cidade encontrada para este estado.
       </div>
     </div>
-
   </div>
 </div>

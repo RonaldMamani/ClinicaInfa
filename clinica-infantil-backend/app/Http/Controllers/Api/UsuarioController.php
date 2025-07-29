@@ -20,7 +20,7 @@ class UsuarioController extends Controller
             // Ordena os resultados pelo username em ordem ascendente
             $usuarios = Usuario::with(['perfil', 'funcionario'])
                                 ->where('ativo', true) // Adicionado: Filtra apenas usuários ativos
-                                ->orderBy('username', 'ASC')
+                                ->orderBy('id', 'ASC')
                                 ->get();
 
             // Retorna a lista de usuários em formato JSON
@@ -45,9 +45,9 @@ class UsuarioController extends Controller
         try {
             // Busca o usuário pelo ID, carregando os relacionamentos e verificando se está ativo
             $usuario = Usuario::with(['perfil', 'funcionario'])
-                                ->where('id', $id)
-                                ->where('ativo', true) // Adicionado: Filtra apenas se o usuário estiver ativo
-                                ->first(); // Usa first() pois find() não permite where encadeado desta forma
+                ->where('id', $id)
+                ->where('ativo', true) // Adicionado: Filtra apenas se o usuário estiver ativo
+                ->first(); // Usa first() pois find() não permite where encadeado desta forma
 
             // Verifica se o usuário foi encontrado e está ativo
             if (!$usuario) {

@@ -23,9 +23,9 @@ class ClienteController extends Controller
         try {
             // Busca apenas clientes ATIVOS, carregando os relacionamentos
             $clientes = Cliente::with(['cidade', 'genero'])
-                                ->where('ativo', true) // Filtra por clientes ativos
-                                ->orderBy('nome', 'ASC')
-                                ->get();
+                ->where('ativo', true) // Filtra por clientes ativos
+                ->orderBy('nome', 'ASC')
+                ->get();
 
             return response()->json([
                 'status' => true,
@@ -54,9 +54,9 @@ class ClienteController extends Controller
         try {
             // Busca o cliente pelo ID, carregando os relacionamentos e verificando se está ativo
             $cliente = Cliente::with(['cidade', 'genero'])
-                                ->where('id', $id)
-                                ->where('ativo', true) // Filtra por cliente ativo
-                                ->first(); // Usa first() pois find() não permite where encadeado desta forma
+                ->where('id', $id)
+                ->where('ativo', true) // Filtra por cliente ativo
+                ->first(); // Usa first() pois find() não permite where encadeado desta forma
 
             // Verifica se o cliente foi encontrado e está ativo
             if (!$cliente) {
@@ -207,9 +207,9 @@ class ClienteController extends Controller
         try {
             // Busca apenas clientes INATIVOS, carregando os relacionamentos
             $clientes = Cliente::with(['cidade', 'genero'])
-                                ->where('ativo', false) // Filtra por clientes inativos
-                                ->orderBy('nome', 'ASC')
-                                ->get();
+                ->where('ativo', false) // Filtra por clientes inativos
+                ->orderBy('nome', 'ASC')
+                ->get();
 
             return response()->json([
                 'status' => true,

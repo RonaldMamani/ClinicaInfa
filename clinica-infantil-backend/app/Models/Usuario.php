@@ -4,34 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Laravel\Sanctum\HasApiTokens;
 
 class Usuario extends Model
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
-    // Define o nome da tabela no banco de dados
     protected $table = 'usuarios';
-
-    // Define a chave primária da tabela
     protected $primaryKey = 'id';
-
-    // Indica que a chave primária é auto-incrementável
     public $incrementing = true;
 
-    // Define os campos que podem ser preenchidos em massa (mass assignable)
     protected $fillable = [
         'id_perfil',
         'id_funcionario',
         'username',
-        'senha', // Lembre-se que a senha deve ser HASHED antes de salvar!
+        'senha',
         'ativo'
     ];
 
-    // Como a tabela 'usuarios' não tem as colunas 'created_at' e 'updated_at',
-    // desativamos o gerenciamento automático de timestamps do Eloquent.
     public $timestamps = false;
 
-    // Oculta a senha ao serializar o modelo para JSON
     protected $hidden = [
         'senha',
     ];
