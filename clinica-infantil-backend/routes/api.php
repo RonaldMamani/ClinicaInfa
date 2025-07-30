@@ -20,6 +20,11 @@ use Illuminate\Support\Facades\Route;
 // Rotas de Autenticação (não precisam de middleware de autenticação para login)
 Route::post('/login', [LoginController::class, 'login']);
 
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/logout', [LoginController::class, 'logout']);
+    Route::get('/generos', [GeneroController::class, 'index']);
+});
+
 // Rotas para Estados
 Route::get('/estados', [EstadoController::class, 'index']);
 Route::get('/estados/{estado}', [EstadoController::class, 'show']);
@@ -30,7 +35,7 @@ Route::get('/cidades/{cidade}', [CidadeController::class, 'show']);
 Route::get('/estados/{estadoId}/cidades', [CidadeController::class, 'getCidadesByEstado']);
 
 // Rotas para Gêneros
-Route::get('/generos', [GeneroController::class, 'index']);
+//Route::get('/generos', [GeneroController::class, 'index']);
 Route::get('/generos/{genero}', [GeneroController::class, 'show']);
 
 // Rotas para Clientes
