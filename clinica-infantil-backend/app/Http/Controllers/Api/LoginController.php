@@ -17,8 +17,7 @@ class LoginController extends Controller
     {
         try {
             $credentials = $request->validated();
-
-            // Busca o usuário pelo username
+            
             $usuario = Usuario::where('username', $credentials['username'])->first();
 
             // Verifica se o usuário existe e se a senha está correta
@@ -50,6 +49,26 @@ class LoginController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro no processo de login. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        try {
+            $request->user()->currentAccessToken()->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Logout realizado com sucesso. Token revogado.',
+            ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Erro no logout: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao realizar o logout. Verifique os logs do servidor.',
                 'error_details' => $e->getMessage()
             ], 500);
         }

@@ -1,0 +1,64 @@
+
+  <div class="d-grid w-100 min-vh-100 shadow-lg border-0  overflow-hidden">
+    <div class="row g-0">
+      <div class="col-md-6 d-none d-md-flex flex-column justify-content-center align-items-center bg-success text-white p-5 text-center">
+        <h2 class="display-5 fw-bold mb-3">Bem-vindo(a) de volta!</h2>
+        <p class="fs-5">Acesse sua conta para acessar nosso sistema.</p>
+      </div>
+
+      <div class="col-md-6 d-flex flex-column justify-content-center align-items-center bg-white p-4 p-lg-5">
+        <div class="w-75">
+          <h3 class="fs-1 fw-bold text-dark mb-4 text-center">LOGIN</h3>
+
+          <form (ngSubmit)="onSubmit()">
+            <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+              {{ errorMessage }}
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label text-muted">Username</label>
+              <input
+                type="email"
+                class="form-control form-control-lg"
+                id="email"
+                name="email"
+                placeholder="Digite seu Usuario"
+                [(ngModel)]="credentials.email"
+                required
+                autocomplete="username"
+              >
+            </div>
+
+            <div class="mb-3">
+              <label for="password" class="form-label text-muted">Senha</label>
+              <input
+                type="password"
+                class="form-control form-control-lg"
+                id="password"
+                name="password"
+                placeholder="Digite sua Senha"
+                [(ngModel)]="credentials.password"
+                required
+                autocomplete="current-password"
+              >
+            </div>
+
+            <div class="d-grid mt-4">
+              <button
+                type="submit"
+                class="btn btn-success btn-lg"
+                [disabled]="isLoading"
+              >
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                {{ isLoading ? 'Entrando...' : 'Entrar' }}
+              </button>
+            </div>
+          </form>
+
+          <div class="mt-4 text-center text-muted">
+            <small>&copy; 2025 Sua Clínica. Todos os direitos reservados.</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
