@@ -1,1 +1,59 @@
-<p>navbar works!</p>
+<nav class="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Clínica Saúde</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        @if (userProfile$ | async; as profile) {
+          @if (profile === 'secretaria') {
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" [routerLink]="['/secretaria']">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/secretaria/pacientes']">Pacientes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/secretaria/consultas/agendar']">Agendar Consulta</a>
+            </li>
+          }
+          @if (profile === 'medico') {
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" [routerLink]="['/medico']">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/medico/consultas']">Minhas Consultas</a>
+            </li>
+            }
+          @if (profile === 'administrador') {
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" [routerLink]="['/administrador']">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/administrador/funcionarios']">Funcionários</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/administrador/perfis']">Perfis</a>
+            </li>
+            }
+        }
+      </ul>
+
+      <ul class="navbar-nav">
+        @if (userProfile$ | async; as profile) {
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Olá, {{ capitalize(profile) }}!
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <li><a class="dropdown-item" href="#">Meu Perfil</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="#" (click)="$event.preventDefault(); logout()">Sair</a></li>
+            </ul>
+          </li>
+        }
+      </ul>
+    </div>
+  </div>
+</nav>

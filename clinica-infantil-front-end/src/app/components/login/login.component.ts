@@ -1,32 +1,51 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Ainda precisamos do FormsModule para [(ngModel)]
+import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../controllers/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Mantenha CommonModule e FormsModule
+  imports: [CommonModule, FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  // Modelo para os dados do formulário de login
-  // Apenas para que o [(ngModel)] no HTML funcione sem erros
   credentials = {
-    email: '',
-    password: ''
+    username: '', 
+    senha: ''
   };
 
-  // Flags para controlar o estado visual (isLoading, errorMessage)
-  // Úteis para simular o comportamento de UI
-  isLoading: boolean = false; 
-  errorMessage: string | null = null; 
+  isLoading: boolean = false;
+  errorMessage: string | null = null;
 
-  // O método onSubmit não fará nada por enquanto, apenas para evitar erros no HTML
+  constructor(private authService: AuthService, private router: Router) { }
+
   onSubmit(): void {
-    console.log('Formulário submetido (apenas visual):', this.credentials);
-    // Você pode alternar isLoading ou errorMessage aqui para testar o visual
-    // this.isLoading = !this.isLoading;
-    // this.errorMessage = this.errorMessage ? null : 'Simulando um erro de login.';
+    this.isLoading = true;
+    this.errorMessage = null; // Limpa mensagens de erro anteriores
+
+    this.authService.login(this.credentials).subscribe({
+      next: (response) => {
+        this.isLoading = false;
+        // O AuthService já cuida de armazenar o token e o perfil
+        // E o DashboardComponent fará o redirecionamento com base no perfil
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        console.error('Erro de login:', err);
+        // Lidar com mensagens de erro da API.
+        // Sua API retorna `message` para erros de login.
+        if (err.status === 401 && err.error && err.error.message) {
+          this.errorMessage = err.error.message; // Mensagem específica de credenciais inválidas
+        } else if (err.error && err.error.message) {
+          this.errorMessage = err.error.message; // Outras mensagens de erro da API
+        } else {
+          this.errorMessage = 'Ocorreu um erro ao tentar logar. Tente novamente mais tarde.';
+        }
+      }
+    });
   }
 }
