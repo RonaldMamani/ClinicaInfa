@@ -12,8 +12,10 @@ import { DashboardSecretariaComponent } from './components/dashboard-secretaria/
 import { AdicionarClienteComponent } from './features/clientes/adicionar-cliente/adicionar-cliente.component';
 import { AdicionarPacienteComponent } from './features/pacientes/adicionar-paciente/adicionar-paciente.component';
 import { AdicionarResponsavelComponent } from './features/responsaveis/adicionar-responsavel/adicionar-responsavel.component';
-//import { AdicionarClienteComponent } from './features/clientes/adicionar-cliente/adicionar-cliente.component';
-//import { AgendarConsultaComponent } from './features/consultas/agendar-consulta/agendar-consulta.component';
+import { ListarConsultasAgendadasComponent } from './features/consultas/listar-consultas-agendadas/listar-consultas-agendadas.component';
+import { ListarTodasConsultasComponent } from './features/consultas/listar-todas-consultas/listar-todas-consultas.component';
+import { DetalhesConsultaComponent } from './features/consultas/detalhes-consulta/detalhes-consulta.component';
+import { EditarConsultaComponent } from './features/consultas/editar-consulta/editar-consulta.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -40,6 +42,10 @@ export const routes: Routes = [
       { path: 'clientes/adicionar/paciente', component: AdicionarPacienteComponent },
       { path: 'clientes/adicionar/responsavel', component: AdicionarResponsavelComponent },
 
+      { path: 'consultas/agendadas', component: ListarConsultasAgendadasComponent },
+      { path: 'consultas', component: ListarTodasConsultasComponent },
+      { path: 'consultas/detalhes/:id', component: DetalhesConsultaComponent},
+      { path: 'consultas/editar/:id', component: EditarConsultaComponent },
       // O redirectTo deve ser o último elemento, redirecionando para a rota padrão
       { path: '**', redirectTo: '' }
     ]

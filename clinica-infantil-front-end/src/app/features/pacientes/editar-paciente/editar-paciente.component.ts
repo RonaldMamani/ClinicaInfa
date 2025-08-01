@@ -169,6 +169,7 @@ export class EditarPacienteComponent implements OnInit {
   }
 
   voltar(): void {
+    // Caminho corrigido
     this.router.navigate(['/secretaria/pacientes']);
   }
 }

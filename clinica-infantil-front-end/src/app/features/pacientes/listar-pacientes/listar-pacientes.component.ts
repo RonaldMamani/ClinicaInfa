@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
 import { Router, RouterModule } from '@angular/router';
-import { ClientesService } from '../../clientes/clientes.service';
+import { forkJoin } from 'rxjs';
+
+import { PacientesService } from '../pacientes.service';
+import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
 
 @Component({
   selector: 'app-listar-pacientes',
@@ -12,12 +14,14 @@ import { ClientesService } from '../../clientes/clientes.service';
   styleUrls: ['./listar-pacientes.component.css']
 })
 export class ListarPacientesComponent implements OnInit {
-  pacientes: Paciente[] = [];
+  pacientesAtivos: Paciente[] = [];
+  pacientesInativos: Paciente[] = [];
   isLoading = true;
   error: string | null = null;
+  successMessage: string | null = null;
 
   constructor(
-    private clientesService: ClientesService,
+    private pacientesService: PacientesService,
     private router: Router
   ) {}
 
@@ -28,9 +32,24 @@ export class ListarPacientesComponent implements OnInit {
   carregarPacientes(): void {
     this.isLoading = true;
     this.error = null;
-    this.clientesService.getPacientes().subscribe({
-      next: (response: PacientesApiResponse) => {
-        this.pacientes = response.pacientes;
+
+    forkJoin({
+      ativos: this.pacientesService.getActivePatients(),
+      inativos: this.pacientesService.getInactivePatients()
+    }).subscribe({
+      next: (results) => {
+        if (results.ativos && results.ativos.pacientes) {
+          this.pacientesAtivos = results.ativos.pacientes;
+        } else {
+          this.pacientesAtivos = [];
+        }
+
+        if (results.inativos && results.inativos.pacientes) {
+          this.pacientesInativos = results.inativos.pacientes;
+        } else {
+          this.pacientesInativos = [];
+        }
+        
         this.isLoading = false;
       },
       error: (err) => {
@@ -42,11 +61,31 @@ export class ListarPacientesComponent implements OnInit {
   }
 
   editarPaciente(id: number): void {
-    this.router.navigate(['/secretaria/clientes/editar-paciente', id]);
+    this.router.navigate(['/secretaria/pacientes/editar', id]);
   }
 
+  // Lógica de exclusão/desativação completa
   excluirPaciente(id: number): void {
-    // Implemente a lógica de exclusão aqui, com uma confirmação
-    console.log('Excluir paciente com ID:', id);
+    this.error = null;
+    this.successMessage = null;
+
+    // Adiciona uma confirmação para evitar exclusões acidentais
+    if (confirm('Tem certeza que deseja desativar este paciente?')) {
+      this.pacientesService.deletePaciente(id).subscribe({
+        next: (response) => {
+          if (response.status) {
+            this.successMessage = response.message;
+            // Recarrega a lista para atualizar a visualização
+            this.carregarPacientes();
+          } else {
+            this.error = response.message;
+          }
+        },
+        error: (err) => {
+          this.error = 'Erro ao tentar desativar o paciente.';
+          console.error(err);
+        }
+      });
+    }
   }
 }

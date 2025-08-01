@@ -1,1 +1,19 @@
 @import "bootstrap/dist/css/bootstrap.min.css";
+
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
+main {
+  height: 100vh;
+}
+
+body {
+  /* Define o body como um container Flexbox */
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  /* Faz com que o conteúdo principal ocupe todo o espaço disponível,
+     empurrando o rodapé para o final da página. */
+  flex-grow: 1;
+}

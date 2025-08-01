@@ -84,9 +84,9 @@ Route::delete('/responsaveis/{id}', [ResponsavelController::class, 'destroy']); 
 // Rotas para Pacientes
 Route::controller(PacienteController::class)->group(function () {
     Route::get('/pacientes', 'index');
-    Route::get('/pacientes/contagem', 'getPatientsCount');
-    Route::get('/pacientes/ativos', 'getActivePatients');
-    Route::get('/pacientes/inativos', 'getInactivePatients');
+    Route::get('/pacientes/contagem', 'contarPacientes');
+    Route::get('/pacientes/ativos', 'pacientesAtivos');
+    Route::get('/pacientes/inativos', 'pacientesInativos');
     Route::get('/pacientes/{id}', 'show');
     Route::put('/pacientes/{id}', 'update');
     Route::delete('/pacientes/{id}', 'destroy');
@@ -101,13 +101,14 @@ Route::patch('/medicos/{id}', [MedicoController::class, 'update']); // PATCH par
 Route::delete('/medicos/{id}', [MedicoController::class, 'destroy']); // DELETE para remover (físico)
 
 // Rotas para Consultas
-Route::get('/consultas/agendadas', [ConsultaController::class, 'getScheduled']); // NOVA ROTA: Consultas agendadas
+Route::get('/consultas/agendadas', [ConsultaController::class, 'consultasAgendadas']); // NOVA ROTA: Consultas agendadas
 Route::get('/consultas/count/all', [ConsultaController::class, 'countAll']); // NOVA ROTA: Contagem total de consultas
 Route::get('/consultas/count/scheduled', [ConsultaController::class, 'countScheduled']); // NOVA ROTA: Contagem de consultas agendadas
 Route::get('/consultas', [ConsultaController::class, 'index']); // GET para listar todos
 Route::get('/consultas/{id}', [ConsultaController::class, 'show']); // GET para mostrar por ID
 Route::post('/consultas', [ConsultaController::class, 'store']); // POST para criar
 Route::put('/consultas/{id}', [ConsultaController::class, 'update']); // PUT para atualizar (completo)
+Route::patch('/consultas/{id}/status', [ConsultaController::class, 'updateStatus']);
 Route::patch('/consultas/{id}', [ConsultaController::class, 'update']); // PATCH para atualizar (parcial)
 Route::delete('/consultas/{id}', [ConsultaController::class, 'destroy']); // DELETE para remover (físico)
 

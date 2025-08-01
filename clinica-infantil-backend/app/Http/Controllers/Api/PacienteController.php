@@ -50,17 +50,28 @@ class PacienteController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getPatientsCount()
+    public function contarPacientes()
     {
         try {
-            $totalPacientes = Paciente::countPatients();
+            // Conta os pacientes cujo cliente relacionado tem 'ativo' = true
+            $ativos = Paciente::whereHas('cliente', function ($query) {
+                $query->where('ativo', true);
+            })->count();
+            
+            // Conta os pacientes cujo cliente relacionado tem 'ativo' = false
+            $inativos = Paciente::whereHas('cliente', function ($query) {
+                $query->where('ativo', false);
+            })->count();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Contagem total de pacientes obtida com sucesso.',
-                'total_pacientes' => $totalPacientes,
+                'message' => 'Contagem de pacientes ativos e inativos realizada com sucesso.',
+                'dados' => [
+                    'ativos' => $ativos,
+                    'inativos' => $inativos
+                ]
             ], 200);
-            
+
         } catch (\Exception $e) {
             Log::error('Erro ao contar pacientes: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
@@ -76,7 +87,7 @@ class PacienteController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getActivePatients()
+    public function pacientesAtivos()
     {
         try {
             // Usa 'whereHas' para filtrar pacientes cujo cliente relacionado tem 'ativo' = true
@@ -105,7 +116,7 @@ class PacienteController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getInactivePatients()
+    public function pacientesInativos()
     {
         try {
             // Usa 'whereHas' para filtrar pacientes cujo cliente relacionado tem 'ativo' = false
@@ -249,31 +260,39 @@ class PacienteController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $paciente = Paciente::with('cliente')->find($id);
+        // 1. Encontra o paciente pelo ID fornecido.
+        $paciente = Paciente::find($id);
 
-            if (!$paciente) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Paciente não encontrado para desativação.',
-                ], 404);
-            }
-
-            // Realiza a exclusão lógica, setando o campo 'ativo' do cliente para false
-            $paciente->cliente->update(['ativo' => false]);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Paciente desativado (exclusão lógica) com sucesso!',
-            ], 200);
-
-        } catch (Exception $e) {
-            Log::error('Erro ao desativar paciente: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+        // 2. VERIFICAÇÃO DE SEGURANÇA:
+        // Se o paciente não for encontrado, retorna uma resposta de erro 404.
+        if (is_null($paciente)) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao desativar o paciente. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
+                'message' => 'Paciente não encontrado.'
+            ], 404);
         }
+
+        // 3. Atualiza o status 'ativo' do paciente e do cliente associado para 0.
+        // Acessamos o relacionamento 'cliente' do paciente.
+        // A verificação de 'is_null($paciente)' acima garante que a relação existe.
+        $cliente = $paciente->cliente;
+
+        // Se o cliente não for encontrado (por segurança extra)
+        if (is_null($cliente)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'O cliente associado a este paciente não foi encontrado.'
+            ], 404);
+        }
+
+        // Atualiza ambos os registros para inativo.
+        $paciente->update(['ativo' => 0]);
+        $cliente->update(['ativo' => 0]);
+
+        // 4. Retorna uma resposta de sucesso.
+        return response()->json([
+            'status' => true,
+            'message' => 'Paciente desativado com sucesso.'
+        ]);
     }
 }
