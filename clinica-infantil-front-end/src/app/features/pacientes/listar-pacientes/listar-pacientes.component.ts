@@ -1,46 +1,52 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PacientesService } from '../pacientes.service';
-import { Paciente } from '../../../core/models/paciente.model';
-import { RouterLink } from '@angular/router';
+import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
+import { Router, RouterModule } from '@angular/router';
+import { ClientesService } from '../../clientes/clientes.service';
 
 @Component({
   selector: 'app-listar-pacientes',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterModule],
   templateUrl: './listar-pacientes.component.html',
   styleUrls: ['./listar-pacientes.component.css']
 })
 export class ListarPacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
-  isLoading: boolean = true;
+  isLoading = true;
   error: string | null = null;
 
-  constructor(private pacientesService: PacientesService) { }
+  constructor(
+    private clientesService: ClientesService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.getPacientesList();
+    this.carregarPacientes();
   }
 
-  getPacientesList(): void {
+  carregarPacientes(): void {
     this.isLoading = true;
     this.error = null;
-    this.pacientesService.getPacientes().subscribe({
-      next: (response) => {
-        if (response.status && response.pacientes) {
-          this.pacientes = response.pacientes;
-          console.log('Pacientes carregados:', this.pacientes);
-        } else {
-          this.error = response.message || 'Erro ao carregar pacientes.';
-          console.error('Erro na resposta da API:', response.message);
-        }
+    this.clientesService.getPacientes().subscribe({
+      next: (response: PacientesApiResponse) => {
+        this.pacientes = response.pacientes;
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = 'Não foi possível conectar ao servidor ou carregar os pacientes.';
-        console.error('Erro na requisição HTTP:', err);
+        this.error = 'Falha ao carregar a lista de pacientes.';
         this.isLoading = false;
+        console.error(err);
       }
     });
+  }
+
+  editarPaciente(id: number): void {
+    this.router.navigate(['/secretaria/clientes/editar-paciente', id]);
+  }
+
+  excluirPaciente(id: number): void {
+    // Implemente a lógica de exclusão aqui, com uma confirmação
+    console.log('Excluir paciente com ID:', id);
   }
 }

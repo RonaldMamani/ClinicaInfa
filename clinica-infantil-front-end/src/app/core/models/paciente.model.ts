@@ -1,57 +1,55 @@
-// Interface para o objeto 'cliente' aninhado dentro de 'paciente'
-export interface ClienteInfo {
-  id: number;
-  id_cidade: number;
-  id_genero: number;
-  cpf: string;
-  rg: string;
-  nome: string;
-  endereco: string;
-  ativo: number;
-  criado_em: string;
-  atualizado_em: string;
+// src/app/core/models/paciente.model.ts
+import { Cliente, Cidade, Genero } from './cliente.model';
+import { Responsavel } from './responsavel.model';
+
+// Representa a estrutura do objeto 'cliente' com as cidades e gêneros aninhados
+export interface ClienteComDetalhes extends Cliente {
+  cidade: Cidade;
+  genero: Genero;
 }
 
-// Interface para o objeto 'responsavel' aninhado dentro de 'paciente'
-// AGORA COM O CLIENTE ANINHADO INCLUÍDO
-export interface ResponsavelInfo {
-  id: number;
-  id_cliente: number;
-  grau_parentesco: string;
-  email: string;
-  telefone: string;
-  cliente?: ClienteInfo; // <-- PROPRIEDADE CORRIGIDA E ADICIONADA AQUI
-}
-
-// Interface principal para um item da lista de pacientes
+// Representa o objeto completo de um paciente, incluindo o cliente e o responsável
+// O tipo do 'responsavel' é o simples 'Responsavel' que não tem o cliente aninhado
 export interface Paciente {
   id: number;
   id_cliente: number;
   id_responsavel: number;
   data_nascimento: string;
   historico_medico: string;
-  cliente: ClienteInfo;
-  responsavel: ResponsavelInfo;
+  cliente: ClienteComDetalhes;
+  responsavel: Responsavel;
 }
 
-// Interface para a resposta completa da API de listagem de pacientes
-export interface ApiResponsePacientes {
+// Representa a resposta completa da API para a lista de pacientes
+export interface PacientesApiResponse {
   status: boolean;
   message: string;
   pacientes: Paciente[];
 }
 
-// Interface para a resposta da API ao obter UM paciente por ID
+// Representa a resposta da API para um único paciente
 export interface PacienteDetailsResponse {
   status: boolean;
   message: string;
   paciente: Paciente;
 }
 
-// Interface para os dados enviados na requisição PUT/POST de um paciente
+// Payload para a criação/atualização de um paciente
 export interface UpdatePacientePayload {
-  id_cliente?: number;
-  id_responsavel?: number;
-  data_nascimento?: string;
-  historico_medico?: string;
+  nome: string;
+  cpf: string;
+  rg: string;
+  endereco: string;
+  id_cidade: number;
+  id_genero: number;
+  data_nascimento: string;
+  historico_medico: string;
+  id_responsavel: number;
+  ativo: boolean;
+}
+
+export interface PatientsCountResponse {
+  status: boolean;
+  message: string;
+  total: number;
 }

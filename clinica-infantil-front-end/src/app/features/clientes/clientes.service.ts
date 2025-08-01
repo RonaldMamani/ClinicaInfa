@@ -14,6 +14,7 @@ import {
   ResponsavelComCliente,
   ResponsavelDetailsResponse
 } from '../../core/models/responsavel.model';
+import { PacienteDetailsResponse, PacientesApiResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
 
 @Injectable({
   providedIn: 'root'
@@ -47,5 +48,17 @@ export class ClientesService {
 
   createCliente(payload: CreateClientePayload): Observable<any> {
     return this.http.post<any>(`${this.apiBaseUrl}/clientes`, payload);
+  }
+
+  getPacientes(): Observable<PacientesApiResponse> {
+    return this.http.get<PacientesApiResponse>(`${this.apiBaseUrl}/pacientes`);
+  }
+
+  getPacienteById(id: number): Observable<PacienteDetailsResponse> {
+    return this.http.get<PacienteDetailsResponse>(`${this.apiBaseUrl}/pacientes/${id}`);
+  }
+
+  updatePaciente(id: number, payload: UpdatePacientePayload): Observable<PacienteDetailsResponse> {
+    return this.http.put<PacienteDetailsResponse>(`${this.apiBaseUrl}/pacientes/${id}`, payload);
   }
 }
