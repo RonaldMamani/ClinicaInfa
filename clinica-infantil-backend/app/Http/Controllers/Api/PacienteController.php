@@ -16,7 +16,7 @@ class PacienteController extends Controller
     {
         try {
             // Busca todos os pacientes, carregando os dados relacionados de cliente e responsável
-            $pacientes = Paciente::with(['cliente', 'responsavel'])->orderBy('data_nascimento', 'ASC')->get();
+            $pacientes = Paciente::with(['cliente', 'responsavel'])->orderBy('id', 'ASC')->get();
 
             // Retorna a lista de pacientes em formato JSON
             return response()->json([
@@ -187,6 +187,26 @@ class PacienteController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao excluir o paciente. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function count()
+    {
+        try {
+            $totalPacientes = Paciente::count();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Quantidade total de pacientes obtida com sucesso.',
+                'total_pacientes' => $totalPacientes,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Erro ao contar pacientes: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao contar os pacientes.',
                 'error_details' => $e->getMessage()
             ], 500);
         }

@@ -2,20 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-
-// Interface para um único objeto Cidade
-export interface Cidade {
-  id: number;
-  id_estado: number;
-  nome_cidade: string;
-}
-
-// Interface para a resposta completa da API de cidades
-export interface ApiResponseCidades {
-  status: boolean;
-  message: string;
-  cidades: Cidade[];
-}
+import { Cidade } from '../../core/models/cliente.model';
+import { ApiResponseCidades } from '../../core/models/cidades.model';
 
 @Injectable({
   providedIn: 'root'

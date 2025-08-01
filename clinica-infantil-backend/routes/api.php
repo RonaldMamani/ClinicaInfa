@@ -22,7 +22,7 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout']);
-    Route::get('/generos', [GeneroController::class, 'index']);
+    //Route::get('/generos', [GeneroController::class, 'index']);
 });
 
 // Rotas para Estados
@@ -35,17 +35,19 @@ Route::get('/cidades/{cidade}', [CidadeController::class, 'show']);
 Route::get('/estados/{estadoId}/cidades', [CidadeController::class, 'getCidadesByEstado']);
 
 // Rotas para Gêneros
-//Route::get('/generos', [GeneroController::class, 'index']);
+Route::get('/generos', [GeneroController::class, 'index']);
 Route::get('/generos/{genero}', [GeneroController::class, 'show']);
 
 // Rotas para Clientes
-Route::get('/clientes', [ClienteController::class, 'index']); // GET para listar todos os clientes ATIVOS
-Route::get('/clientes/inativos', [ClienteController::class, 'getInactiveClients']); // GET para listar clientes INATIVOS
-Route::get('/clientes/{id}', [ClienteController::class, 'show']); // GET para mostrar um cliente por ID (se ATIVO)
-Route::post('/clientes', [ClienteController::class, 'store']); // POST para criar um novo cliente
-Route::put('/clientes/{id}', [ClienteController::class, 'update']); // PUT para atualizar um cliente
-Route::patch('/clientes/{id}', [ClienteController::class, 'update']); // PATCH para atualizar um cliente
-Route::delete('/clientes/{id}', [ClienteController::class, 'destroy']);
+Route::controller(ClienteController::class)->group(function () {
+    Route::get('/clientes', 'index');
+    Route::get('/clientes/ativos', 'getActiveClients');
+    Route::get('/clientes/inativos', 'getInactiveClients');
+    Route::get('/clientes/{id}', 'show');
+    Route::post('/clientes', 'store');
+    Route::put('/clientes/{id}', 'update'); // Endpoint de atualização
+    Route::delete('/clientes/{id}', 'destroy');
+});
 
 // Rotas para Perfis
 Route::get('/perfis', [PerfilController::class, 'index']);
@@ -80,6 +82,7 @@ Route::patch('/responsaveis/{id}', [ResponsavelController::class, 'update']); //
 Route::delete('/responsaveis/{id}', [ResponsavelController::class, 'destroy']); // DELETE para remover (físico)
 
 // Rotas para Pacientes
+Route::get('/pacientes/count', [PacienteController::class, 'count']); // NOVA ROTA: Contagem total de pacientes
 Route::get('/pacientes', [PacienteController::class, 'index']); // GET para listar todos
 Route::get('/pacientes/{id}', [PacienteController::class, 'show']); // GET para mostrar por ID
 Route::post('/pacientes', [PacienteController::class, 'store']); // POST para criar
@@ -96,6 +99,9 @@ Route::patch('/medicos/{id}', [MedicoController::class, 'update']); // PATCH par
 Route::delete('/medicos/{id}', [MedicoController::class, 'destroy']); // DELETE para remover (físico)
 
 // Rotas para Consultas
+Route::get('/consultas/agendadas', [ConsultaController::class, 'getScheduled']); // NOVA ROTA: Consultas agendadas
+Route::get('/consultas/count/all', [ConsultaController::class, 'countAll']); // NOVA ROTA: Contagem total de consultas
+Route::get('/consultas/count/scheduled', [ConsultaController::class, 'countScheduled']); // NOVA ROTA: Contagem de consultas agendadas
 Route::get('/consultas', [ConsultaController::class, 'index']); // GET para listar todos
 Route::get('/consultas/{id}', [ConsultaController::class, 'show']); // GET para mostrar por ID
 Route::post('/consultas', [ConsultaController::class, 'store']); // POST para criar

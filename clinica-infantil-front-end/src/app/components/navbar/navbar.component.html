@@ -25,7 +25,7 @@
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['/medico/consultas']">Minhas Consultas</a>
             </li>
-            }
+          }
           @if (profile === 'administrador') {
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" [routerLink]="['/administrador']">Dashboard</a>
@@ -36,7 +36,7 @@
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['/administrador/perfis']">Perfis</a>
             </li>
-            }
+          }
         }
       </ul>
 
@@ -44,7 +44,7 @@
         @if (userProfile$ | async; as profile) {
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Olá, {{ capitalize(profile) }}!
+              Olá, {{ (userName$ | async) ? (userName$ | async) : capitalize(profile) }} ({{ capitalize(profile) }})!
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
               <li><a class="dropdown-item" href="#">Meu Perfil</a></li>

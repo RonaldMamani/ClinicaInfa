@@ -1,12 +1,27 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Para diretivas como @if, @for
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "../../components/navbar/navbar.component";
+import { FooterComponent } from "../../components/footer/footer.component";
 
 @Component({
   selector: 'app-secretaria',
-  imports: [NavbarComponent],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterOutlet,
+    NavbarComponent,
+    FooterComponent
+],
   templateUrl: './secretaria.component.html',
-  styleUrl: './secretaria.component.css'
+  styleUrls: ['./secretaria.component.css']
 })
-export class SecretariaComponent {
+export class SecretariaComponent implements OnInit {
 
+  constructor() { }
+
+  ngOnInit(): void {
+    // Lógica de inicialização do componente de dashboard da secretária.
+    // Você pode, por exemplo, carregar dados de resumo ou estatísticas aqui.
+  }
 }

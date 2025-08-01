@@ -1,16 +1,29 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { EstadosComponent } from './components/estados/estados.component';
-import { routes } from './app.routes';
-import { RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet],
+  imports: [
+    CommonModule,
+    RouterOutlet
+],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {
-  title = 'frontend-clinica';
+export class AppComponent implements OnInit {
+  // Propriedade para controlar a visibilidade do navbar
+  showNavbar: boolean = true;
+
+  constructor(private router: Router) { }
+
+  ngOnInit() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd) 
+    ).subscribe((event: NavigationEnd) => {
+      this.showNavbar = !event.urlAfterRedirects.includes('/login');
+    });
+  }
 }

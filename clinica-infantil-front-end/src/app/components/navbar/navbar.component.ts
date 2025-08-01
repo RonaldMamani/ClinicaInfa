@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../controllers/auth/auth.service';
+import { AuthService } from '../../controllers/auth/auth.service'; // Ajuste o caminho
 import { Observable } from 'rxjs';
 
 @Component({
@@ -12,14 +12,14 @@ import { Observable } from 'rxjs';
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
-  // Use um Observable para o perfil, que pode ser nulo antes de carregar.
   userProfile$!: Observable<string | null>;
+  userName$!: Observable<string | null>; // NOVO: Observable para o nome do usuário
 
   constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-    // Inscreve-se no Observable de perfil do serviço de autenticação.
     this.userProfile$ = this.authService.userProfile$;
+    this.userName$ = this.authService.userName$; // NOVO: Assina o Observable do nome
   }
 
   logout(): void {
@@ -33,8 +33,7 @@ export class NavbarComponent implements OnInit {
       }
     });
   }
-  
-  // Método para capitalizar a primeira letra do perfil para exibição.
+
   capitalize(s: string | null): string {
     if (!s) return '';
     return s.charAt(0).toUpperCase() + s.slice(1);

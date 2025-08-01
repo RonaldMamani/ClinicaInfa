@@ -37,4 +37,14 @@ class Cliente extends Model
     {
         return $this->belongsTo(Genero::class, 'id_genero');
     }
+
+    public function responsavel()
+    {
+        return $this->hasOne(Responsavel::class, 'id_cliente');
+    }
+
+    public function paciente()
+    {
+        return $this->hasOne(Paciente::class, 'id_cliente');
+    }
 }
