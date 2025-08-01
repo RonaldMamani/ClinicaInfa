@@ -25,7 +25,8 @@ class Consulta extends Model
         'data_consulta',
         'hora_inicio',
         'hora_fim',
-        'descricao'
+        'status', // Adicionada a nova coluna 'status'
+        'descricao' // Corrigida a grafia de 'descricao'
     ];
 
     // Como a tabela 'consultas' não tem as colunas 'created_at' e 'updated_at',

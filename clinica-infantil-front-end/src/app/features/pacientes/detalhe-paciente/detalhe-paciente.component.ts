@@ -3,7 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PacientesService } from '../pacientes.service';
 import { ClientesService } from '../../clientes/clientes.service';
+import { EstadosService } from '../../../controllers/estados/estados.service';
 import { Paciente } from '../../../core/models/paciente.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-detalhe-paciente',
@@ -15,6 +17,7 @@ import { Paciente } from '../../../core/models/paciente.model';
 export class DetalhePacienteComponent implements OnInit {
   paciente: Paciente | null = null;
   nomeResponsavel: string = '';
+  estadoSigla: string = '';
   isLoading = true;
   error: string | null = null;
   idade: number | null = null;
@@ -23,7 +26,8 @@ export class DetalhePacienteComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private pacientesService: PacientesService,
-    private clientesService: ClientesService
+    private clientesService: ClientesService,
+    private estadosService: EstadosService
   ) { }
 
   ngOnInit(): void {
@@ -36,13 +40,24 @@ export class DetalhePacienteComponent implements OnInit {
   carregarDetalhesDoPaciente(id: number): void {
     this.isLoading = true;
     this.error = null;
-    this.pacientesService.getPacienteById(id).subscribe({
-      next: (response) => {
+
+    forkJoin({
+      pacienteResponse: this.pacientesService.getPacienteById(id),
+      estados: this.estadosService.getEstados()
+    }).subscribe({
+      next: (results) => {
+        const response = results.pacienteResponse;
+        const estados = results.estados;
+
         if (response && response.paciente) {
           this.paciente = response.paciente;
           this.calcularIdade();
-          
-          // Busca o nome do responsável usando o id_cliente
+
+          // Encontrar a sigla do estado
+          const estado = estados.find(e => e.id === this.paciente?.cliente.cidade.id_estado);
+          this.estadoSigla = estado ? estado.sigla : 'Estado não encontrado';
+
+          // Busca o nome do responsável
           this.clientesService.getClienteById(this.paciente.responsavel.id_cliente).subscribe({
             next: (clienteResponse) => {
               this.nomeResponsavel = clienteResponse.cliente.nome;

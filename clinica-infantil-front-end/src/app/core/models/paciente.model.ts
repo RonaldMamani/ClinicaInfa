@@ -53,3 +53,4 @@ export interface PatientsCountResponse {
   message: string;
   total: number;
 }
+

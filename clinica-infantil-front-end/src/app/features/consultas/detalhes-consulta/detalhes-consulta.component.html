@@ -1,0 +1,76 @@
+<div class="container my-5">
+  <h2>Detalhes da Consulta</h2>
+
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando detalhes...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (!isLoading && !error && consulta) {
+    <div class="row">
+      <div class="col-12 my-4">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            Informações da Consulta #{{ consulta.id }}
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">Descrição: {{ consulta.descricao }}</h5>
+            <p class="card-text">
+              <strong>Data:</strong> {{ consulta.data_consulta | date:'dd/MM/yyyy' }}<br>
+              <strong>Horário:</strong> {{ consulta.hora_inicio }} - {{ consulta.hora_fim }}<br>
+              <strong>Status:</strong>
+              <span class="badge rounded-pill" [ngClass]="{
+                'bg-warning text-dark': consulta.status === 'Agendada',
+                'bg-success': consulta.status === 'Concluida',
+                'bg-danger': consulta.status === 'Cancelada'
+              }">
+                {{ consulta.status }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 my-4">
+        <div class="card">
+          <div class="card-header bg-info text-white">
+            Detalhes do Paciente
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ consulta.paciente.cliente.nome }}</h5>
+            <p class="card-text">
+              <strong>CPF:</strong> {{ consulta.paciente.cliente.cpf }}<br>
+              <strong>RG:</strong> {{ consulta.paciente.cliente.rg }}<br>
+              <strong>Endereço:</strong> {{ consulta.paciente.cliente.endereco }}<br>
+              <strong>Data de Nascimento:</strong> {{ consulta.paciente.data_nascimento | date:'dd/MM/yyyy' }}<br>
+              <strong>Histórico Médico:</strong> {{ consulta.paciente.historico_medico }}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 my-4">
+        <div class="card">
+          <div class="card-header bg-success text-white">
+            Detalhes do Médico
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ consulta.medico?.usuario?.funcionario?.nome }}</h5>
+            <p class="card-text">
+              <strong>Especialidade:</strong> {{ consulta.medico?.especialidade }}<br>
+              <strong>CRM:</strong> {{ consulta.medico?.CRM }}<br>
+              <strong>Email:</strong> {{ consulta.medico?.usuario?.funcionario?.email_empresarial }}<br>
+              <strong>Telefone:</strong> {{ consulta.medico?.usuario?.funcionario?.telefone_empresarial }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria/consultas']">Voltar para a Lista</a>
+  }
+
+</div>

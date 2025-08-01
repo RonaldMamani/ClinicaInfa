@@ -1,0 +1,64 @@
+<div class="container my-5">
+  <h2>Consultas Agendadas</h2>
+
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando consultas...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (!isLoading && !error && consultas.length > 0) {
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Paciente</th>
+          <th>Médico</th>
+          <th>Especialidade</th>
+          <th>Data</th>
+          <th>Horário de Início</th>
+          <th>Horário de Fim</th>
+          <th>Status</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (consulta of consultas; track consulta.id) {
+          <tr>
+            <td>{{ consulta.paciente.cliente.nome }}</td>
+            <td>{{ consulta.medico?.usuario?.funcionario?.nome }}</td>
+            <td>{{ consulta.medico?.especialidade }}</td>
+            <td>{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
+            <td>{{ consulta.hora_inicio }}</td>
+            <td>{{ consulta.hora_fim }}</td>
+            <td>
+              <span class="badge rounded-pill text-uppercase p-2" [ngClass]="{
+                'bg-warning text-dark': consulta.status === 'agendada',
+                'bg-success': consulta.status === 'concluida',
+                'bg-danger text-white': consulta.status === 'cancelada'
+              }">
+                {{ consulta.status }}
+              </span>
+            </td>
+            <td>
+                <a class="btn btn-info btn-sm me-2" [routerLink]="['../detalhes', consulta.id]" title="Ver Detalhes">
+                    <i class="bi bi-info-circle"></i>
+                </a>
+                <a class="btn btn-primary btn-sm me-2" [routerLink]="['../editar', consulta.id]" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                </a>
+                <button class="btn btn-danger btn-sm" title="Cancelar">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else if (!isLoading && !error) {
+    <div class="alert alert-warning mt-3">Nenhuma consulta agendada encontrada.</div>
+  }
+
+  <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria']">Voltar</a>
+</div>

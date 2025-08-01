@@ -1,15 +1,12 @@
-<div class="container my-5">
-  <h2>Lista de Pacientes</h2>
-
+<div class="container mt-4">
+  <h2>Lista de Pacientes Ativos</h2>
   @if (isLoading) {
     <div class="alert alert-info">Carregando pacientes...</div>
   }
-
   @if (error) {
     <div class="alert alert-danger">{{ error }}</div>
   }
-
-  @if (!isLoading && !error && pacientes.length > 0) {
+  @if (!isLoading && !error && pacientesAtivos.length > 0) {
     <table class="table table-striped mt-3">
       <thead>
         <tr>
@@ -21,21 +18,56 @@
         </tr>
       </thead>
       <tbody>
-        @for (paciente of pacientes; track paciente.id) {
+        @for (paciente of pacientesAtivos; track paciente.id) {
           <tr>
             <td>{{ paciente.cliente.nome }}</td>
             <td>{{ paciente.cliente.cpf }}</td>
             <td>{{ paciente.data_nascimento }}</td>
             <td>{{ paciente.responsavel.grau_parentesco }}</td>
             <td>
-              <button class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
-                Detalhes
-              </button>
-              <button class="btn btn-primary btn-sm me-2" [routerLink]="['/secretaria/pacientes/editar', paciente.id]">
-                Editar
-              </button>
+              <a class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
+                <i class="bi bi-info-circle"></i> </a>
+              <a class="btn btn-primary btn-sm me-2" [routerLink]="['/secretaria/pacientes/editar', paciente.id]">
+                <i class="bi bi-pencil"></i> </a>
               <button class="btn btn-danger btn-sm" (click)="excluirPaciente(paciente.id)">
-                Excluir
+                <i class="bi bi-trash"></i> </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  } @else if (!isLoading && !error) {
+    <div class="alert alert-warning mt-3">Nenhum paciente ativo encontrado.</div>
+  }
+
+  <h2 class="mt-5">Pacientes Inativos</h2>
+  @if (!isLoading && !error && pacientesInativos.length > 0) {
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Nome do Paciente</th>
+          <th>CPF</th>
+          <th>Data de Nascimento</th>
+          <th>Responsável</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (paciente of pacientesInativos; track paciente.id) {
+          <tr>
+            <td>{{ paciente.cliente.nome }}</td>
+            <td>{{ paciente.cliente.cpf }}</td>
+            <td>{{ paciente.data_nascimento }}</td>
+            <td>{{ paciente.responsavel.grau_parentesco }}</td>
+            <td>
+              <a class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
+                <i class="bi bi-info-circle"></i>
+              </a>
+              <a class="btn btn-primary btn-sm me-2" [routerLink]="['/secretaria/pacientes/editar', paciente.id]">
+                <i class="bi bi-pencil"></i>
+              </a>
+              <button class="btn btn-danger btn-sm" (click)="excluirPaciente(paciente.id)">
+                <i class="bi bi-trash"></i>
               </button>
             </td>
           </tr>
@@ -43,6 +75,7 @@
       </tbody>
     </table>
   } @else if (!isLoading && !error) {
-    <div class="alert alert-warning mt-3">Nenhum paciente cadastrado.</div>
+    <div class="alert alert-info mt-3">Nenhum paciente inativo encontrado.</div>
   }
+  <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria']">Voltar</a>
 </div>

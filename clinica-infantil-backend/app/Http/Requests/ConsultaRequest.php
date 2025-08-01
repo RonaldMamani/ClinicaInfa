@@ -19,15 +19,16 @@ class ConsultaRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
         return [
-            'id_paciente' => 'required|integer|exists:pacientes,id',
-            'id_medico' => 'required|integer|exists:medicos,id',
-            'data_consulta' => 'required|date_format:Y-m-d H:i:s|after_or_equal:today', // Formato YYYY-MM-DD HH:MM:SS, não pode ser no passado
-            'hora_inicio' => 'required|date_format:H:i:s', // Formato HH:MM:SS
-            'hora_fim' => 'required|date_format:H:i:s|after:hora_inicio', // Formato HH:MM:SS e deve ser depois da hora_inicio
-            'descricao' => 'nullable|string',
+            'data_consulta' => 'required|date',
+            'hora_inicio' => 'required|date_format:H:i:s',
+            'hora_fim' => 'required|date_format:H:i:s|after_or_equal:hora_inicio',
+            'id_paciente' => 'required|exists:pacientes,id',
+            'id_medico' => 'required|exists:medicos,id',
+            'status' => 'required|in:agendada,cancelada,concluida',
+            'descricao' => 'nullable|string'
         ];
     }
 

@@ -1,0 +1,50 @@
+<div class="container mt-4">
+  <h2>Editar Consulta</h2>
+
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando dados da consulta...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (!isLoading && !error && consulta) {
+    <div class="card p-4">
+      <h4 class="card-title">Paciente: {{ consulta.paciente.cliente.nome }}</h4>
+      <h5 class="card-subtitle mb-4 text-muted">Especialidade: {{ consulta.medico?.especialidade }}</h5>
+
+      <form [formGroup]="formConsulta" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="data_consulta" class="form-label">Nova Data</label>
+          <input type="date" class="form-control" id="data_consulta" formControlName="data_consulta">
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="hora_inicio" class="form-label">Horário de Início</label>
+            <input type="time" class="form-control" id="hora_inicio" formControlName="hora_inicio">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="hora_fim" class="form-label">Horário de Fim</label>
+            <input type="time" class="form-control" id="hora_fim" formControlName="hora_fim">
+          </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select class="form-control" id="status" formControlName="status">
+                <option value="Agendada">Agendada</option>
+                <option value="Cancelada">Cancelada</option>
+                <option value="Concluida">Concluída</option>
+            </select>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a class="btn btn-secondary" [routerLink]="['/secretaria/consultas/agendadas']">Voltar</a>
+          <button type="submit" class="btn btn-primary" [disabled]="formConsulta.invalid">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

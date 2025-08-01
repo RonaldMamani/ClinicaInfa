@@ -12,13 +12,28 @@ use Illuminate\Support\Facades\Log;
 
 class ConsultaController extends Controller
 {
+    /**
+     * Define os relacionamentos a serem carregados para os métodos.
+     * Adicionado 'paciente.cliente' para carregar os dados do cliente dentro do paciente.
+     */
+    protected $relations = [
+        'paciente.cliente', 
+        'medico.usuario.perfil', 
+        'medico.usuario.funcionario'
+    ];
+
+    /**
+     * Retorna a lista completa de consultas, com dados aninhados do paciente, médico e usuário.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         try {
-            // Busca todas as consultas, carregando os dados relacionados de paciente e médico
-            $consultas = Consulta::with(['paciente', 'medico'])->orderBy('data_consulta', 'DESC')->get();
+            $consultas = Consulta::with($this->relations)
+                ->orderBy('id', 'ASC')
+                ->get();
 
-            // Retorna a lista de consultas em formato JSON
             return response()->json([
                 'status' => true,
                 'message' => 'Lista de consultas obtida com sucesso.',
@@ -44,10 +59,8 @@ class ConsultaController extends Controller
     public function show($id)
     {
         try {
-            // Busca a consulta pelo ID, carregando os relacionamentos
-            $consulta = Consulta::with(['paciente', 'medico'])->find($id);
+            $consulta = Consulta::with($this->relations)->find($id);
 
-            // Verifica se a consulta foi encontrada
             if (!$consulta) {
                 return response()->json([
                     'status' => false,
@@ -55,7 +68,6 @@ class ConsultaController extends Controller
                 ], 404);
             }
 
-            // Retorna os detalhes da consulta em formato JSON
             return response()->json([
                 'status' => true,
                 'message' => 'Consulta obtida com sucesso.',
@@ -71,31 +83,28 @@ class ConsultaController extends Controller
             ], 500);
         }
     }
-
+    
     /**
      * Cria uma nova consulta no banco de dados.
-     * A validação dos dados é realizada automaticamente pelo ConsultaRequest.
      *
      * @param \App\Http\Requests\ConsultaRequest $request A requisição validada pelo ConsultaRequest.
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(ConsultaRequest $request)
     {
-        DB::beginTransaction(); // Inicia a transação
+        DB::beginTransaction();
         try {
-            // Cria uma nova consulta com os dados validados
             $consulta = Consulta::create($request->validated());
-            DB::commit(); // Confirma a transação
+            DB::commit();
 
-            // Retorna a confirmação de criação da consulta
             return response()->json([
                 'status' => true,
                 'message' => 'Consulta criada com sucesso!',
                 'consulta' => $consulta,
-            ], 201); // Código 201 Created
+            ], 201);
 
         } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+            DB::rollBack();
             Log::error('Erro ao criar consulta: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -107,7 +116,6 @@ class ConsultaController extends Controller
 
     /**
      * Atualiza uma consulta existente no banco de dados.
-     * A validação dos dados é realizada automaticamente pelo ConsultaRequest.
      *
      * @param \App\Http\Requests\ConsultaRequest $request A requisição validada pelo ConsultaRequest.
      * @param int $id O ID da consulta a ser atualizada.
@@ -115,40 +123,83 @@ class ConsultaController extends Controller
      */
     public function update(ConsultaRequest $request, $id)
     {
-        DB::beginTransaction(); // Inicia a transação
+        DB::beginTransaction();
         try {
-            // Encontra a consulta pelo ID
             $consulta = Consulta::find($id);
 
-            // Se a consulta não for encontrada, retorna 404 Not Found
             if (!$consulta) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Consulta não encontrada para atualização.',
-                ], 404);
+                // ... (código existente)
             }
+            
+            $validatedData = $request->validated();
+            
+            // Aqui está o ponto de falha.
+            // Adicione um log para ver os dados que estão chegando.
+            Log::info('Dados validados para atualização: ', $validatedData);
 
-            // Atualiza a consulta com os dados validados
-            $consulta->update($request->validated());
-            DB::commit(); // Confirma a transação
+            $consulta->update($validatedData); // A falha ocorre aqui
+            DB::commit();
 
-            // Retorna a confirmação de atualização da consulta
             return response()->json([
                 'status' => true,
                 'message' => 'Consulta atualizada com sucesso!',
                 'consulta' => $consulta,
-            ], 200); // Código 200 OK
+            ], 200);
 
-        } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
-            Log::error('Erro ao atualizar consulta: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+        } catch (\Exception $e) { // Use \Exception para capturar qualquer tipo de erro
+            DB::rollBack();
+            
+            // Retorne o erro detalhado para o front-end
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao atualizar a consulta. Verifique os logs do servidor.',
+                'message' => 'Erro interno do servidor',
+                'error_details' => $e->getMessage() // Esta linha é a mais importante para debug
+            ], 500);
+        }
+    }
+    
+    /**
+     * Atualiza o status de uma consulta específica.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $id O ID da consulta a ser atualizada.
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string'
+        ]);
+
+        try {
+            $consulta = Consulta::find($id);
+
+            if (!$consulta) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Consulta não encontrada.',
+                ], 404);
+            }
+
+            $consulta->status = $request->input('status');
+            $consulta->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Status da consulta atualizado com sucesso.',
+                'consulta' => $consulta,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao atualizar o status da consulta: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao atualizar o status da consulta.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
     }
+
 
     /**
      * Remove uma consulta do banco de dados (delete físico).
@@ -158,12 +209,10 @@ class ConsultaController extends Controller
      */
     public function destroy($id)
     {
-        DB::beginTransaction(); // Inicia a transação
+        DB::beginTransaction();
         try {
-            // Encontra a consulta pelo ID
             $consulta = Consulta::find($id);
 
-            // Se a consulta não for encontrada, retorna 404 Not Found
             if (!$consulta) {
                 return response()->json([
                     'status' => false,
@@ -171,18 +220,16 @@ class ConsultaController extends Controller
                 ], 404);
             }
 
-            // Tenta deletar a consulta (delete físico)
             $consulta->delete();
-            DB::commit(); // Confirma a transação
+            DB::commit();
 
-            // Retorna a confirmação de exclusão
             return response()->json([
                 'status' => true,
                 'message' => 'Consulta excluída com sucesso!',
-            ], 200); // Código 200 OK
+            ], 200);
 
         } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+            DB::rollBack();
             Log::error('Erro ao excluir consulta: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -225,7 +272,6 @@ class ConsultaController extends Controller
     public function countScheduled()
     {
         try {
-            // Conta consultas onde a data_consulta é maior que a data e hora atual
             $consultasAgendadas = Consulta::where('data_consulta', '>', now())->count();
 
             return response()->json([
@@ -243,14 +289,18 @@ class ConsultaController extends Controller
         }
     }
 
-    public function getScheduled()
+    /**
+     * Retorna a lista de consultas agendadas, com os dados completos e aninhados.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function consultasAgendadas()
     {
         try {
-            // Busca consultas onde a data_consulta é maior que a data e hora atual
-            $consultasAgendadas = Consulta::with(['paciente', 'medico'])
-                                            ->where('data_consulta', '>', now())
-                                            ->orderBy('data_consulta', 'ASC')
-                                            ->get();
+            $consultasAgendadas = Consulta::with($this->relations)
+                ->where('data_consulta', '>', now())
+                ->orderBy('data_consulta', 'ASC')
+                ->get();
 
             return response()->json([
                 'status' => true,

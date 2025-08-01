@@ -1,0 +1,25 @@
+.status-agendada {
+  background-color: #ffc107; /* Amarelo */
+  color: #343a40;
+  font-weight: bold;
+  max-width: 50%;
+  padding: 5px;
+  border-radius: 50px;
+  text-align: center;
+}
+
+.status-concluida {
+  background-color: #28a745; /* Verde */
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.status-cancelada {
+  background-color: #dc3545; /* Vermelho */
+  color: white;
+  font-weight: bold;
+  padding: 5px;
+  border-radius: 4px;
+}
