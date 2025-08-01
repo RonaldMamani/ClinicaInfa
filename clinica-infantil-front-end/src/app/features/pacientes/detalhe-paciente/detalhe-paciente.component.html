@@ -1,0 +1,55 @@
+<div class="container mt-4">
+  <h2>Detalhes do Paciente</h2>
+
+  @if (isLoading) {
+    <div class="alert alert-info text-center">
+      Carregando detalhes do paciente...
+    </div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger">
+      {{ error }} <br>
+      <button class="btn btn-sm btn-primary mt-2" (click)="getPacienteDetails(pacienteId!)">Tentar Novamente</button>
+    </div>
+  }
+
+  @if (!isLoading && !error && paciente) {
+    <div class="card mb-3">
+      <div class="card-header bg-primary text-white">
+        Detalhes de {{ paciente.cliente.nome }}
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <h5 class="card-title">Informações do Paciente</h5>
+            <p><strong>ID Paciente:</strong> {{ paciente.id }}</p>
+            <p><strong>Nome Completo:</strong> {{ paciente.cliente.nome }}</p>
+            <p><strong>CPF:</strong> {{ paciente.cliente.cpf }}</p>
+            <p><strong>RG:</strong> {{ paciente.cliente.rg }}</p>
+            <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento }}</p>
+            <p><strong>Endereço:</strong> {{ paciente.cliente.endereco }}</p>
+            <p><strong>Histórico Médico:</strong> {{ paciente.historico_medico }}</p>
+          </div>
+          <div class="col-md-6">
+            <h5 class="card-title">Informações do Responsável</h5>
+            <p><strong>Nome do Responsável:</strong> {{ paciente.responsavel.cliente?.nome || 'N/A' }}</p>
+            <p><strong>Grau de Parentesco:</strong> {{ paciente.responsavel.grau_parentesco }}</p>
+            <p><strong>Email:</strong> {{ paciente.responsavel.email }}</p>
+            <p><strong>Telefone:</strong> {{ paciente.responsavel.telefone }}</p>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer d-flex justify-content-between">
+        <button class="btn btn-warning" (click)="editarPaciente()">Editar Paciente</button>
+        <button class="btn btn-secondary" [routerLink]="['/secretaria/pacientes']">Voltar para a Lista</button>
+      </div>
+    </div>
+  }
+
+  @if (!isLoading && !error && !paciente) {
+    <div class="alert alert-warning text-center">
+      Paciente não encontrado.
+    </div>
+  }
+</div>

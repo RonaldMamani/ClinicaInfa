@@ -3,33 +3,32 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ClienteRequest;
+use Illuminate\Http\Request;
 use App\Models\Cliente;
-use Exception;
+use App\Models\Responsavel;
+use App\Models\Paciente;
+use App\Http\Requests\ClienteRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
+use Exception;
 
 class ClienteController extends Controller
 {
     /**
-     * Lista todos os clientes ATIVOS.
-     * Inclui os relacionamentos de cidade e gênero.
+     * Lista todos os clientes do banco de dados,
+     * incluindo os relacionamentos.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function index()
     {
         try {
-            // Busca apenas clientes ATIVOS, carregando os relacionamentos
-            $clientes = Cliente::with(['cidade', 'genero'])
-                ->where('ativo', true) // Filtra por clientes ativos
-                ->orderBy('nome', 'ASC')
-                ->get();
+            // Retorna todos os clientes com seus relacionamentos
+            $clientes = Cliente::with(['cidade', 'genero', 'responsavel', 'paciente'])->get();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Lista de clientes ativos obtida com sucesso.',
+                'message' => 'Lista de clientes obtida com sucesso.',
                 'clientes' => $clientes,
             ], 200);
 
@@ -44,7 +43,7 @@ class ClienteController extends Controller
     }
 
     /**
-     * Exibe um cliente específico pelo seu ID (apenas se estiver ATIVO).
+     * Exibe um cliente específico pelo seu ID.
      *
      * @param int $id O ID do cliente a ser exibido.
      * @return \Illuminate\Http\JsonResponse
@@ -52,17 +51,12 @@ class ClienteController extends Controller
     public function show($id)
     {
         try {
-            // Busca o cliente pelo ID, carregando os relacionamentos e verificando se está ativo
-            $cliente = Cliente::with(['cidade', 'genero'])
-                ->where('id', $id)
-                ->where('ativo', true) // Filtra por cliente ativo
-                ->first(); // Usa first() pois find() não permite where encadeado desta forma
+            $cliente = Cliente::with(['cidade', 'genero', 'responsavel', 'paciente'])->find($id);
 
-            // Verifica se o cliente foi encontrado e está ativo
             if (!$cliente) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Cliente não encontrado ou inativo.',
+                    'message' => 'Cliente não encontrado.',
                 ], 404);
             }
 
@@ -83,7 +77,8 @@ class ClienteController extends Controller
     }
 
     /**
-     * Cria um novo cliente no banco de dados.
+     * Cria um novo cliente, e opcionalmente um paciente e/ou responsável,
+     * em uma única transação de banco de dados.
      *
      * @param \App\Http\Requests\ClienteRequest $request A requisição validada.
      * @return \Illuminate\Http\JsonResponse
@@ -92,35 +87,66 @@ class ClienteController extends Controller
     {
         DB::beginTransaction();
         try {
-            $data = $request->validated();
+            // Passo 1: Criar o Cliente (sempre é a primeira entidade a ser criada)
+            $cliente = Cliente::create($request->only([
+                'id_cidade',
+                'id_genero',
+                'cpf',
+                'rg',
+                'nome',
+                'endereco',
+                'ativo' // Adicionado 'ativo' para ser criado com o cliente
+            ]));
 
-            // Se 'ativo' não for fornecido na requisição, ele usará o DEFAULT TRUE do banco.
-            // Se for fornecido, será validado como booleano.
-            $cliente = Cliente::create($data);
+            $responsavelId = null;
+
+            // Passo 2 (Opcional): Criar o Responsável se os dados estiverem presentes
+            if ($request->has('grau_parentesco') || $request->has('email') || $request->has('telefone')) {
+                $responsavel = Responsavel::create([
+                    'id_cliente' => $cliente->id,
+                    'grau_parentesco' => $request->grau_parentesco,
+                    'email' => $request->email,
+                    'telefone' => $request->telefone,
+                ]);
+                $responsavelId = $responsavel->id;
+            }
+
+            // Passo 3 (Opcional): Criar o Paciente se os dados estiverem presentes
+            if ($request->has('data_nascimento') || $request->has('historico_medico')) {
+                $idDoResponsavel = $request->id_responsavel ?? $responsavelId;
+                
+                Paciente::create([
+                    'id_cliente' => $cliente->id,
+                    'id_responsavel' => $idDoResponsavel,
+                    'data_nascimento' => $request->data_nascimento,
+                    'historico_medico' => $request->historico_medico,
+                ]);
+            }
+
             DB::commit();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Cliente criado com sucesso!',
-                'cliente' => $cliente,
+                'message' => 'Cliente e tipo(s) de cliente adicionado(s) com sucesso!',
+                'cliente' => $cliente->load(['cidade', 'genero', 'responsavel', 'paciente']),
             ], 201);
 
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Erro ao criar cliente: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            Log::error('Erro ao criar cliente e seus tipos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao criar o cliente. Verifique os logs do servidor.',
+                'message' => 'Ocorreu um erro ao criar o cliente e/ou o tipo de cliente. Verifique os logs do servidor.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Atualiza um cliente existente no banco de dados.
+     * Atualiza um cliente e seus dados relacionados.
      *
-     * @param \App\Http\Requests\ClienteRequest $request A requisição validada.
-     * @param int $id O ID do cliente a ser atualizado.
+     * @param \App\Http\Requests\ClienteRequest $request
+     * @param int $id
      * @return \Illuminate\Http\JsonResponse
      */
     public function update(ClienteRequest $request, $id)
@@ -136,13 +162,57 @@ class ClienteController extends Controller
                 ], 404);
             }
 
-            $cliente->update($request->validated());
+            // 1. Atualiza os dados principais do Cliente
+            $cliente->update($request->only([
+                'id_cidade',
+                'id_genero',
+                'cpf',
+                'rg',
+                'nome',
+                'endereco',
+                'ativo'
+            ]));
+
+            // 2. Lógica para Responsavel (Cria, Atualiza ou Deleta)
+            $responsavelData = $request->only('grau_parentesco', 'email', 'telefone');
+            if (!empty($responsavelData) && $request->has('grau_parentesco')) {
+                // Tenta encontrar o responsável existente
+                $responsavel = $cliente->responsavel;
+                if ($responsavel) {
+                    $responsavel->update($responsavelData);
+                } else {
+                    $cliente->responsavel()->create($responsavelData);
+                }
+            } else {
+                // Se não há dados de responsável na requisição, remove o registro existente
+                if ($cliente->responsavel) {
+                    $cliente->responsavel()->delete();
+                }
+            }
+
+            // 3. Lógica para Paciente (Cria, Atualiza ou Deleta)
+            $pacienteData = $request->only('data_nascimento', 'historico_medico', 'id_responsavel');
+            if (!empty($pacienteData) && $request->has('data_nascimento')) {
+                 // Tenta encontrar o paciente existente
+                $paciente = $cliente->paciente;
+                if ($paciente) {
+                    $paciente->update($pacienteData);
+                } else {
+                    $cliente->paciente()->create($pacienteData);
+                }
+            } else {
+                // Se não há dados de paciente na requisição, remove o registro existente
+                if ($cliente->paciente) {
+                    $cliente->paciente()->delete();
+                }
+            }
+
             DB::commit();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Cliente atualizado com sucesso!',
-                'cliente' => $cliente,
+                'message' => 'Cliente e seus dados relacionados atualizados com sucesso!',
+                'cliente' => $cliente->load(['cidade', 'genero', 'responsavel', 'paciente']),
             ], 200);
 
         } catch (Exception $e) {
@@ -157,60 +227,80 @@ class ClienteController extends Controller
     }
 
     /**
-     * Realiza um "delete lógico" de um cliente, marcando-o como inativo.
+     * Remove (logicamente) um cliente do banco de dados,
+     * setando o campo 'ativo' para false.
      *
-     * @param int $id O ID do cliente a ser "deletado" (marcado como inativo).
+     * @param int $id O ID do cliente a ser desativado.
      * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
-        DB::beginTransaction();
         try {
             $cliente = Cliente::find($id);
 
-            // Verifica se o cliente foi encontrado e se já não está inativo
-            if (!$cliente || !$cliente->ativo) {
+            if (!$cliente) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Cliente não encontrado ou já está inativo.',
+                    'message' => 'Cliente não encontrado para desativação.',
                 ], 404);
             }
-
-            // Marca o cliente como inativo (delete lógico)
+            
+            // Realiza a exclusão lógica, setando o campo 'ativo' para false
             $cliente->update(['ativo' => false]);
-            DB::commit();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Cliente inativado com sucesso (delete lógico)!',
+                'message' => 'Cliente desativado (exclusão lógica) com sucesso!',
             ], 200);
 
         } catch (Exception $e) {
-            DB::rollBack();
-            Log::error('Erro ao inativar cliente: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            Log::error('Erro ao desativar cliente: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao inativar o cliente. Verifique os logs do servidor.',
+                'message' => 'Ocorreu um erro ao desativar o cliente. Verifique os logs do servidor.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
     }
 
     /**
-     * Lista todos os clientes INATIVOS.
-     * Inclui os relacionamentos de cidade e gênero.
+     * Retorna todos os clientes com o status 'ativo' = true.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getActiveClients()
+    {
+        try {
+            $clientes = Cliente::where('ativo', true)
+                                ->with(['cidade', 'genero', 'responsavel', 'paciente'])
+                                ->get();
+            return response()->json([
+                'status' => true,
+                'message' => 'Lista de clientes ativos obtida com sucesso.',
+                'clientes' => $clientes,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar clientes ativos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao buscar os clientes ativos.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Retorna todos os clientes com o status 'ativo' = false.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function getInactiveClients()
     {
         try {
-            // Busca apenas clientes INATIVOS, carregando os relacionamentos
-            $clientes = Cliente::with(['cidade', 'genero'])
-                ->where('ativo', false) // Filtra por clientes inativos
-                ->orderBy('nome', 'ASC')
-                ->get();
-
+            $clientes = Cliente::where('ativo', false)
+                                ->with(['cidade', 'genero', 'responsavel', 'paciente'])
+                                ->get();
             return response()->json([
                 'status' => true,
                 'message' => 'Lista de clientes inativos obtida com sucesso.',
@@ -221,7 +311,7 @@ class ClienteController extends Controller
             Log::error('Erro ao listar clientes inativos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao buscar os clientes inativos. Verifique os logs do servidor.',
+                'message' => 'Ocorreu um erro ao buscar os clientes inativos.',
                 'error_details' => $e->getMessage()
             ], 500);
         }

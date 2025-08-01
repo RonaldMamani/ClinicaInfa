@@ -1,0 +1,51 @@
+// src/app/features/clientes/clientes.service.ts
+
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { map, Observable } from 'rxjs';
+import {
+  ApiResponseClientes,
+  ClienteDetailsResponse,
+  UpdateClientePayload,
+  CreateClientePayload
+} from '../../core/models/cliente.model';
+import {
+  ResponsaveisApiResponse,
+  ResponsavelComCliente,
+  ResponsavelDetailsResponse
+} from '../../core/models/responsavel.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ClientesService {
+  private apiBaseUrl = 'http://localhost:8000/api';
+
+  constructor(private http: HttpClient) { }
+
+  getClientes(): Observable<ApiResponseClientes> {
+    return this.http.get<ApiResponseClientes>(`${this.apiBaseUrl}/clientes`);
+  }
+
+  getClienteById(id: number): Observable<ClienteDetailsResponse> {
+    return this.http.get<ClienteDetailsResponse>(`${this.apiBaseUrl}/clientes/${id}`);
+  }
+
+  getResponsaveis(): Observable<ResponsavelComCliente[]> {
+    return this.http.get<ResponsaveisApiResponse>(`${this.apiBaseUrl}/responsaveis`).pipe(
+      map(response => response.responsaveis)
+    );
+  }
+
+  getResponsavelById(id: number): Observable<ResponsavelDetailsResponse> {
+    return this.http.get<ResponsavelDetailsResponse>(`${this.apiBaseUrl}/responsaveis/${id}`);
+  }
+
+  updateCliente(id: number, payload: UpdateClientePayload): Observable<ClienteDetailsResponse> {
+    return this.http.put<ClienteDetailsResponse>(`${this.apiBaseUrl}/clientes/${id}`, payload);
+  }
+
+  createCliente(payload: CreateClientePayload): Observable<any> {
+    return this.http.post<any>(`${this.apiBaseUrl}/clientes`, payload);
+  }
+}

@@ -15,28 +15,49 @@ class ClienteRequest extends FormRequest
         return true;
     }
 
-    public function rules(): array
+    public function rules()
     {
-        $clienteId = $this->route('id');
-
-        return [
+        $rules = [
+            // Regras obrigatórias para a tabela 'clientes'
+            'nome' => 'required|string|max:255',
+            'cpf' => 'required|string|max:14|unique:clientes,cpf,' . ($this->cliente ? $this->cliente->id : 'NULL'),
+            'rg' => 'required|string|max:20|unique:clientes,rg,' . ($this->cliente ? $this->cliente->id : 'NULL'),
+            'endereco' => 'required|string|max:255',
             'id_cidade' => 'required|integer|exists:cidades,id',
             'id_genero' => 'required|integer|exists:generos,id',
-            'cpf' => [
-                'required',
-                'string',
-                'max:14',
-                Rule::unique('clientes', 'cpf')->ignore($clienteId),
-            ],
-            'rg' => [
-                'nullable',
-                'string',
-                'max:20',
-                Rule::unique('clientes', 'rg')->ignore($clienteId),
-            ],
-            'nome' => 'required|string|max:255',
-            'endereco' => 'nullable|string',
-            'ativo' => 'boolean', // <--- Validação para o campo 'ativo'
+        ];
+
+        // Regras opcionais para a tabela 'responsaveis' (só serão validadas se estiverem presentes no payload)
+        if ($this->has('grau_parentesco') || $this->has('email') || $this->has('telefone')) {
+            $rules['grau_parentesco'] = 'required|string|max:255';
+            $rules['email'] = 'required|email|max:255|unique:responsaveis,email,' . ($this->id_responsavel ?? 'NULL') . ',id';
+            $rules['telefone'] = 'required|string|max:20';
+        }
+
+        // Regras opcionais para a tabela 'pacientes' (só serão validadas se estiverem presentes no payload)
+        if ($this->has('data_nascimento') || $this->has('historico_medico')) {
+            $rules['data_nascimento'] = 'required|date';
+            $rules['historico_medico'] = 'nullable|string';
+            $rules['id_responsavel'] = 'sometimes|nullable|integer|exists:responsaveis,id';
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Get custom attributes for validator errors.
+     *
+     * @return array
+     */
+    public function attributes()
+    {
+        return [
+            'id_genero' => 'ID do Gênero',
+            'id_cidade' => 'ID da Cidade',
+            'id_responsavel' => 'ID do Responsável',
+            'grau_parentesco' => 'Grau de Parentesco',
+            'data_nascimento' => 'Data de Nascimento',
+            'historico_medico' => 'Histórico Médico'
         ];
     }
 

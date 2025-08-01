@@ -191,4 +191,80 @@ class ConsultaController extends Controller
             ], 500);
         }
     }
+
+    /**
+     * Retorna a quantidade total de consultas.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function countAll()
+    {
+        try {
+            $totalConsultas = Consulta::count();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Quantidade total de consultas obtida com sucesso.',
+                'total_consultas' => $totalConsultas,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Erro ao contar todas as consultas: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao contar todas as consultas.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Retorna a quantidade de consultas agendadas (futuras).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function countScheduled()
+    {
+        try {
+            // Conta consultas onde a data_consulta é maior que a data e hora atual
+            $consultasAgendadas = Consulta::where('data_consulta', '>', now())->count();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Quantidade de consultas agendadas obtida com sucesso.',
+                'consultas_agendadas' => $consultasAgendadas,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Erro ao contar consultas agendadas: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao contar as consultas agendadas.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getScheduled()
+    {
+        try {
+            // Busca consultas onde a data_consulta é maior que a data e hora atual
+            $consultasAgendadas = Consulta::with(['paciente', 'medico'])
+                                            ->where('data_consulta', '>', now())
+                                            ->orderBy('data_consulta', 'ASC')
+                                            ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Lista de consultas agendadas obtida com sucesso.',
+                'consultas_agendadas' => $consultasAgendadas,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar consultas agendadas: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao buscar as consultas agendadas. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

@@ -1,0 +1,117 @@
+<div class="container mt-4">
+  <h2>Editar Paciente</h2>
+
+  @if (isLoading) {
+    <div class="alert alert-info text-center">
+      Carregando dados do paciente para edição...
+    </div>
+  }
+
+  @if (error && !successMessage) {
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (!isLoading && pacienteForm) {
+    <form [formGroup]="pacienteForm" (ngSubmit)="onSubmit()">
+
+      <fieldset class="border p-3 mb-4 rounded">
+        <legend class="float-none w-auto px-2">Dados do Paciente</legend>
+        <div class="mb-3">
+          <label for="data_nascimento" class="form-label">Data de Nascimento:</label>
+          <input type="date" class="form-control" id="data_nascimento" formControlName="data_nascimento">
+          @if (pacienteForm.get('data_nascimento')?.invalid && pacienteForm.get('data_nascimento')?.touched) {
+            <div class="text-danger">Data de Nascimento é obrigatória.</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="historico_medico" class="form-label">Histórico Médico:</label>
+          <textarea class="form-control" id="historico_medico" formControlName="historico_medico" rows="5"></textarea>
+          @if (pacienteForm.get('historico_medico')?.invalid && pacienteForm.get('historico_medico')?.touched) {
+            <div class="text-danger">Histórico Médico é obrigatório.</div>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset formGroupName="cliente" class="border p-3 mb-4 rounded">
+        <legend class="float-none w-auto px-2">Dados do Cliente</legend>
+        <div class="mb-3">
+          <label for="cliente_nome" class="form-label">Nome:</label>
+          <input type="text" class="form-control" id="cliente_nome" formControlName="nome">
+          @if (pacienteForm.get('cliente.nome')?.invalid && pacienteForm.get('cliente.nome')?.touched) {
+            <div class="text-danger">Nome do cliente é obrigatório.</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="cliente_cpf" class="form-label">CPF:</label>
+          <input type="text" class="form-control" id="cliente_cpf" formControlName="cpf" placeholder="Ex: 000.000.000-00">
+          @if (pacienteForm.get('cliente.cpf')?.invalid && pacienteForm.get('cliente.cpf')?.touched) {
+            <div class="text-danger">CPF inválido ou obrigatório.</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="cliente_rg" class="form-label">RG:</label>
+          <input type="text" class="form-control" id="cliente_rg" formControlName="rg">
+        </div>
+        <div class="mb-3">
+          <label for="cliente_endereco" class="form-label">Endereço:</label>
+          <input type="text" class="form-control" id="cliente_endereco" formControlName="endereco">
+          @if (pacienteForm.get('cliente.endereco')?.invalid && pacienteForm.get('cliente.endereco')?.touched) {
+            <div class="text-danger">Endereço é obrigatório.</div>
+          }
+        </div>
+      </fieldset>
+
+      <fieldset formGroupName="responsavel" class="border p-3 mb-4 rounded">
+        <legend class="float-none w-auto px-2">Dados do Responsável</legend>
+        <div formGroupName="cliente">
+          <div class="mb-3">
+            <label for="responsavel_nome" class="form-label">Nome do Responsável:</label>
+            <input type="text" class="form-control" id="responsavel_nome" formControlName="nome">
+            @if (pacienteForm.get('responsavel.cliente.nome')?.invalid && pacienteForm.get('responsavel.cliente.nome')?.touched) {
+              <div class="text-danger">Nome do responsável é obrigatório.</div>
+            }
+          </div>
+        </div>
+        <div class="mb-3">
+          <label for="responsavel_grau_parentesco" class="form-label">Grau de Parentesco:</label>
+          <input type="text" class="form-control" id="responsavel_grau_parentesco" formControlName="grau_parentesco">
+          @if (pacienteForm.get('responsavel.grau_parentesco')?.invalid && pacienteForm.get('responsavel.grau_parentesco')?.touched) {
+            <div class="text-danger">Grau de parentesco é obrigatório.</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="responsavel_email" class="form-label">Email Responsável:</label>
+          <input type="email" class="form-control" id="responsavel_email" formControlName="email">
+          @if (pacienteForm.get('responsavel.email')?.invalid && pacienteForm.get('responsavel.email')?.touched) {
+            <div class="text-danger">Email inválido ou obrigatório.</div>
+          }
+        </div>
+        <div class="mb-3">
+          <label for="responsavel_telefone" class="form-label">Telefone Responsável:</label>
+          <input type="text" class="form-control" id="responsavel_telefone" formControlName="telefone" placeholder="Ex: 11987654321">
+          @if (pacienteForm.get('responsavel.telefone')?.invalid && pacienteForm.get('responsavel.telefone')?.touched) {
+            <div class="text-danger">Telefone inválido ou obrigatório.</div>
+          }
+        </div>
+      </fieldset>
+
+      <button type="submit" class="btn btn-primary me-2" [disabled]="pacienteForm.invalid || isSaving">
+        @if (isSaving) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Salvando...
+        } @else {
+          Salvar Alterações
+        }
+      </button>
+      <button type="button" class="btn btn-secondary" [routerLink]="['/secretaria/pacientes']">Cancelar</button>
+    </form>
+  }
+</div>
