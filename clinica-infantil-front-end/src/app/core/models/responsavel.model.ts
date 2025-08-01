@@ -1,9 +1,10 @@
-// src/app/core/models/responsavel.model.ts
+// A interface 'Cliente' precisa ser importada para o 'ResponsavelComCliente'
 import { Cliente } from './cliente.model';
 
 // Representa a estrutura de um responsável com os campos específicos
 export interface Responsavel {
   id: number;
+  id_cliente: number; // Propriedade adicionada
   grau_parentesco: string;
   email: string;
   telefone: string;

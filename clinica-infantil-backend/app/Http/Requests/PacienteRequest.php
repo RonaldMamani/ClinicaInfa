@@ -20,14 +20,25 @@ class PacienteRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
+    public function rules()
     {
-        return [
-            'id_cliente' => 'required|integer|exists:clientes,id',
-            'id_responsavel' => 'required|integer|exists:responsaveis,id',
-            'data_nascimento' => 'required|date|before_or_equal:today', // Data de nascimento obrigatória, formato de data, não pode ser no futuro
-            'historico_medico' => 'nullable|string', // Histórico médico é opcional
+        $rules = [
+            // Regras para os campos do Paciente (opcionais, pois nem todos precisam ser atualizados)
+            'data_nascimento' => 'sometimes|required|date',
+            'historico_medico' => 'sometimes|nullable|string',
+            'id_responsavel' => 'sometimes|nullable|integer|exists:responsaveis,id',
+            
+            // Regras para os campos do Cliente (opcionais)
+            'nome' => 'sometimes|required|string|max:255',
+            'cpf' => 'sometimes|required|string|max:14|unique:clientes,cpf,' . $this->paciente->cliente->id,
+            'rg' => 'sometimes|required|string|max:20|unique:clientes,rg,' . $this->paciente->cliente->id,
+            'endereco' => 'sometimes|required|string|max:255',
+            'id_cidade' => 'sometimes|required|integer|exists:cidades,id',
+            'id_genero' => 'sometimes|required|integer|exists:generos,id',
+            'ativo' => 'sometimes|boolean',
         ];
+
+        return $rules;
     }
 
     /**

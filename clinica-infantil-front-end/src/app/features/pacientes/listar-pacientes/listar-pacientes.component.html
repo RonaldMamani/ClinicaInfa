@@ -1,59 +1,48 @@
-<div class="container mt-4">
+<div class="container my-5">
   <h2>Lista de Pacientes</h2>
 
   @if (isLoading) {
-    <div class="alert alert-info text-center">
-      Carregando pacientes...
-    </div>
+    <div class="alert alert-info">Carregando pacientes...</div>
   }
 
   @if (error) {
-    <div class="alert alert-danger">
-      {{ error }} <br>
-      <button class="btn btn-sm btn-primary mt-2" (click)="getPacientesList()">Tentar Novamente</button>
-    </div>
-  }
-
-  @if (!isLoading && !error && pacientes.length === 0) {
-    <div class="alert alert-warning text-center">
-      Nenhum paciente encontrado.
-    </div>
+    <div class="alert alert-danger">{{ error }}</div>
   }
 
   @if (!isLoading && !error && pacientes.length > 0) {
-    <div class="table-responsive"> <table class="table table-striped table-hover mt-3">
-        <thead>
+    <table class="table table-striped mt-3">
+      <thead>
+        <tr>
+          <th>Nome do Paciente</th>
+          <th>CPF</th>
+          <th>Data de Nascimento</th>
+          <th>Responsável</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (paciente of pacientes; track paciente.id) {
           <tr>
-            <th scope="col">ID Paciente</th>
-            <th scope="col">Nome do Cliente</th>
-            <th scope="col">Data Nasc.</th>
-            <th scope="col">Endereço</th>
-            <th scope="col">Telefone Responsavel</th>
-            <th scope="col">Email Resp.</th>
-            <th scope="col">Ações</th>
+            <td>{{ paciente.cliente.nome }}</td>
+            <td>{{ paciente.cliente.cpf }}</td>
+            <td>{{ paciente.data_nascimento }}</td>
+            <td>{{ paciente.responsavel.grau_parentesco }}</td>
+            <td>
+              <button class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
+                Detalhes
+              </button>
+              <button class="btn btn-primary btn-sm me-2" [routerLink]="['/secretaria/pacientes/editar', paciente.id]">
+                Editar
+              </button>
+              <button class="btn btn-danger btn-sm" (click)="excluirPaciente(paciente.id)">
+                Excluir
+              </button>
+            </td>
           </tr>
-        </thead>
-        <tbody>
-          @for (paciente of pacientes; track paciente.id) {
-            <tr>
-              <td>{{ paciente.id }}</td>
-              <td>{{ paciente.cliente.nome }}</td>
-              <td>{{ paciente.data_nascimento }}</td>
-              <td>{{ paciente.cliente.endereco }}</td>
-              <td>{{ paciente.responsavel.telefone }}</td>
-              <td>{{ paciente.responsavel.email || 'N/A' }}</td>
-              <td>
-                <button class="btn btn-sm btn-info me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">Ver</button>
-                <button class="btn btn-sm btn-warning me-2" [routerLink]="['/secretaria/pacientes/editar', paciente.id]">Editar</button>
-                <button class="btn btn-sm btn-danger">Excluir</button>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+        }
+      </tbody>
+    </table>
+  } @else if (!isLoading && !error) {
+    <div class="alert alert-warning mt-3">Nenhum paciente cadastrado.</div>
   }
-  <div class="card-footer d-flex justify-content-between">
-    <button class="btn btn-secondary" [routerLink]="['/secretaria']">Voltar para o Dashboard</button>
-  </div>
 </div>

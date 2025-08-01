@@ -45,4 +45,9 @@ class Paciente extends Model
     {
         return $this->belongsTo(Responsavel::class, 'id_responsavel');
     }
+
+    public static function countPatients()
+    {
+        return self::count();
+    }
 }

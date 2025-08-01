@@ -82,13 +82,15 @@ Route::patch('/responsaveis/{id}', [ResponsavelController::class, 'update']); //
 Route::delete('/responsaveis/{id}', [ResponsavelController::class, 'destroy']); // DELETE para remover (físico)
 
 // Rotas para Pacientes
-Route::get('/pacientes/count', [PacienteController::class, 'count']); // NOVA ROTA: Contagem total de pacientes
-Route::get('/pacientes', [PacienteController::class, 'index']); // GET para listar todos
-Route::get('/pacientes/{id}', [PacienteController::class, 'show']); // GET para mostrar por ID
-Route::post('/pacientes', [PacienteController::class, 'store']); // POST para criar
-Route::put('/pacientes/{id}', [PacienteController::class, 'update']); // PUT para atualizar (completo)
-Route::patch('/pacientes/{id}', [PacienteController::class, 'update']); // PATCH para atualizar (parcial)
-Route::delete('/pacientes/{id}', [PacienteController::class, 'destroy']); // DELETE para remover (físico)
+Route::controller(PacienteController::class)->group(function () {
+    Route::get('/pacientes', 'index');
+    Route::get('/pacientes/contagem', 'getPatientsCount');
+    Route::get('/pacientes/ativos', 'getActivePatients');
+    Route::get('/pacientes/inativos', 'getInactivePatients');
+    Route::get('/pacientes/{id}', 'show');
+    Route::put('/pacientes/{id}', 'update');
+    Route::delete('/pacientes/{id}', 'destroy');
+});
 
 // Rotas para Médicos
 Route::get('/medicos', [MedicoController::class, 'index']); // GET para listar todos
