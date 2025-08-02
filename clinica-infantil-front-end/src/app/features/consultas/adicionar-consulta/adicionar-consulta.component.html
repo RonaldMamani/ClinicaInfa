@@ -1,0 +1,94 @@
+<div class="container mt-5 p-4 bg-light rounded-3 shadow">
+  <h2 class="h2 text-center mb-4">Agendar Nova Consulta</h2>
+  <hr class="mb-4">
+
+  <form [formGroup]="formularioConsulta" (ngSubmit)="enviarFormulario()">
+
+    <!-- Mensagens de Feedback -->
+    @if (mensagemSucesso) {
+      <div class="alert alert-success" role="alert">
+        <p>{{ mensagemSucesso }}</p>
+      </div>
+    }
+    @if (mensagemErro) {
+      <div class="alert alert-danger" role="alert">
+        <p>{{ mensagemErro }}</p>
+      </div>
+    }
+
+    <!-- Campo Paciente -->
+    <div class="mb-3">
+      <label for="id_paciente" class="form-label">Paciente</label>
+      <select id="id_paciente" formControlName="id_paciente" class="form-select">
+        <option [ngValue]="null" disabled>Selecione um paciente</option>
+        @for (paciente of pacientes; track paciente.id) {
+          <option [ngValue]="paciente.id">
+            {{ paciente.nome }}
+          </option>
+        } @empty {
+          <option [ngValue]="null" disabled>Nenhum paciente disponível</option>
+        }
+      </select>
+    </div>
+
+    <!-- Campo Médico -->
+    <div class="mb-3">
+      <label for="id_medico" class="form-label">Médico</label>
+      <select id="id_medico" formControlName="id_medico" class="form-select">
+        <option [ngValue]="null" disabled>Selecione um médico</option>
+        @for (medico of medicos; track medico.id) {
+          <option [ngValue]="medico.id">
+            {{ medico.nome }}
+          </option>
+        } @empty {
+          <option [ngValue]="null" disabled>Nenhum médico disponível</option>
+        }
+      </select>
+    </div>
+
+    <!-- Campos de Data e Hora -->
+    <div class="row g-3 mb-3">
+      <div class="col-md-4">
+        <label for="data_consulta" class="form-label">Data</label>
+        <input type="date" id="data_consulta" formControlName="data_consulta" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label for="hora_inicio" class="form-label">Hora de Início</label>
+        <input type="time" id="hora_inicio" formControlName="hora_inicio" class="form-control">
+      </div>
+      <div class="col-md-4">
+        <label for="hora_fim" class="form-label">Hora de Fim</label>
+        <input type="time" id="hora_fim" formControlName="hora_fim" class="form-control">
+      </div>
+    </div>
+
+    <!-- Campo Status -->
+    <div class="mb-3">
+      <label for="status" class="form-label">Status</label>
+      <select id="status" formControlName="status" class="form-select">
+        <option value="agendada">Agendada</option>
+        <option value="cancelada">Cancelada</option>
+        <option value="concluida">Concluída</option>
+      </select>
+    </div>
+
+    <!-- Campo Descrição -->
+    <div class="mb-4">
+      <label for="descricao" class="form-label">Descrição (Opcional)</label>
+      <textarea id="descricao" formControlName="descricao" rows="3" class="form-control"></textarea>
+    </div>
+
+    <!-- Botão de Envio -->
+    <div class="text-center">
+      <button type="submit" [disabled]="formularioConsulta.invalid || estaCarregando"
+        class="btn btn-primary btn-lg">
+        @if (!estaCarregando) {
+          <span>Agendar Consulta</span>
+        } @else {
+          <span>Agendando...</span>
+        }
+      </button>
+    </div>
+
+  </form>
+</div>

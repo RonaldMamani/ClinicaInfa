@@ -1,3 +1,5 @@
+import { Responsavel } from "./responsavel.model";
+
 export interface Cidade {
   id: number;
   id_estado: number;
@@ -36,7 +38,6 @@ export interface ClienteDetailsResponse {
   cliente: Cliente;
 }
 
-// Payload para PUT/POST de Cliente
 export interface UpdateClientePayload {
   id_cidade?: number;
   id_genero?: number;
@@ -62,8 +63,6 @@ export interface CreatePacientePayload extends CreateClientePayload {
   id_responsavel: number;
 }
 
-// Payload para criação de um Responsável
-// Estende a interface base com campos específicos
 export interface CreateResponsavelPayload extends CreateClientePayload {
   grau_parentesco: string;
   email: string;

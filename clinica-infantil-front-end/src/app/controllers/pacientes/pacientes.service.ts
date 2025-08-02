@@ -1,12 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import {
-  PacientesApiResponse,
-  PacienteDetailsResponse,
-  UpdatePacientePayload,
-  PatientsCountResponse,
-} from '../../core/models/paciente.model';
+import { PacienteDetailsResponse, PacientesApiResponse, PatientsCountResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
+
 
 @Injectable({
   providedIn: 'root',
@@ -51,4 +47,5 @@ export class PacientesService {
   getInactivePatients(): Observable<PacientesApiResponse> {
     return this.http.get<PacientesApiResponse>(`${this.apiBaseUrl}/pacientes/inativos`);
   }
+
 }

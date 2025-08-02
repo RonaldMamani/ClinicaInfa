@@ -17,3 +17,7 @@ body {
      empurrando o rodapé para o final da página. */
   flex-grow: 1;
 }
+
+.dashboard {
+    height: 75vh;
+}

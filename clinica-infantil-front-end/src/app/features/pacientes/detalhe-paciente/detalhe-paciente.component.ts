@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PacientesService } from '../pacientes.service';
-import { ClientesService } from '../../clientes/clientes.service';
+import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
+import { ClientesService } from '../../../controllers/clientes/clientes.service';
 import { EstadosService } from '../../../controllers/estados/estados.service';
 import { Paciente } from '../../../core/models/paciente.model';
 import { forkJoin } from 'rxjs';

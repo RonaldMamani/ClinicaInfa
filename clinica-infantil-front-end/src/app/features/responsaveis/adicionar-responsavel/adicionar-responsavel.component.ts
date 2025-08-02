@@ -12,8 +12,8 @@ import { Estado } from '../../../core/models/estados.model';
 import { EstadosService } from '../../../controllers/estados/estados.service';
 import { CidadesService } from '../../../controllers/cidades/cidades.service';
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
-import { ClientesService } from '../../clientes/clientes.service';
 import { GenerosService } from '../../../controllers/generos/generos.service';
+import { ClientesService } from '../../../controllers/clientes/clientes.service';
 
 
 @Component({

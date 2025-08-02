@@ -16,6 +16,9 @@ import { ListarConsultasAgendadasComponent } from './features/consultas/listar-c
 import { ListarTodasConsultasComponent } from './features/consultas/listar-todas-consultas/listar-todas-consultas.component';
 import { DetalhesConsultaComponent } from './features/consultas/detalhes-consulta/detalhes-consulta.component';
 import { EditarConsultaComponent } from './features/consultas/editar-consulta/editar-consulta.component';
+import { AdicionarConsultaComponent } from './features/consultas/adicionar-consulta/adicionar-consulta.component';
+import { DetalhesConsultaAgendadaComponent } from './features/consultas/detalhes-consulta-agendada/detalhes-consulta-agendada.component';
+import { RemarcarConsultaComponent } from './features/consultas/remarcar-consulta/remarcar-consulta.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -43,9 +46,12 @@ export const routes: Routes = [
       { path: 'clientes/adicionar/responsavel', component: AdicionarResponsavelComponent },
 
       { path: 'consultas/agendadas', component: ListarConsultasAgendadasComponent },
+      { path: 'consultas/agendadas/:id', component: DetalhesConsultaAgendadaComponent},
       { path: 'consultas', component: ListarTodasConsultasComponent },
       { path: 'consultas/detalhes/:id', component: DetalhesConsultaComponent},
+      { path: 'consultas/agendadas/:id/remarcar', component: RemarcarConsultaComponent },
       { path: 'consultas/editar/:id', component: EditarConsultaComponent },
+      { path: 'consultas/adicionar', component: AdicionarConsultaComponent },
       // O redirectTo deve ser o último elemento, redirecionando para a rota padrão
       { path: '**', redirectTo: '' }
     ]

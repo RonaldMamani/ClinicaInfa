@@ -4,7 +4,6 @@ export interface Estado {
   sigla: string;
 }
 
-// Interface que representa a estrutura completa da resposta da API de estados
 export interface ApiResponseEstados {
   status: boolean;
   estados: Estado[];

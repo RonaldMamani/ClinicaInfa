@@ -5,7 +5,6 @@ export interface Perfil {
   descricao: string;
 }
 
-// Interface para o funcionário (como retornado dentro de 'usuario')
 export interface Funcionario {
   id: number;
   nome: string;
@@ -15,7 +14,6 @@ export interface Funcionario {
   telefone_empresarial: string;
 }
 
-// Interface para o objeto 'usuario' (como retornado no login e em /api/usuarios/{id})
 export interface Usuario {
   id: number;
   id_perfil: number;
@@ -39,7 +37,7 @@ export interface LoginResponse {
 export interface UsuarioDetailsResponse {
   status: boolean;
   message: string;
-  usuario: Usuario; // Note que o 'usuario' aqui pode ter 'perfil' e 'funcionario' preenchidos
+  usuario: Usuario;
 }
 
 // Interface para a resposta de /api/usuarios (todos os usuários)

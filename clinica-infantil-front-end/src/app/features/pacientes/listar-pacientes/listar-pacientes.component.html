@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="container my-5">
   <h2>Lista de Pacientes Ativos</h2>
   @if (isLoading) {
     <div class="alert alert-info">Carregando pacientes...</div>
@@ -40,7 +40,7 @@
     <div class="alert alert-warning mt-3">Nenhum paciente ativo encontrado.</div>
   }
 
-  <h2 class="mt-5">Pacientes Inativos</h2>
+  <h2 class="my-5">Pacientes Inativos</h2>
   @if (!isLoading && !error && pacientesInativos.length > 0) {
     <table class="table table-striped mt-3">
       <thead>

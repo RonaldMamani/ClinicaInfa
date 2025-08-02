@@ -23,7 +23,7 @@ export interface ConsultasApiResponse {
 export interface ConsultasAgendadasApiResponse {
   status: boolean;
   message: string;
-  consultas_agendadas: Consulta[];
+  consultas: Consulta[];
 }
 
 export interface ConsultaDetailsResponse {

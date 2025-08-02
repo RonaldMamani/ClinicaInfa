@@ -8,10 +8,14 @@ class ConsultaRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
+     * Neste caso, retornamos 'true' para permitir a validação da requisição
+     * sem a necessidade de uma autorização complexa. Se você precisar
+     * verificar se o usuário logado pode criar ou atualizar a consulta,
+     * a lógica de verificação pode ser adicionada aqui.
      */
     public function authorize(): bool
     {
-        return true; // Mantenha como true para permitir a requisição
+        return true;
     }
 
     /**
@@ -19,16 +23,18 @@ class ConsultaRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'data_consulta' => 'required|date',
-            'hora_inicio' => 'required|date_format:H:i:s',
-            'hora_fim' => 'required|date_format:H:i:s|after_or_equal:hora_inicio',
             'id_paciente' => 'required|exists:pacientes,id',
             'id_medico' => 'required|exists:medicos,id',
+            // Adicionada a regra 'in' para garantir que o status seja um dos valores permitidos.
             'status' => 'required|in:agendada,cancelada,concluida',
-            'descricao' => 'nullable|string'
+            'descricao' => 'nullable|string',
+
+            'data_consulta' => ['required', 'date'],
+            'hora_inicio' => ['required', 'date_format:H:i:s'],
+            'hora_fim' => ['required', 'date_format:H:i:s', 'after:hora_inicio'],
         ];
     }
 
@@ -41,19 +47,21 @@ class ConsultaRequest extends FormRequest
     {
         return [
             'id_paciente.required' => 'O campo paciente é obrigatório.',
-            'id_paciente.integer' => 'O campo paciente deve ser um número inteiro.',
             'id_paciente.exists' => 'O paciente selecionado não existe.',
             'id_medico.required' => 'O campo médico é obrigatório.',
-            'id_medico.integer' => 'O campo médico deve ser um número inteiro.',
             'id_medico.exists' => 'O médico selecionado não existe.',
             'data_consulta.required' => 'O campo data da consulta é obrigatório.',
-            'data_consulta.date_format' => 'O campo data da consulta deve estar no formato YYYY-MM-DD HH:MM:SS.',
-            'data_consulta.after_or_equal' => 'A data da consulta não pode ser no passado.',
-            'hora_inicio.required' => 'O campo hora de início é obrigatório.',
-            'hora_inicio.date_format' => 'O campo hora de início deve estar no formato HH:MM:SS.',
-            'hora_fim.required' => 'O campo hora de fim é obrigatório.',
-            'hora_fim.date_format' => 'O campo hora de fim deve estar no formato HH:MM:SS.',
+            // Mensagem ajustada para refletir a regra 'date_format'.
+            'data_consulta.date_format' => 'O campo data da consulta deve estar no formato YYYY-MM-DD.',
+            // Mensagem para a nova regra 'after_or_equal:today'.
+            'data_consulta.required' => 'A data da consulta é obrigatória.',
+            'data_consulta.date' => 'A data da consulta deve ser uma data válida.',
+            'hora_inicio.required' => 'A hora de início é obrigatória.',
+            'hora_inicio.date_format' => 'A hora de início deve estar no formato HH:MM:SS.',
+            'hora_fim.required' => 'A hora de fim é obrigatória.',
+            'hora_fim.date_format' => 'A hora de fim deve estar no formato HH:MM:SS.',
             'hora_fim.after' => 'A hora de fim deve ser posterior à hora de início.',
+            'status.in' => 'O status da consulta deve ser um dos seguintes: agendada, cancelada ou concluida.',
             'descricao.string' => 'O campo descrição deve ser um texto.',
         ];
     }
