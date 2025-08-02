@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common'; // Removemos a importação do DatePipe
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { Consulta, ConsultaDetailsResponse } from '../../../core/models/consultas.model';
 
@@ -26,7 +26,6 @@ export class RemarcarConsultaComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private consultasService: ConsultasService,
-    private datePipe: DatePipe // Adicione DatePipe para formatar a data
   ) {
     this.remarcarForm = this.fb.group({
       data_consulta: ['', Validators.required],
@@ -81,7 +80,6 @@ export class RemarcarConsultaComponent implements OnInit {
         next: (response) => {
           this.isLoading = false;
           this.successMessage = response.message || 'Consulta remarcada com sucesso!';
-          // Após 3 segundos, redireciona para a tela de detalhes ou para a lista
           setTimeout(() => {
             this.router.navigate(['/secretaria/consultas']);
           }, 3000);
@@ -99,7 +97,7 @@ export class RemarcarConsultaComponent implements OnInit {
     }
   }
 
-  // Formata a data para o formato YYYY-MM-DD exigido pelo input 'date'
+  // O pipe 'date' no template ainda funciona porque CommonModule é importado
   private formatarDataParaInput(dataString: string): string {
     return dataString ? dataString.split(' ')[0] : '';
   }

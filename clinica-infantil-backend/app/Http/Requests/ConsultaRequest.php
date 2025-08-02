@@ -18,6 +18,18 @@ class ConsultaRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation()
+    {
+        // Garante que o formato de hora seja HH:MM:SS,
+        // mesmo que o frontend envie apenas HH:MM
+        if ($this->hora_inicio && !str_contains($this->hora_inicio, ':')) {
+            $this->merge(['hora_inicio' => $this->hora_inicio . ':00']);
+        }
+        if ($this->hora_fim && !str_contains($this->hora_fim, ':')) {
+            $this->merge(['hora_fim' => $this->hora_fim . ':00']);
+        }
+    }
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -28,11 +40,10 @@ class ConsultaRequest extends FormRequest
         return [
             'id_paciente' => 'required|exists:pacientes,id',
             'id_medico' => 'required|exists:medicos,id',
-            // Adicionada a regra 'in' para garantir que o status seja um dos valores permitidos.
-            'status' => 'required|in:agendada,cancelada,concluida',
             'descricao' => 'nullable|string',
-
             'data_consulta' => ['required', 'date'],
+            // Mantemos a validação para HH:MM:SS, pois os segundos
+            // serão adicionados no método prepareForValidation().
             'hora_inicio' => ['required', 'date_format:H:i:s'],
             'hora_fim' => ['required', 'date_format:H:i:s', 'after:hora_inicio'],
         ];
@@ -50,10 +61,6 @@ class ConsultaRequest extends FormRequest
             'id_paciente.exists' => 'O paciente selecionado não existe.',
             'id_medico.required' => 'O campo médico é obrigatório.',
             'id_medico.exists' => 'O médico selecionado não existe.',
-            'data_consulta.required' => 'O campo data da consulta é obrigatório.',
-            // Mensagem ajustada para refletir a regra 'date_format'.
-            'data_consulta.date_format' => 'O campo data da consulta deve estar no formato YYYY-MM-DD.',
-            // Mensagem para a nova regra 'after_or_equal:today'.
             'data_consulta.required' => 'A data da consulta é obrigatória.',
             'data_consulta.date' => 'A data da consulta deve ser uma data válida.',
             'hora_inicio.required' => 'A hora de início é obrigatória.',
@@ -61,7 +68,6 @@ class ConsultaRequest extends FormRequest
             'hora_fim.required' => 'A hora de fim é obrigatória.',
             'hora_fim.date_format' => 'A hora de fim deve estar no formato HH:MM:SS.',
             'hora_fim.after' => 'A hora de fim deve ser posterior à hora de início.',
-            'status.in' => 'O status da consulta deve ser um dos seguintes: agendada, cancelada ou concluida.',
             'descricao.string' => 'O campo descrição deve ser um texto.',
         ];
     }

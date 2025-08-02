@@ -1,4 +1,4 @@
-<div class="container my-5">
+<div class="dashboard container my-5">
   <h2>Todas as Consultas</h2>
 
   @if (isLoading) {
@@ -46,6 +46,7 @@
                 <td class="">
                     <a class="btn btn-info btn-sm" [routerLink]="['./detalhes', consulta.id]" title="Ver Detalhes">
                         <i class="bi bi-info-circle"></i>
+                        <span class="ms-2">Detalhes</span>
                     </a>
                 </td>
               </tr>

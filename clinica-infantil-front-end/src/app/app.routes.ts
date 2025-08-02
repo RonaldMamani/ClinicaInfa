@@ -19,6 +19,8 @@ import { EditarConsultaComponent } from './features/consultas/editar-consulta/ed
 import { AdicionarConsultaComponent } from './features/consultas/adicionar-consulta/adicionar-consulta.component';
 import { DetalhesConsultaAgendadaComponent } from './features/consultas/detalhes-consulta-agendada/detalhes-consulta-agendada.component';
 import { RemarcarConsultaComponent } from './features/consultas/remarcar-consulta/remarcar-consulta.component';
+import { MedicoConsultasComponent } from './features/consultas/medico-consultas/medico-consultas.component';
+import { DashboardMedicoComponent } from './components/dashboard-medico/dashboard-medico.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -37,19 +39,14 @@ export const routes: Routes = [
       { path: 'pacientes', component: ListarPacientesComponent },
       { path: 'pacientes/:id', component: DetalhePacienteComponent },
       { path: 'pacientes/editar/:id', component: EditarPacienteComponent },
-
-      // Rota para o menu de seleção
       { path: 'clientes/adicionar', component: AdicionarClienteComponent },
-
-      // Rotas para os novos formulários
       { path: 'clientes/adicionar/paciente', component: AdicionarPacienteComponent },
       { path: 'clientes/adicionar/responsavel', component: AdicionarResponsavelComponent },
-
       { path: 'consultas/agendadas', component: ListarConsultasAgendadasComponent },
       { path: 'consultas/agendadas/:id', component: DetalhesConsultaAgendadaComponent},
+      { path: 'consultas/agendadas/:id/remarcar', component: RemarcarConsultaComponent },
       { path: 'consultas', component: ListarTodasConsultasComponent },
       { path: 'consultas/detalhes/:id', component: DetalhesConsultaComponent},
-      { path: 'consultas/agendadas/:id/remarcar', component: RemarcarConsultaComponent },
       { path: 'consultas/editar/:id', component: EditarConsultaComponent },
       { path: 'consultas/adicionar', component: AdicionarConsultaComponent },
       // O redirectTo deve ser o último elemento, redirecionando para a rota padrão
@@ -60,7 +57,11 @@ export const routes: Routes = [
     path: 'medico',
     component: MedicoComponent,
     canActivate: [authGuard],
-    data: { expectedProfile: 'medico' }
+    data: { expectedProfile: 'medico' },
+    children: [
+      { path: '', component: DashboardMedicoComponent },
+      { path: 'consultas', component: MedicoConsultasComponent}
+    ]
   },
   {
     path: 'administrador',

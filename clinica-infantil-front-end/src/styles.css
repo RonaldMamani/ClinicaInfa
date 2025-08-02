@@ -3,7 +3,7 @@
 @import "bootstrap-icons/font/bootstrap-icons.css";
 
 main {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 body {
@@ -19,5 +19,9 @@ body {
 }
 
 .dashboard {
-    height: 75vh;
+  min-height: 73.7vh;
+}
+
+.cardFeature{
+  min-height: 183px;
 }
