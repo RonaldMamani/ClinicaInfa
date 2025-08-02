@@ -19,7 +19,7 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit(): void {
     this.userProfile$ = this.authService.userProfile$;
-    this.userName$ = this.authService.userName$; // NOVO: Assina o Observable do nome
+    this.userName$ = this.authService.userName$;
   }
 
   logout(): void {

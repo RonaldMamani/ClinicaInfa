@@ -18,6 +18,8 @@ class Consulta extends Model
     // Indica que a chave primária é auto-incrementável
     public $incrementing = true;
 
+    protected $with = ['paciente', 'medico'];
+
     // Define os campos que podem ser preenchidos em massa (mass assignable)
     protected $fillable = [
         'id_paciente',
@@ -25,8 +27,8 @@ class Consulta extends Model
         'data_consulta',
         'hora_inicio',
         'hora_fim',
-        'status', // Adicionada a nova coluna 'status'
-        'descricao' // Corrigida a grafia de 'descricao'
+        'status',
+        'descricao',
     ];
 
     // Como a tabela 'consultas' não tem as colunas 'created_at' e 'updated_at',

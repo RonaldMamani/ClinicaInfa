@@ -43,4 +43,9 @@ class Usuario extends Model
     {
         return $this->belongsTo(Funcionario::class, 'id_funcionario');
     }
+
+    public function medico()
+    {
+        return $this->hasOne(Medico::class, 'id_usuario');
+    }
 }

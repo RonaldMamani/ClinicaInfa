@@ -1,94 +1,104 @@
-<div class="container mt-5 p-4 bg-light rounded-3 shadow">
-  <h2 class="h2 text-center mb-4">Agendar Nova Consulta</h2>
-  <hr class="mb-4">
+<div class="dashboard container my-5">
+  <h2>Criar Nova Consulta</h2>
 
-  <form [formGroup]="formularioConsulta" (ngSubmit)="enviarFormulario()">
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando dados necessários...</div>
+  }
 
-    <!-- Mensagens de Feedback -->
-    @if (mensagemSucesso) {
-      <div class="alert alert-success" role="alert">
-        <p>{{ mensagemSucesso }}</p>
-      </div>
-    }
-    @if (mensagemErro) {
-      <div class="alert alert-danger" role="alert">
-        <p>{{ mensagemErro }}</p>
-      </div>
-    }
+  @if (successMessage) {
+    <div class="alert alert-success mt-3">{{ successMessage }}</div>
+  }
 
-    <!-- Campo Paciente -->
-    <div class="mb-3">
-      <label for="id_paciente" class="form-label">Paciente</label>
-      <select id="id_paciente" formControlName="id_paciente" class="form-select">
-        <option [ngValue]="null" disabled>Selecione um paciente</option>
-        @for (paciente of pacientes; track paciente.id) {
-          <option [ngValue]="paciente.id">
-            {{ paciente.nome }}
-          </option>
-        } @empty {
-          <option [ngValue]="null" disabled>Nenhum paciente disponível</option>
-        }
-      </select>
+  @if (errorMessage) {
+    <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
+  }
+
+  @if (!isLoading && !errorMessage) {
+    <div class="card p-4">
+      <form [formGroup]="criarForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="paciente" class="form-label">Paciente</label>
+          <select id="paciente" class="form-control" formControlName="id_paciente"
+                  [class.is-invalid]="criarForm.get('id_paciente')?.invalid && criarForm.get('id_paciente')?.touched">
+            <option value="" disabled selected>Selecione um paciente</option>
+            @for (paciente of pacientes; track paciente.id) {
+              <option [value]="paciente.id">{{ paciente.cliente.nome }}</option>
+            }
+          </select>
+          @if (criarForm.get('id_paciente')?.errors?.['required'] && criarForm.get('id_paciente')?.touched) {
+            <div class="invalid-feedback">
+              O paciente é obrigatório.
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label for="medico" class="form-label">Médico</label>
+          <select id="medico" class="form-control" formControlName="id_medico"
+                  [class.is-invalid]="criarForm.get('id_medico')?.invalid && criarForm.get('id_medico')?.touched">
+            <option value="" disabled selected>Selecione um médico</option>
+            @for (medico of medicos; track medico.id) {
+              <option [value]="medico.id">{{ medico.usuario.funcionario?.nome }} ({{ medico.especialidade }})</option>
+            }
+          </select>
+          @if (criarForm.get('id_medico')?.errors?.['required'] && criarForm.get('id_medico')?.touched) {
+            <div class="invalid-feedback">
+              O médico é obrigatório.
+            </div>
+          }
+        </div>
+
+        <div class="mb-3">
+          <label for="data_consulta" class="form-label">Data da Consulta</label>
+          <input type="date" id="data_consulta" class="form-control" formControlName="data_consulta"
+                 [class.is-invalid]="criarForm.get('data_consulta')?.invalid && criarForm.get('data_consulta')?.touched">
+          @if (criarForm.get('data_consulta')?.errors?.['required'] && criarForm.get('data_consulta')?.touched) {
+            <div class="invalid-feedback">
+              A data da consulta é obrigatória.
+            </div>
+          }
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="hora_inicio" class="form-label">Horário de Início</label>
+            <input type="time" id="hora_inicio" class="form-control" formControlName="hora_inicio"
+                   [class.is-invalid]="criarForm.get('hora_inicio')?.invalid && criarForm.get('hora_inicio')?.touched">
+            @if (criarForm.get('hora_inicio')?.errors?.['required'] && criarForm.get('hora_inicio')?.touched) {
+              <div class="invalid-feedback">
+                O horário de início é obrigatório.
+              </div>
+            }
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="hora_fim" class="form-label">Horário de Fim</label>
+            <input type="time" id="hora_fim" class="form-control" formControlName="hora_fim"
+                   [class.is-invalid]="criarForm.get('hora_fim')?.invalid && criarForm.get('hora_fim')?.touched">
+            @if (criarForm.get('hora_fim')?.errors?.['required'] && criarForm.get('hora_fim')?.touched) {
+              <div class="invalid-feedback">
+                O horário de fim é obrigatório.
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="descricao" class="form-label">Descrição (opcional)</label>
+          <textarea id="descricao" class="form-control" formControlName="descricao" rows="3"></textarea>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <a class="btn btn-secondary" [routerLink]="['/secretaria']">Voltar</a>
+          <button type="submit" class="btn btn-primary" [disabled]="criarForm.invalid || isSubmitting">
+            @if (isSubmitting) {
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Agendando...
+            } @else {
+              Agendar Consulta
+            }
+          </button>
+        </div>
+      </form>
     </div>
-
-    <!-- Campo Médico -->
-    <div class="mb-3">
-      <label for="id_medico" class="form-label">Médico</label>
-      <select id="id_medico" formControlName="id_medico" class="form-select">
-        <option [ngValue]="null" disabled>Selecione um médico</option>
-        @for (medico of medicos; track medico.id) {
-          <option [ngValue]="medico.id">
-            {{ medico.nome }}
-          </option>
-        } @empty {
-          <option [ngValue]="null" disabled>Nenhum médico disponível</option>
-        }
-      </select>
-    </div>
-
-    <!-- Campos de Data e Hora -->
-    <div class="row g-3 mb-3">
-      <div class="col-md-4">
-        <label for="data_consulta" class="form-label">Data</label>
-        <input type="date" id="data_consulta" formControlName="data_consulta" class="form-control">
-      </div>
-      <div class="col-md-4">
-        <label for="hora_inicio" class="form-label">Hora de Início</label>
-        <input type="time" id="hora_inicio" formControlName="hora_inicio" class="form-control">
-      </div>
-      <div class="col-md-4">
-        <label for="hora_fim" class="form-label">Hora de Fim</label>
-        <input type="time" id="hora_fim" formControlName="hora_fim" class="form-control">
-      </div>
-    </div>
-
-    <!-- Campo Status -->
-    <div class="mb-3">
-      <label for="status" class="form-label">Status</label>
-      <select id="status" formControlName="status" class="form-select">
-        <option value="agendada">Agendada</option>
-        <option value="cancelada">Cancelada</option>
-        <option value="concluida">Concluída</option>
-      </select>
-    </div>
-
-    <!-- Campo Descrição -->
-    <div class="mb-4">
-      <label for="descricao" class="form-label">Descrição (Opcional)</label>
-      <textarea id="descricao" formControlName="descricao" rows="3" class="form-control"></textarea>
-    </div>
-
-    <!-- Botão de Envio -->
-    <div class="text-center">
-      <button type="submit" [disabled]="formularioConsulta.invalid || estaCarregando"
-        class="btn btn-primary btn-lg">
-        @if (!estaCarregando) {
-          <span>Agendar Consulta</span>
-        } @else {
-          <span>Agendando...</span>
-        }
-      </button>
-    </div>
-
-  </form>
+  }
 </div>

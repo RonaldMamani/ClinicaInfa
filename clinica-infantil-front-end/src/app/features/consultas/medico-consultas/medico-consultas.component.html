@@ -1,0 +1,87 @@
+<div class="container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="fw-bold">Minhas Consultas</h1>
+    <a
+      [routerLink]="['/medico/consultas/agendar']"
+      class="btn btn-success fw-bold d-flex align-items-center"
+    >
+      <i class="bi bi-plus-lg me-2"></i> Agendar Nova Consulta
+    </a>
+  </div>
+
+  <div class="row">
+    @if (isLoading) {
+      <div class="text-center p-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Carregando consultas...</p>
+      </div>
+    } @else if (error) {
+      <div class="alert alert-danger text-center">{{ error }}</div>
+    } @else if (consultas.length === 0) {
+      <div class="alert alert-info text-center">Nenhuma consulta encontrada.</div>
+    } @else {
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th>ID</th>
+              <th>Data</th>
+              <th>Hora Início</th>
+              <th>Paciente</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (consulta of consultas; track consulta.id) {
+              <tr>
+                <td>{{ consulta.id }}</td>
+                <td>{{ consulta.data_consulta }}</td>
+                <td>{{ consulta.hora_inicio }}</td>
+                <td>{{ consulta.paciente.cliente.nome }}</td>
+                <td>{{ consulta.status }}</td>
+                <td class="text-nowrap">
+                  <button
+                    class="btn btn-warning btn-sm me-2"
+                    [routerLink]="['/medico/consultas/remarcar', consulta.id]"
+                    aria-label="Remarcar consulta"
+                  >
+                    <i class="bi bi-calendar-range"></i>
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    (click)="openCancelModal(consulta.id)"
+                    aria-label="Cancelar consulta"
+                  >
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+
+  <!-- Modal de Confirmação de Cancelamento -->
+  <div class="modal fade" [class.show]="showCancelModal" [style.display]="showCancelModal ? 'block' : 'none'" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="cancelModalLabel">Confirmar Cancelamento</h5>
+          <button type="button" class="btn-close" (click)="closeCancelModal()" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja cancelar esta consulta? Esta ação é irreversível.
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeCancelModal()">Não</button>
+          <button type="button" class="btn btn-danger" (click)="cancelarConsulta()">Sim, Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

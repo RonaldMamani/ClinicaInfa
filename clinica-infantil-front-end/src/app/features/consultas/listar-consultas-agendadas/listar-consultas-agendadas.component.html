@@ -1,5 +1,9 @@
-<div class="container my-5">
+<div class="dashboard container my-5">
   <h2>Consultas Agendadas</h2>
+
+  @if (successMessage) {
+    <div class="alert alert-success mt-3">{{ successMessage }}</div>
+  }
 
   @if (isLoading) {
     <div class="alert alert-info mt-3">Carregando consultas...</div>
@@ -42,15 +46,18 @@
               </span>
             </td>
             <td>
-                <a class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/consultas/agendadas', consulta.id]" title="Ver Detalhes">
-                    <i class="bi bi-info-circle"></i>
-                </a>
-                <a class="btn btn-primary btn-sm me-2" [routerLink]="['/secretaria/consultas/agendadas', consulta.id , 'remarcar']" title="Editar">
-                    <i class="bi bi-pencil"></i>
-                </a>
-                <button class="btn btn-danger btn-sm" title="Cancelar">
-                    <i class="bi bi-trash"></i>
-                </button>
+              <a class="btn btn-info btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id]" title="Ver Detalhes">
+                <i class="bi bi-info-circle"></i>
+                <span class="ms-2">Detalhes</span>
+              </a>
+              <a class="btn btn-primary btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'remarcar']" title="Remarcar">
+                <i class="bi bi-pencil"></i>
+                <span class="ms-2">Remarcar</span>
+              </a>
+              <button class="btn btn-danger btn-sm align-items-center" title="Cancelar" (click)="openCancelModal(consulta.id)">
+                <i class="bi bi-trash"></i>
+                <span class="ms-2">Cancelar</span>
+              </button>
             </td>
           </tr>
         }
@@ -62,3 +69,25 @@
 
   <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria']">Voltar</a>
 </div>
+
+<!-- Modal de Confirmação de Cancelamento -->
+@if (showCancelModal) {
+<div class="modal d-block" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirmar Cancelamento</h5>
+        <button type="button" class="btn-close" aria-label="Close" (click)="closeCancelModal()"></button>
+      </div>
+      <div class="modal-body">
+        <p>Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeCancelModal()">Não</button>
+        <button type="button" class="btn btn-danger" (click)="confirmCancel()">Sim, Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade show"></div>
+}

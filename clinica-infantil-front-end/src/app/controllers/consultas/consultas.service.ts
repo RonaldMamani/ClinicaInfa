@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 export interface UpdateConsultaResponse {
   status: boolean;
@@ -9,39 +10,44 @@ export interface UpdateConsultaResponse {
 }
 
 import { ConsultasApiResponse, ConsultasAgendadasApiResponse, ConsultaDetailsResponse, Consulta } from '../../core/models/consultas.model';
+import { Paciente } from '../../core/models/paciente.model';
+import { Medico } from '../../core/models/medico.model';
+import { QuantidadeAgendadaResponse, QuantidadeTotalResponse } from '../../core/models/quantidades.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConsultasService {
   // Use a URL base do seu backend diretamente, sem o arquivo de environment
-  private apiUrl = 'http://localhost:8000/api';
+  private apiUrl = 'http://localhost:8000/api/consultas';
+  private pacientesApiUrl = 'http://localhost:8000/api/pacientes';
+  private medicosApiUrl = 'http://localhost:8000/api/medicos';
 
   constructor(private http: HttpClient) {}
 
   getTodasConsultas(): Observable<ConsultasApiResponse> {
     // Rota correta: /api/consultas/todas
-    const url = `${this.apiUrl}/consultas`;
+    const url = `${this.apiUrl}`;
     return this.http.get<ConsultasApiResponse>(url);
   }
 
   getConsultasAgendadas(): Observable<ConsultasAgendadasApiResponse> {
-    const url = `${this.apiUrl}/consultas/agendadas`;
+    const url = `${this.apiUrl}/agendadas`;
     return this.http.get<ConsultasAgendadasApiResponse>(url);
   }
 
   getConsultaById(id: number): Observable<ConsultaDetailsResponse> {
-    const url = `${this.apiUrl}/consultas/${id}`;
+    const url = `${this.apiUrl}/${id}`;
     return this.http.get<ConsultaDetailsResponse>(url);
   }
 
   getConsultaAgendadaById(id: number): Observable<ConsultaDetailsResponse> {
-    const url = `${this.apiUrl}/consultas/agendadas/${id}`;
+    const url = `${this.apiUrl}/agendadas/${id}`;
     return this.http.get<ConsultaDetailsResponse>(url);
   }
 
   updateConsulta(id: number, data: any): Observable<UpdateConsultaResponse> {
-    const url = `${this.apiUrl}/consultas/${id}`; 
+    const url = `${this.apiUrl}/${id}`; 
     return this.http.put<UpdateConsultaResponse>(url, data);
   }
 
@@ -52,15 +58,38 @@ export class ConsultasService {
     return this.http.put(`${this.apiUrl}/agendadas/${id}/remarcar`, dadosRemarcacao);
   }
 
-  adicionarConsulta(consulta: Consulta): Observable<ConsultaDetailsResponse> {
-    return this.http.post<ConsultaDetailsResponse>(`${this.apiUrl}/consultas`, consulta)
-      .pipe(
-        catchError(this.tratarErro)
-      );
+  cancelarConsulta(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
-  private tratarErro(error: any) {
-    console.error('Um erro ocorreu:', error);
-    return throwError(() => new Error('Ocorreu um erro ao agendar a consulta. Por favor, tente novamente mais tarde.'));
+  criarConsulta(dados: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}`, dados);
+  }
+
+  getPacientes(): Observable<Paciente[]> {
+    return this.http.get<{ pacientes: Paciente[] }>(this.pacientesApiUrl).pipe(
+      map(response => response.pacientes)
+    );
+  }
+
+  getMedicos(): Observable<Medico[]> {
+    return this.http.get<{ medicos: Medico[] }>(this.medicosApiUrl).pipe(
+      map(response => response.medicos)
+    );
+  }
+
+  getQuantidadeTodasConsultas(): Observable<QuantidadeTotalResponse> {
+    const url = `${this.apiUrl}/quantidades/todas`;
+    return this.http.get<QuantidadeTotalResponse>(url);
+  }
+
+  getQuantidadeAgendadas(): Observable<QuantidadeAgendadaResponse> {
+    const url = `${this.apiUrl}/quantidades/agendadas`;
+    return this.http.get<QuantidadeAgendadaResponse>(url);
+  }
+
+  getConsultasDoMedico(): Observable<ConsultasAgendadasApiResponse> {
+    const url = `${this.apiUrl}/medico`;
+    return this.http.get<ConsultasAgendadasApiResponse>(url);
   }
 }

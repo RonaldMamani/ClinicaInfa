@@ -1,15 +1,11 @@
-// src/app/features/adicionar-consulta/adicionar-consulta.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
-import { Consulta } from '../../../core/models/consultas.model';
-import { MedicosService } from '../../../controllers/medicos/medicos.service';
-import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
-import { finalize } from 'rxjs/operators';
-import { PacientesApiResponse } from '../../../core/models/paciente.model';
+import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
 import { CommonModule } from '@angular/common';
+import { Medico } from '../../../core/models/medico.model';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-adicionar-consulta',
@@ -19,89 +15,102 @@ import { CommonModule } from '@angular/common';
   imports: [
     CommonModule,
     ReactiveFormsModule,
+    RouterLink
   ]
 })
 export class AdicionarConsultaComponent implements OnInit {
-  formularioConsulta: FormGroup;
-  pacientes: any[] = [];
-  medicos: any[] = [];
-  estaCarregando = false;
-  mensagemSucesso: string | null = null;
-  mensagemErro: string | null = null;
+  criarForm: FormGroup;
+  pacientes: Paciente[] = [];
+  medicos: Medico[] = [];
+  isLoading = true;
+  isSubmitting = false;
+  successMessage: string | null = null;
+  errorMessage: string | null = null;
 
   constructor(
     private fb: FormBuilder,
-    private consultaService: ConsultasService,
-    private pacientesService: PacientesService,
-    private medicosService: MedicosService,
-    private router: Router
+    private router: Router,
+    private consultasService: ConsultasService
   ) {
-    // Inicializamos o formulário reativo com FormBuilder
-    this.formularioConsulta = this.fb.group({
-      id_paciente: [null, Validators.required],
-      id_medico: [null, Validators.required],
+    this.criarForm = this.fb.group({
+      id_paciente: ['', Validators.required],
+      id_medico: ['', Validators.required],
       data_consulta: ['', Validators.required],
       hora_inicio: ['', Validators.required],
       hora_fim: ['', Validators.required],
-      status: ['agendada', Validators.required],
-      descricao: ['']
+      descricao: [''],
+      status: ['agendada'],
     });
   }
 
   ngOnInit(): void {
-    // Carrega a lista de pacientes da API
-    this.pacientesService.getPacientes().subscribe({
-      next: (resposta: PacientesApiResponse) => {
-        this.pacientes = resposta.pacientes;
-      },
-      error: (erro) => {
-        console.error('Erro ao carregar pacientes:', erro);
-        this.mensagemErro = 'Não foi possível carregar a lista de pacientes.';
-      }
-    });
+    this.carregarDadosIniciais();
+  }
 
-    // Carrega a lista de médicos da API
-    this.medicosService.getMedicos().subscribe({
-      next: (resposta) => {
-        this.medicos = resposta.medicos;
+  carregarDadosIniciais(): void {
+    this.isLoading = true;
+    this.errorMessage = null;
+
+    forkJoin({
+      pacientes: this.consultasService.getPacientes(),
+      medicos: this.consultasService.getMedicos()
+    }).subscribe({
+      next: (results) => {
+        this.pacientes = results.pacientes;
+        this.medicos = results.medicos;
+        this.isLoading = false;
       },
-      error: (erro) => {
-        console.error('Erro ao carregar médicos:', erro);
-        this.mensagemErro = 'Não foi possível carregar a lista de médicos.';
+      error: (err) => {
+        this.errorMessage = 'Falha ao carregar os dados. Verifique a conexão com a API ou as permissões de acesso.';
+        this.isLoading = false;
+        console.error('Erro ao carregar dados iniciais:', err);
       }
     });
   }
 
-  /**
-   * Método chamado ao enviar o formulário.
-   */
-  enviarFormulario() {
-    this.mensagemErro = null;
-    this.mensagemSucesso = null;
-
-    if (this.formularioConsulta.invalid) {
-      this.mensagemErro = 'Por favor, preencha todos os campos obrigatórios corretamente.';
-      return;
+  // Novo método para formatar a hora para HH:MM:SS
+  private formatTime(timeString: string): string {
+    if (!timeString) {
+      return '';
     }
+    // Adiciona ':00' se a string não contiver segundos
+    if (timeString.split(':').length === 2) {
+      return `${timeString}:00`;
+    }
+    return timeString;
+  }
 
-    this.estaCarregando = true;
-    const novaConsulta: Consulta = this.formularioConsulta.value;
+  onSubmit(): void {
+    if (this.criarForm.valid) {
+      this.isSubmitting = true;
+      this.successMessage = null;
+      this.errorMessage = null;
 
-    this.consultaService.adicionarConsulta(novaConsulta)
-      .pipe(
-        finalize(() => this.estaCarregando = false)
-      )
-      .subscribe({
+      const dados = { ...this.criarForm.value };
+
+      // CORRIGIDO: Usa o método auxiliar para garantir o formato correto
+      dados.hora_inicio = this.formatTime(dados.hora_inicio);
+      dados.hora_fim = this.formatTime(dados.hora_fim);
+
+      this.consultasService.criarConsulta(dados).subscribe({
         next: (response) => {
-          this.mensagemSucesso = 'Consulta agendada com sucesso!';
-          this.formularioConsulta.reset({ status: 'agendada' });
+          this.isSubmitting = false;
+          this.successMessage = response.message || 'Consulta criada com sucesso!';
+          this.criarForm.reset({ status: 'agendada' });
           setTimeout(() => {
-            this.router.navigate(['/consultas']);
-          }, 2000);
+            this.router.navigate(['/secretaria']);
+          }, 3000);
         },
-        error: (error) => {
-          this.mensagemErro = error.message || 'Erro ao agendar a consulta.';
+        error: (err) => {
+          this.isSubmitting = false;
+          if (err.error && err.error.message) {
+            this.errorMessage = err.error.message;
+          } else {
+            this.errorMessage = 'Erro ao criar a consulta. Tente novamente.';
+          }
+          console.error('Erro de criação:', err);
         }
       });
+    }
   }
 }

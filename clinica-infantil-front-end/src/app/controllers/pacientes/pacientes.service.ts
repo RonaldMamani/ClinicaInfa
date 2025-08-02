@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PacienteDetailsResponse, PacientesApiResponse, PatientsCountResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
+import { PacientesContagemResponse } from '../../core/models/quantidades.model';
 
 
 @Injectable({
@@ -35,10 +36,6 @@ export class PacientesService {
   deletePaciente(id: number): Observable<any> {
     return this.http.delete<any>(`${this.apiBaseUrl}/pacientes/${id}`);
   }
-
-  getPatientsCount(): Observable<PatientsCountResponse> {
-    return this.http.get<PatientsCountResponse>(`${this.apiBaseUrl}/pacientes/contagem`);
-  }
   
   getActivePatients(): Observable<PacientesApiResponse> {
     return this.http.get<PacientesApiResponse>(`${this.apiBaseUrl}/pacientes/ativos`);
@@ -46,6 +43,11 @@ export class PacientesService {
 
   getInactivePatients(): Observable<PacientesApiResponse> {
     return this.http.get<PacientesApiResponse>(`${this.apiBaseUrl}/pacientes/inativos`);
+  }
+
+  getContagemPacientes(): Observable<PacientesContagemResponse> {
+    const url = `${this.apiBaseUrl}/pacientes/contagem`;
+    return this.http.get<PacientesContagemResponse>(url);
   }
 
 }

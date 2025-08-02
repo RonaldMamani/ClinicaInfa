@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ConsultaRequest;
 use App\Http\Requests\RemarcarConsultaRequest;
 use App\Models\Consulta;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ConsultaController extends Controller
 {
@@ -181,22 +183,86 @@ class ConsultaController extends Controller
         ], 200);
     }
 
-    public function destroy(Consulta $consulta)
+    public function destroy($id)
     {
-        try {
-            // Altera o status da consulta para 'cancelado'
-            $consulta->update(['status' => 'cancelado']);
+        Log::info('Tentativa de cancelar a consulta com ID: ' . $id);
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Consulta cancelada com sucesso.',
-                'consulta' => $consulta->load($this->relations),
-            ], 200);
+        try {
+            $consulta = Consulta::find($id);
+
+            if (!$consulta) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Consulta não encontrada.',
+                ], 404);
+            }
+
+            $consulta->status = 'cancelada';
+            
+            if ($consulta->save()) {
+                $consulta->refresh();
+                
+                Log::info('Consulta ' . $consulta->id . ' cancelada com sucesso. Status agora é ' . $consulta->status);
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Consulta cancelada com sucesso.',
+                    'consulta' => $consulta->load($this->relations),
+                ], 200);
+            } else {
+                Log::error('Falha ao salvar o novo status para a consulta ' . $id);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Ocorreu um erro ao atualizar o status da consulta. Por favor, verifique os logs para mais detalhes.',
+                ], 500);
+            }
+
         } catch (\Exception $e) {
-            Log::error('Erro ao cancelar consulta: ' . $e->getMessage());
+            Log::error('Erro ao cancelar consulta: ' . $e->getMessage() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao cancelar a consulta.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function consultasMedico()
+    {
+        // Obtém o usuário autenticado, que é um modelo Usuario
+        $usuario = Auth::user();
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Não autenticado.'], 401);
+        }
+
+        // Usa o relacionamento 'medico' para encontrar o médico associado
+        $medico = $usuario->medico;
+
+        if (!$medico) {
+            Log::warning('Usuário autenticado ' . $usuario->id . ' não tem perfil de médico.');
+            return response()->json(['message' => 'Perfil de médico não encontrado.'], 403);
+        }
+
+        try {
+            // Busca as consultas filtrando pelo 'id_medico'
+            $consultas = Consulta::with($this->relations)
+                                   ->where('id_medico', $medico->id)
+                                   ->orderBy('data_consulta', 'asc')
+                                   ->orderBy('hora_inicio', 'asc')
+                                   ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Consultas do médico obtidas com sucesso.',
+                'consultas' => $consultas,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar consultas do médico: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao buscar as consultas.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
