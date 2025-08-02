@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
-import { PacientesService } from '../pacientes.service';
+import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
 import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
 
 @Component({

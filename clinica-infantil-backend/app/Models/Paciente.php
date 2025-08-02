@@ -50,4 +50,5 @@ class Paciente extends Model
     {
         return self::count();
     }
+
 }

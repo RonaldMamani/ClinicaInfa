@@ -12,13 +12,23 @@ use Illuminate\Support\Facades\Log;
 
 class MedicoController extends Controller
 {
+    protected $relations = [
+        'usuario.perfil',
+        'usuario.funcionario',
+        'consultas',
+    ];
+
+    /**
+     * Retorna a lista completa de médicos, com dados aninhados.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function index()
     {
         try {
-            // Busca todos os médicos, carregando os dados relacionados do usuário
-            $medicos = Medico::with('usuario')->orderBy('especialidade', 'ASC')->get();
+            // Usa with() para carregar todas as relações definidas.
+            $medicos = Medico::with($this->relations)->get();
 
-            // Retorna a lista de médicos em formato JSON
             return response()->json([
                 'status' => true,
                 'message' => 'Lista de médicos obtida com sucesso.',
@@ -26,7 +36,8 @@ class MedicoController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
-            Log::error('Erro ao listar médicos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            // Se houver qualquer erro na execução, ele será capturado aqui.
+            Log::error('Erro ao listar médicos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao buscar os médicos. Verifique os logs do servidor.',

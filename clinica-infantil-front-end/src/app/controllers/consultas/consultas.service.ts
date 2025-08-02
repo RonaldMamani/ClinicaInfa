@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 
 export interface UpdateConsultaResponse {
   status: boolean;
@@ -8,7 +8,7 @@ export interface UpdateConsultaResponse {
   consulta: any;
 }
 
-import { ConsultasApiResponse, ConsultasAgendadasApiResponse, ConsultaDetailsResponse } from '../../core/models/consultas.model';
+import { ConsultasApiResponse, ConsultasAgendadasApiResponse, ConsultaDetailsResponse, Consulta } from '../../core/models/consultas.model';
 
 @Injectable({
   providedIn: 'root'
@@ -26,7 +26,6 @@ export class ConsultasService {
   }
 
   getConsultasAgendadas(): Observable<ConsultasAgendadasApiResponse> {
-    // Rota correta: /api/consultas/agendadas
     const url = `${this.apiUrl}/consultas/agendadas`;
     return this.http.get<ConsultasAgendadasApiResponse>(url);
   }
@@ -36,8 +35,32 @@ export class ConsultasService {
     return this.http.get<ConsultaDetailsResponse>(url);
   }
 
+  getConsultaAgendadaById(id: number): Observable<ConsultaDetailsResponse> {
+    const url = `${this.apiUrl}/consultas/agendadas/${id}`;
+    return this.http.get<ConsultaDetailsResponse>(url);
+  }
+
   updateConsulta(id: number, data: any): Observable<UpdateConsultaResponse> {
-  const url = `${this.apiUrl}/consultas/${id}`; 
-  return this.http.put<UpdateConsultaResponse>(url, data);
-}
+    const url = `${this.apiUrl}/consultas/${id}`; 
+    return this.http.put<UpdateConsultaResponse>(url, data);
+  }
+
+  remarcarConsulta(
+    id: number,
+    dadosRemarcacao: { data_consulta: string; hora_inicio: string; hora_fim: string }
+  ): Observable<any> {
+    return this.http.put(`${this.apiUrl}/agendadas/${id}/remarcar`, dadosRemarcacao);
+  }
+
+  adicionarConsulta(consulta: Consulta): Observable<ConsultaDetailsResponse> {
+    return this.http.post<ConsultaDetailsResponse>(`${this.apiUrl}/consultas`, consulta)
+      .pipe(
+        catchError(this.tratarErro)
+      );
+  }
+
+  private tratarErro(error: any) {
+    console.error('Um erro ocorreu:', error);
+    return throwError(() => new Error('Ocorreu um erro ao agendar a consulta. Por favor, tente novamente mais tarde.'));
+  }
 }

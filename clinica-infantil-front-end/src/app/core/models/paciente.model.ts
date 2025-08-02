@@ -1,6 +1,5 @@
-// src/app/core/models/paciente.model.ts
 import { Cliente, Cidade, Genero } from './cliente.model';
-import { Responsavel } from './responsavel.model';
+import { Responsavel, ResponsavelComCliente } from './responsavel.model';
 
 // Representa a estrutura do objeto 'cliente' com as cidades e gêneros aninhados
 export interface ClienteComDetalhes extends Cliente {
@@ -17,7 +16,7 @@ export interface Paciente {
   data_nascimento: string;
   historico_medico: string;
   cliente: ClienteComDetalhes;
-  responsavel: Responsavel;
+  responsavel: ResponsavelComCliente;
 }
 
 // Representa a resposta completa da API para a lista de pacientes
@@ -27,14 +26,12 @@ export interface PacientesApiResponse {
   pacientes: Paciente[];
 }
 
-// Representa a resposta da API para um único paciente
 export interface PacienteDetailsResponse {
   status: boolean;
   message: string;
   paciente: Paciente;
 }
 
-// Payload para a criação/atualização de um paciente
 export interface UpdatePacientePayload {
   nome: string;
   cpf: string;

@@ -5,11 +5,10 @@ import { CommonModule } from '@angular/common';
 import { forkJoin } from 'rxjs';
 
 // Serviços
-import { PacientesService } from '../pacientes.service';
+import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
 import { EstadosService } from '../../../controllers/estados/estados.service';
 import { CidadesService } from '../../../controllers/cidades/cidades.service';
 import { GenerosService } from '../../../controllers/generos/generos.service';
-import { ResponsaveisService } from '../../responsaveis/responsaveis.service';
 
 // Modelos
 import { Estado } from '../../../core/models/estados.model';
@@ -20,6 +19,7 @@ import { Paciente, UpdatePacientePayload } from '../../../core/models/paciente.m
 
 // Diretivas
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
+import { ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
 
 @Component({
   selector: 'app-editar-paciente',

@@ -9,31 +9,30 @@ class Medico extends Model
 {
     use HasFactory;
 
-    // Define o nome da tabela no banco de dados
-    protected $table = 'medicos';
-
-    // Define a chave primária da tabela
-    protected $primaryKey = 'id';
-
-    // Indica que a chave primária é auto-incrementável
-    public $incrementing = true;
-
-    // Define os campos que podem ser preenchidos em massa (mass assignable)
+    // A tabela 'medicos' tem as colunas 'id_usuario', 'CRM', 'especialidade'
+    // e outras colunas que você possa ter.
     protected $fillable = [
         'id_usuario',
         'CRM',
-        'especialidade'
+        'especialidade',
+        // Adicione outros campos preenchíveis aqui
     ];
 
-    // As colunas 'created_at' e 'updated_at' estão na sua tabela,
-    // então ativamos o gerenciamento automático de timestamps do Eloquent.
-    public $timestamps = true;
+    public $timestamps = false; // Supondo que você não tenha timestamps
 
     /**
-     * Define o relacionamento com a tabela Usuarios.
+     * Um médico pertence a um usuário.
      */
     public function usuario()
     {
         return $this->belongsTo(Usuario::class, 'id_usuario');
+    }
+    
+    /**
+     * Um médico tem muitas consultas.
+     */
+    public function consultas()
+    {
+        return $this->hasMany(Consulta::class, 'id_medico', 'id');
     }
 }

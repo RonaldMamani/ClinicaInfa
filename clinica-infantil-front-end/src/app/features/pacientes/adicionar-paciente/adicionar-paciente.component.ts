@@ -6,11 +6,11 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
 // Serviços
-import { ClientesService } from '../../clientes/clientes.service';
+import { ClientesService } from '../../../controllers/clientes/clientes.service';
 import { EstadosService } from '../../../controllers/estados/estados.service';
 import { CidadesService } from '../../../controllers/cidades/cidades.service';
 import { GenerosService } from '../../../controllers/generos/generos.service';
-import { ResponsaveisService } from '../../responsaveis/responsaveis.service';
+import { ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
 
 // Modelos
 import { Cidade, CreatePacientePayload } from '../../../core/models/cliente.model';

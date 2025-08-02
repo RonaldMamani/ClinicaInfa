@@ -1,0 +1,61 @@
+<div class="container my-5">
+  <h2>Remarcar Consulta</h2>
+
+  @if (successMessage) {
+    <div class="alert alert-success">
+      {{ successMessage }}
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="alert alert-danger">
+      {{ errorMessage }}
+    </div>
+  }
+
+  <form [formGroup]="remarcarForm" (ngSubmit)="onSubmit()">
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="data_consulta" class="form-label">Nova Data</label>
+        <input type="date" id="data_consulta" class="form-control" formControlName="data_consulta" [class.is-invalid]="remarcarForm.get('data_consulta')?.invalid && remarcarForm.get('data_consulta')?.touched">
+        @if (remarcarForm.get('data_consulta')?.errors?.['required'] && remarcarForm.get('data_consulta')?.touched) {
+          <div class="invalid-feedback">
+            A data da consulta é obrigatória.
+          </div>
+        }
+      </div>
+
+      <div class="col-md-3 mb-3">
+        <label for="hora_inicio" class="form-label">Hora de Início</label>
+        <input type="time" id="hora_inicio" class="form-control" formControlName="hora_inicio" [class.is-invalid]="remarcarForm.get('hora_inicio')?.invalid && remarcarForm.get('hora_inicio')?.touched">
+        @if (remarcarForm.get('hora_inicio')?.errors?.['required'] && remarcarForm.get('hora_inicio')?.touched) {
+          <div class="invalid-feedback">
+            A hora de início é obrigatória.
+          </div>
+        }
+      </div>
+
+      <div class="col-md-3 mb-3">
+        <label for="hora_fim" class="form-label">Hora de Fim</label>
+        <input type="time" id="hora_fim" class="form-control" formControlName="hora_fim" [class.is-invalid]="remarcarForm.get('hora_fim')?.invalid && remarcarForm.get('hora_fim')?.touched">
+        @if (remarcarForm.get('hora_fim')?.errors?.['required'] && remarcarForm.get('hora_fim')?.touched) {
+          <div class="invalid-feedback">
+            A hora de fim é obrigatória.
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="btn btn-primary" [disabled]="remarcarForm.invalid || isLoading">
+        @if (isLoading) {
+          <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          Remarcando...
+        } @else {
+          Remarcar
+        }
+      </button>
+      <a class="btn btn-secondary ms-2" [routerLink]="['/secretaria/consultas']">Cancelar</a>
+    </div>
+  </form>
+</div>

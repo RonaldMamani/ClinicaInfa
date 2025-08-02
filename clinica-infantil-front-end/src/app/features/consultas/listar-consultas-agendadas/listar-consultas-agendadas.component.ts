@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
-// Importe a nova interface
 import { Consulta, ConsultasAgendadasApiResponse } from '../../../core/models/consultas.model';
 
 @Component({
@@ -27,11 +26,10 @@ export class ListarConsultasAgendadasComponent implements OnInit {
     this.isLoading = true;
     this.error = null;
 
-    // Use a nova interface no subscribe
     this.consultasService.getConsultasAgendadas().subscribe({
       next: (response: ConsultasAgendadasApiResponse) => {
-        // Corrigido para ler a propriedade 'consultas_agendadas'
-        this.consultas = response.consultas_agendadas || [];
+        // CORRIGIDO: Acessando a propriedade 'consultas'
+        this.consultas = response.consultas || [];
         this.isLoading = false;
       },
       error: (err) => {
