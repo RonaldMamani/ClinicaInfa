@@ -21,6 +21,7 @@ import { DetalhesConsultaAgendadaComponent } from './features/consultas/detalhes
 import { RemarcarConsultaComponent } from './features/consultas/remarcar-consulta/remarcar-consulta.component';
 import { MedicoConsultasComponent } from './features/consultas/medico-consultas/medico-consultas.component';
 import { DashboardMedicoComponent } from './components/dashboard-medico/dashboard-medico.component';
+import { AgendarConsultaComponent } from './features/consultas/agendar-consulta/agendar-consulta.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -60,7 +61,10 @@ export const routes: Routes = [
     data: { expectedProfile: 'medico' },
     children: [
       { path: '', component: DashboardMedicoComponent },
-      { path: 'consultas', component: MedicoConsultasComponent}
+      { path: 'consultas', component: MedicoConsultasComponent},
+      { path: 'agendar', component: AgendarConsultaComponent},
+
+      { path: '**', redirectTo: '' }
     ]
   },
   {

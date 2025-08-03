@@ -83,6 +83,54 @@ class ConsultaController extends Controller
         }
     }
 
+    public function storeMedico(Request $request)
+    {
+        $usuario = Auth::user();
+
+        // Garante que o usuário autenticado é um médico
+        if (!$usuario || !$usuario->medico) {
+            return response()->json(['message' => 'Perfil de médico não encontrado.'], 403);
+        }
+        
+        $medico = $usuario->medico;
+
+        // Validação dos dados recebidos, incluindo o campo 'descricao'
+        $request->validate([
+            'id_paciente' => 'required|exists:pacientes,id',
+            'data_consulta' => 'required|date',
+            'hora_inicio' => 'required|date_format:H:i',
+            'hora_fim' => 'required|date_format:H:i|after:hora_inicio',
+            'descricao' => 'required|string|max:1000', // Campo 'descricao' é obrigatório
+        ]);
+        
+        try {
+            // Cria a nova consulta com os dados validados
+            $consulta = new Consulta();
+            $consulta->id_paciente = $request->input('id_paciente');
+            $consulta->id_medico = $medico->id; // Pega o ID do médico logado
+            $consulta->data_consulta = $request->input('data_consulta');
+            $consulta->hora_inicio = $request->input('hora_inicio');
+            $consulta->hora_fim = $request->input('hora_fim');
+            $consulta->descricao = $request->input('descricao'); // Salva a descrição
+            $consulta->status = 'agendado'; // Define o status padrão
+            $consulta->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Consulta agendada com sucesso.',
+                'consulta' => $consulta
+            ], 201);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao agendar consulta (storeMedico): ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao agendar a consulta.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Exibe uma consulta específica.
      *

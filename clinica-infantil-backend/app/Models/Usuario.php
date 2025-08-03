@@ -3,10 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;
 
-class Usuario extends Model
+class Usuario extends Authenticatable
 {
     use HasFactory, HasApiTokens;
 
@@ -27,7 +27,11 @@ class Usuario extends Model
     protected $hidden = [
         'senha',
     ];
-
+    
+    public function medico()
+    {
+        return $this->hasOne(Medico::class, 'id_usuario');
+    }
     /**
      * Define o relacionamento com a tabela Perfis.
      */
@@ -42,10 +46,5 @@ class Usuario extends Model
     public function funcionario()
     {
         return $this->belongsTo(Funcionario::class, 'id_funcionario');
-    }
-
-    public function medico()
-    {
-        return $this->hasOne(Medico::class, 'id_usuario');
     }
 }

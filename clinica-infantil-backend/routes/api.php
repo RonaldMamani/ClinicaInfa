@@ -21,8 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    // Rota para o logout, que precisa de autenticação para revogar o token
     Route::post('/logout', [LoginController::class, 'logout']);
-    //Route::get('/generos', [GeneroController::class, 'index']);
+
+    // Rotas de consultas para o médico
+    Route::get('/consultas/medico', [ConsultaController::class, 'consultasMedico']);
+    Route::post('/consultas/medico/agendar', [ConsultaController::class, 'storeMedico']);
 });
 
 // Rotas para Estados
@@ -105,7 +109,7 @@ Route::get('/consultas/agendadas', [ConsultaController::class, 'consultasAgendad
 Route::get('/consultas/agendadas/{id}', [ConsultaController::class, 'showAgendada']); // GET para mostrar consulta agendada por ID
 Route::get('/consultas/quantidades/todas', [ConsultaController::class, 'quantidadeTotal']); // NOVA ROTA: Contagem total de consultas
 Route::get('/consultas/quantidades/agendadas', [ConsultaController::class, 'quantidadeAgendadas']); // NOVA ROTA: Contagem de consultas agendadas
-Route::get('/consultas/medico', [ConsultaController::class, 'consultasMedico']);
+//Route::get('/consultas/medico', [ConsultaController::class, 'consultasMedico']);
 Route::get('/consultas', [ConsultaController::class, 'index']); // GET para listar todos
 Route::get('/consultas/{id}', [ConsultaController::class, 'show']); // GET para mostrar por ID
 Route::post('/consultas', [ConsultaController::class, 'store']); // POST para criar

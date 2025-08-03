@@ -1,1 +1,63 @@
-<p>dashboard-medico works!</p>
+<div class="dashboard container my-5">
+  <h1 class="mb-4">Dashboard da Medico</h1>
+
+  <div class="row">
+    <div class="col-md-6 col-sm-12">
+      <div class="card text-center bg-primary text-white mb-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title">Minhas Consultas</h5>
+          <p class="card-text">Carregando...</p>
+          <a
+            [routerLink]="['/medico/consultas']"
+            class="btn btn-outline-light rounded-3 fs-5 btn-sm"
+            >Gerenciar Pacientes</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card text-center bg-warning text-dark mb-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title fs-3 fw-bold">Proximas Consultas</h5>
+          <p>
+            <i class="bi bi-plus-circle display-6"></i>
+          </p>
+          <a
+            [routerLink]="['/medico/consultas/proximas']"
+            class="btn btn-outline-light rounded-3 text-dark fs-5 btn-sm"
+            >Criar Cliente</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card text-center bg-secondary text-white mb-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title">Meus Prontuarios</h5>
+          <p class="card-text">Carregando...</p>
+          <a
+            [routerLink]="['/medico/prontuarios']"
+            class="btn btn-outline-light rounded-3 fs-5 btn-sm border-dark"
+            >Ver todas as Consultas</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card text-center bg-success mb-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title">Adicionar Consulta</h5>
+          <p class="card-text">Carregando...</p>
+          <a
+            [routerLink]="['/medico/agendar']"
+            class="btn btn-outline-light rounded-3 fs-5 btn-sm border-dark"
+            >Ver Agendamentos</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
