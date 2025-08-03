@@ -10,7 +10,7 @@ export interface UpdateConsultaResponse {
 }
 
 import { ConsultasApiResponse, ConsultasAgendadasApiResponse, ConsultaDetailsResponse, Consulta } from '../../core/models/consultas.model';
-import { Paciente } from '../../core/models/paciente.model';
+import { Paciente, PacientesApiResponse } from '../../core/models/paciente.model';
 import { Medico } from '../../core/models/medico.model';
 import { QuantidadeAgendadaResponse, QuantidadeTotalResponse } from '../../core/models/quantidades.model';
 
@@ -91,5 +91,14 @@ export class ConsultasService {
   getConsultasDoMedico(): Observable<ConsultasAgendadasApiResponse> {
     const url = `${this.apiUrl}/medico`;
     return this.http.get<ConsultasAgendadasApiResponse>(url);
+  }
+
+  agendarConsulta(consultaData: any): Observable<any> {
+    const url = `${this.apiUrl}/medico/agendar`;
+    return this.http.post(url, consultaData);
+  }
+
+  getPacientesAgendar(): Observable<PacientesApiResponse> {
+    return this.http.get<PacientesApiResponse>(`${this.pacientesApiUrl}/ativos`);
   }
 }

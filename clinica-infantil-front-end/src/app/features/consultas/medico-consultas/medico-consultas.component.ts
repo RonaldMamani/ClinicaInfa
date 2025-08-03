@@ -64,7 +64,7 @@ export class MedicoConsultasComponent {
         next: (response) => {
           this.successMessage = response.message;
           this.closeCancelModal();
-          this.carregarConsultasDoMedico(); // Recarrega a lista
+          this.carregarConsultasDoMedico();
         },
         error: (err) => {
           this.error = 'Ocorreu um erro ao cancelar a consulta.';

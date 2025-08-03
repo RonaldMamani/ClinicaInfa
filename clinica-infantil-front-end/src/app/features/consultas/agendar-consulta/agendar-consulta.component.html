@@ -1,0 +1,60 @@
+<div class="dashboard container my-5">
+    <div class="card p-5 shadow-md border-3 border-success rounded-4">
+        <h1 class="fw-bold mb-4">Agendar Nova Consulta</h1>
+
+        @if (isLoading) {
+        <div class="text-center p-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Carregando pacientes...</p>
+        </div>
+        } @else if (errorMessage) {
+        <div class="alert alert-danger text-center">{{ errorMessage }}</div>
+        } @else if (successMessage) {
+        <div class="alert alert-success text-center">{{ successMessage }}</div>
+        } @else {
+        <form [formGroup]="agendarForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <label for="paciente" class="form-label">Paciente</label>
+                <select id="paciente" class="form-select border-success" formControlName="id_paciente">
+                    <option value="" disabled>Selecione um paciente</option>
+                    @for (paciente of pacientes; track paciente.id) {
+                    <option [ngValue]="paciente.id">{{ paciente.cliente.nome }}</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="data" class="form-label">Data da Consulta</label>
+                <input type="date" id="data" class="form-control border-success" formControlName="data_consulta" />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="hora_inicio" class="form-label">Hora de Início</label>
+                    <input type="time" id="hora_inicio" class="form-control border-success" formControlName="hora_inicio" />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="hora_fim" class="form-label">Hora do Fim</label>
+                    <input type="time" id="hora_fim" class="form-control border-success" formControlName="hora_fim" />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição da Consulta</label>
+                <textarea id="descricao" class="form-control border-bottom border-success" formControlName="descricao" rows="3"></textarea>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="button" class="btn btn-secondary me-2" (click)="onCancel()">
+                    Cancelar
+                </button>
+                <button type="submit" class="btn btn-success" [disabled]="agendarForm.invalid">
+                    Agendar
+                </button>
+            </div>
+        </form>
+        }
+    </div>
+</div>

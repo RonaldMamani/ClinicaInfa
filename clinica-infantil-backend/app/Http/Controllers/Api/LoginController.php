@@ -18,22 +18,21 @@ class LoginController extends Controller
         try {
             $credentials = $request->validated();
             
+            // 1. Busca o usuário pelo username
             $usuario = Usuario::where('username', $credentials['username'])->first();
 
-            // Verifica se o usuário existe e se a senha está correta
-            // E também verifica se o usuário está ativo (delete lógico)
+            // 2. Verifica se o usuário existe, se a senha está correta e se está ativo
             if (!$usuario || !Hash::check($credentials['senha'], $usuario->senha) || !$usuario->ativo) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Credenciais inválidas ou usuário inativo.',
                 ], 401); // Código 401 Unauthorized
             }
+            
+            // 3. Revoga todos os tokens existentes para este usuário para maior segurança
+            $usuario->tokens()->delete();
 
-            // Revoga todos os tokens existentes para este usuário (opcional, para segurança)
-            // $usuario->tokens()->delete();
-
-            // Cria um novo token para o usuário
-            // 'auth_token' é o nome do token, pode ser qualquer string descritiva
+            // 4. Cria um novo token para o usuário
             $token = $usuario->createToken('auth_token')->plainTextToken;
 
             return response()->json([
@@ -41,7 +40,7 @@ class LoginController extends Controller
                 'message' => 'Login realizado com sucesso!',
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-                'usuario' => $usuario, // Opcional: retorna dados do usuário (sem a senha)
+                'usuario' => $usuario->load('perfil', 'funcionario'), // Opcional: retorna dados do usuário (sem a senha)
             ], 200);
 
         } catch (Exception $e) {
@@ -57,12 +56,20 @@ class LoginController extends Controller
     public function logout(Request $request)
     {
         try {
-            $request->user()->currentAccessToken()->delete();
-
+            // Tenta obter o usuário autenticado via Sanctum
+            $user = $request->user();
+            if ($user) {
+                $user->currentAccessToken()->delete();
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Logout realizado com sucesso. Token revogado.',
+                ], 200);
+            }
+            
             return response()->json([
-                'status' => true,
-                'message' => 'Logout realizado com sucesso. Token revogado.',
-            ], 200);
+                'status' => false,
+                'message' => 'Nenhum usuário autenticado para realizar o logout.',
+            ], 401);
 
         } catch (Exception $e) {
             Log::error('Erro no logout: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
