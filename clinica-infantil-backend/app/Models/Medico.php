@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Medico extends Model
 {
@@ -23,7 +25,7 @@ class Medico extends Model
     /**
      * Um médico pertence a um usuário.
      */
-    public function usuario()
+    public function usuario(): BelongsTo
     {
         return $this->belongsTo(Usuario::class, 'id_usuario');
     }
@@ -31,8 +33,13 @@ class Medico extends Model
     /**
      * Um médico tem muitas consultas.
      */
-    public function consultas()
+    public function consultas(): HasMany
     {
         return $this->hasMany(Consulta::class, 'id_medico', 'id');
+    }
+
+    public function prontuarios(): HasMany
+    {
+        return $this->hasMany(Prontuario::class, 'id_medico');
     }
 }

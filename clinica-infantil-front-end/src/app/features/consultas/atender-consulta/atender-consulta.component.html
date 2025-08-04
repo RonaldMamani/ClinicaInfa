@@ -1,0 +1,101 @@
+<div class="container my-5">
+  <h2>Atender Consulta</h2>
+
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando detalhes...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (!isLoading && !error && consulta) {
+    <div class="row">
+      <!-- Card de Informações da Consulta e Paciente -->
+      <div class="col-12 mb-4">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            Informações da Consulta #{{ consulta.id }}
+          </div>
+          <div class="card-body">
+            <p class="card-text">
+              <strong>Paciente:</strong> {{ consulta.paciente.cliente.nome }}<br>
+              <strong>Data:</strong> {{ consulta.data_consulta | date: 'dd/MM/yyyy' }}<br>
+              <strong>Horário:</strong> {{ consulta.hora_inicio }} - {{ consulta.hora_fim }}<br>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulário para Atender a Consulta -->
+    <form [formGroup]="atenderConsultaForm" (ngSubmit)="onSubmit()">
+      <!-- Campos de Descrição da Consulta -->
+      <div class="form-group mb-4">
+        <label for="descricao">Descrição da Consulta <span class="text-danger">*</span></label>
+        <textarea id="descricao" formControlName="descricao" class="form-control" rows="5"
+          [ngClass]="{'is-invalid': atenderConsultaForm.get('descricao')?.invalid && atenderConsultaForm.get('descricao')?.touched}"></textarea>
+        @if (atenderConsultaForm.get('descricao')?.invalid && atenderConsultaForm.get('descricao')?.touched) {
+          <div class="invalid-feedback">A descrição da consulta é obrigatória.</div>
+        }
+      </div>
+
+      <!-- Campos do Prontuário (sempre visíveis) -->
+      <div class="card my-4">
+        <div class="card-header bg-secondary text-white">
+          @if (prontuarioExistente) {
+            Editar Prontuário
+          } @else {
+            Criar Prontuário
+          }
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 form-group mb-3">
+              <label for="data_diagnostico">Data do Diagnóstico <span class="text-danger">*</span></label>
+              <input type="date" id="data_diagnostico" formControlName="data_diagnostico" class="form-control"
+                [ngClass]="{'is-invalid': atenderConsultaForm.get('data_diagnostico')?.invalid && atenderConsultaForm.get('data_diagnostico')?.touched}">
+              @if (atenderConsultaForm.get('data_diagnostico')?.invalid && atenderConsultaForm.get('data_diagnostico')?.touched) {
+                <div class="invalid-feedback">Data do diagnóstico é obrigatória para o prontuário.</div>
+              }
+            </div>
+            <div class="col-md-6 form-group mb-3">
+              <label for="diagnostico">Diagnóstico <span class="text-danger">*</span></label>
+              <input type="text" id="diagnostico" formControlName="diagnostico" class="form-control"
+                [ngClass]="{'is-invalid': atenderConsultaForm.get('diagnostico')?.invalid && atenderConsultaForm.get('diagnostico')?.touched}">
+              @if (atenderConsultaForm.get('diagnostico')?.invalid && atenderConsultaForm.get('diagnostico')?.touched) {
+                <div class="invalid-feedback">O diagnóstico é obrigatório para o prontuário.</div>
+              }
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <label for="prescricao">Prescrição</label>
+            <textarea id="prescricao" formControlName="prescricao" class="form-control" rows="3"></textarea>
+          </div>
+          <div class="form-group mb-3">
+            <label for="observacoes">Observações</label>
+            <textarea id="observacoes" formControlName="observacoes" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between mt-4">
+        <a class="btn btn-secondary" [routerLink]="['/consultas/agendadas']">Cancelar</a>
+        <button type="submit" class="btn btn-success" [disabled]="atenderConsultaForm.invalid || isSubmitting">
+          @if (isSubmitting) {
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Concluindo...
+          } @else {
+            Concluir Consulta
+          }
+        </button>
+      </div>
+    </form>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success mt-3 text-center">
+      {{ successMessage }}
+    </div>
+  }
+</div>

@@ -11,7 +11,7 @@ use App\Http\Controllers\Api\MedicoController;
 use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\PagamentoController;
 use App\Http\Controllers\Api\PerfilController;
-use App\Http\Controllers\Api\ProntuarioMedicoController;
+use App\Http\Controllers\Api\ProntuarioController;
 use App\Http\Controllers\Api\ResponsavelController;
 use App\Http\Controllers\Api\UsuarioController;
 use Illuminate\Http\Request;
@@ -26,7 +26,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Rotas de consultas para o médico
     Route::get('/consultas/medico', [ConsultaController::class, 'consultasMedico']);
+    Route::get('/consultas/medico/agendados', [ConsultaController::class, 'consultasMedicoAgendados']);
     Route::post('/consultas/medico/agendar', [ConsultaController::class, 'storeMedico']);
+
+    Route::put('/consultas/{id}/concluir', [ConsultaController::class, 'concluir']);
+
+    Route::get('prontuarios/paciente/{idPaciente}/check', [ProntuarioController::class, 'checkProntuario']);
+    Route::get('prontuarios/paciente/{idPaciente}', [ProntuarioController::class, 'showByPacienteId']);
+    Route::post('/prontuarios', [ProntuarioController::class, 'storeMedico']);
 });
 
 // Rotas para Estados
@@ -49,7 +56,7 @@ Route::controller(ClienteController::class)->group(function () {
     Route::get('/clientes/inativos', 'getInactiveClients');
     Route::get('/clientes/{id}', 'show');
     Route::post('/clientes', 'store');
-    Route::put('/clientes/{id}', 'update'); // Endpoint de atualização
+    Route::put('/clientes/{id}', 'update');
     Route::delete('/clientes/{id}', 'destroy');
 });
 
@@ -120,12 +127,12 @@ Route::patch('/consultas/{id}', [ConsultaController::class, 'update']); // PATCH
 Route::delete('/consultas/{id}', [ConsultaController::class, 'destroy']);
 
 // Rotas para Prontuários Médicos
-Route::get('/prontuarios-medicos', [ProntuarioMedicoController::class, 'index']); // GET para listar todos
-Route::get('/prontuarios-medicos/{id}', [ProntuarioMedicoController::class, 'show']); // GET para mostrar por ID
-Route::post('/prontuarios-medicos', [ProntuarioMedicoController::class, 'store']); // POST para criar
-Route::put('/prontuarios-medicos/{id}', [ProntuarioMedicoController::class, 'update']); // PUT para atualizar (completo)
-Route::patch('/prontuarios-medicos/{id}', [ProntuarioMedicoController::class, 'update']); // PATCH para atualizar (parcial)
-Route::delete('/prontuarios-medicos/{id}', [ProntuarioMedicoController::class, 'destroy']); // DELETE para remover (físico)
+Route::get('/prontuarios', [ProntuarioController::class, 'index']); // GET para listar todos
+Route::get('/prontuarios/{id}', [ProntuarioController::class, 'show']); // GET para mostrar por ID
+Route::post('/prontuarios-medicos', [ProntuarioController::class, 'store']); // POST para criar
+Route::put('/prontuarios/{id}', [ProntuarioController::class, 'update']); // PUT para atualizar (completo)
+Route::patch('/prontuarios/{id}', [ProntuarioController::class, 'update']); // PATCH para atualizar (parcial)
+Route::delete('/prontuarios/{id}', [ProntuarioController::class, 'destroy']); // DELETE para remover (físico)
 
 // Rotas para Pagamentos
 Route::get('/pagamentos', [PagamentoController::class, 'index']); // GET para listar todos

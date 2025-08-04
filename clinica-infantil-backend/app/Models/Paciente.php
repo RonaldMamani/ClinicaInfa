@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Paciente extends Model
 {
@@ -33,7 +35,7 @@ class Paciente extends Model
     /**
      * Define o relacionamento com a tabela Clientes.
      */
-    public function cliente()
+    public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class, 'id_cliente');
     }
@@ -41,9 +43,25 @@ class Paciente extends Model
     /**
      * Define o relacionamento com a tabela Responsaveis.
      */
-    public function responsavel()
+    public function responsavel(): BelongsTo
     {
         return $this->belongsTo(Responsavel::class, 'id_responsavel');
+    }
+
+    public function consultas(): HasMany
+    {
+        // Correção: A chave estrangeira na tabela 'consultas' é 'id_paciente'.
+        return $this->hasMany(Consulta::class, 'id_paciente');
+    }
+
+    /**
+     * Define o relacionamento com a tabela `prontuarios`.
+     *
+     * @return HasMany
+     */
+    public function prontuarios(): HasMany
+    {
+        return $this->hasMany(Prontuario::class, 'id_paciente');
     }
 
     public static function countPatients()

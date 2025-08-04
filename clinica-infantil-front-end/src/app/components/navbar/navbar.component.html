@@ -25,6 +25,9 @@
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['/medico/consultas']">Minhas Consultas</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['/medico/prontuarios']">Prontuarios</a>
+            </li>
           }
           @if (profile === 'administrador') {
             <li class="nav-item">
@@ -34,7 +37,7 @@
               <a class="nav-link" [routerLink]="['/administrador/funcionarios']">Funcionários</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/administrador/perfis']">Perfis</a>
+              <a class="nav-link" [routerLink]="['/administrador/perfis']">Clientes</a>
             </li>
           }
         }

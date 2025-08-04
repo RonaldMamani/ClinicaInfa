@@ -15,7 +15,7 @@ class PacienteController extends Controller
     /**
      * Define os relacionamentos a serem carregados.
      */
-    protected $relations = ['cliente.cidade', 'cliente.genero', 'responsavel'];
+    protected $relations = ['cliente.cidade', 'cliente.genero', 'responsavel', 'consultas'];
 
     /**
      * Lista todos os pacientes do banco de dados,
