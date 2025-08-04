@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Consulta } from '../../../core/models/consultas.model';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
@@ -19,8 +19,17 @@ export class DetalhesConsultaComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private consultasService: ConsultasService
   ) {}
+
+  get isSecretariaRoute(): boolean {
+    return this.router.url.startsWith('/secretaria');
+  }
+
+  get isMedicoRoute(): boolean {
+    return this.router.url.startsWith('/medico');
+  }
 
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');

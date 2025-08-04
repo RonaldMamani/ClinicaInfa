@@ -22,6 +22,10 @@ import { RemarcarConsultaComponent } from './features/consultas/remarcar-consult
 import { MedicoConsultasComponent } from './features/consultas/medico-consultas/medico-consultas.component';
 import { DashboardMedicoComponent } from './components/dashboard-medico/dashboard-medico.component';
 import { AgendarConsultaComponent } from './features/consultas/agendar-consulta/agendar-consulta.component';
+import { MedicoConsultasAgendadosComponent } from './features/consultas/medico-consultas-agendados/medico-consultas-agendados.component';
+import { AtenderConsultaComponent } from './features/consultas/atender-consulta/atender-consulta.component';
+import { ListarProntuariosComponent } from './features/prontuarios/listar-prontuarios/listar-prontuarios.component';
+import { DetalheProntuarioComponent } from './features/prontuarios/detalhe-prontuario/detalhe-prontuario.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -62,7 +66,13 @@ export const routes: Routes = [
     children: [
       { path: '', component: DashboardMedicoComponent },
       { path: 'consultas', component: MedicoConsultasComponent},
+      { path: 'consultas/:id', component: DetalhesConsultaComponent},
+      { path: 'agendados', component: MedicoConsultasAgendadosComponent},
+      { path: 'agendados/:id/remarcar', component: RemarcarConsultaComponent },
+      { path: 'agendados/:id/atender', component: AtenderConsultaComponent },
       { path: 'agendar', component: AgendarConsultaComponent},
+      { path: 'prontuarios', component: ListarProntuariosComponent },
+      { path: 'prontuarios/:id', component: DetalheProntuarioComponent },
 
       { path: '**', redirectTo: '' }
     ]

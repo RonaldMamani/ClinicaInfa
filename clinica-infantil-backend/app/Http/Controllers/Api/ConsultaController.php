@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ConcluirConsultaRequest;
 use App\Http\Requests\ConsultaRequest;
 use App\Http\Requests\RemarcarConsultaRequest;
 use App\Models\Consulta;
+use App\Models\Prontuario;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -111,8 +113,8 @@ class ConsultaController extends Controller
             $consulta->data_consulta = $request->input('data_consulta');
             $consulta->hora_inicio = $request->input('hora_inicio');
             $consulta->hora_fim = $request->input('hora_fim');
-            $consulta->descricao = $request->input('descricao'); // Salva a descrição
-            $consulta->status = 'agendado'; // Define o status padrão
+            $consulta->descricao = $request->input('descricao');
+            $consulta->status = 'agendada';
             $consulta->save();
 
             return response()->json([
@@ -231,6 +233,62 @@ class ConsultaController extends Controller
         ], 200);
     }
 
+    public function concluir(ConcluirConsultaRequest $request, int $id): \Illuminate\Http\JsonResponse
+    {
+        try {
+            $consulta = Consulta::with('paciente')->find($id);
+
+            if (!$consulta) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Consulta não encontrada.'
+                ], 404);
+            }
+
+            // Atualiza a descrição e o status da consulta
+            $consulta->descricao = $request->input('descricao');
+            $consulta->status = 'concluida';
+            $consulta->save();
+
+            // Lógica para criar ou atualizar o prontuário
+            $prontuarioData = $request->input('prontuario');
+
+            if ($prontuarioData) {
+                $prontuarioExistente = Prontuario::where('id_paciente', $consulta->id_paciente)->first();
+                $idMedico = $consulta->id_medico;
+
+                if ($prontuarioExistente) {
+                    // Se o prontuário já existe, atualiza-o
+                    $prontuarioExistente->update(array_merge($prontuarioData, [
+                        'id_medico' => $idMedico,
+                    ]));
+                } else {
+                    // Se o prontuário não existe, cria um novo
+                    Prontuario::create(array_merge($prontuarioData, [
+                        'id_paciente' => $consulta->id_paciente,
+                        'id_medico' => $idMedico,
+                    ]));
+                }
+            }
+
+            $consulta->load(['paciente.cliente', 'paciente.responsavel.cliente', 'medico.usuario.funcionario']);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Consulta concluída com sucesso.',
+                'consulta' => $consulta
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao concluir consulta: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao concluir a consulta.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function destroy($id)
     {
         Log::info('Tentativa de cancelar a consulta com ID: ' . $id);
@@ -296,13 +354,54 @@ class ConsultaController extends Controller
             // Busca as consultas filtrando pelo 'id_medico'
             $consultas = Consulta::with($this->relations)
                                    ->where('id_medico', $medico->id)
+                                   ->orderBy('id', 'asc')
+                                   ->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Consultas do médico obtidas com sucesso.',
+                'consultas' => $consultas,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao buscar consultas do médico: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao buscar as consultas.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+     public function consultasMedicoAgendados()
+    {
+        // Obtém o usuário autenticado, que é um modelo Usuario
+        $usuario = Auth::user();
+
+        if (!$usuario) {
+            return response()->json(['message' => 'Não autenticado.'], 401);
+        }
+
+        // Usa o relacionamento 'medico' para encontrar o médico associado
+        $medico = $usuario->medico;
+
+        if (!$medico) {
+            Log::warning('Usuário autenticado ' . $usuario->id . ' não tem perfil de médico.');
+            return response()->json(['message' => 'Perfil de médico não encontrado.'], 403);
+        }
+
+        try {
+            // Busca as consultas filtrando pelo 'id_medico'
+            $consultas = Consulta::with($this->relations)
+                                   ->where('id_medico', $medico->id)
+                                   ->where('status', 'agendada')
                                    ->orderBy('data_consulta', 'asc')
                                    ->orderBy('hora_inicio', 'asc')
                                    ->get();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Consultas do médico obtidas com sucesso.',
+                'message' => 'Consultas agendadas do médico obtidas com sucesso.',
                 'consultas' => $consultas,
             ], 200);
 

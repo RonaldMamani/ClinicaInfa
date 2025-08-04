@@ -1,0 +1,27 @@
+.prontuario-card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  border-radius: 15px;
+}
+
+.prontuario-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.prontuario-card .card-body {
+  padding: 1.5rem;
+}
+
+.prontuario-card svg {
+  color: #0b35f0;
+}
+
+.prontuario-card .card-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+.prontuario-card .card-text {
+  font-size: 0.95rem;
+}

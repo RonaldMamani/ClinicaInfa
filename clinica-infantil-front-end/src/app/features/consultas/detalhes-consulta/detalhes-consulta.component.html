@@ -1,5 +1,5 @@
-<div class="container my-5">
-  <h2>Detalhes da Consulta Agendada</h2>
+<div class="dashboard container my-5">
+  <h2>Detalhes da Consulta</h2>
 
   @if (isLoading) {
     <div class="alert alert-info mt-3">Carregando detalhes...</div>
@@ -117,7 +117,11 @@
       </div>
     </div>
 
-    <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria/consultas']">Voltar para a Lista</a>
+    @if (isSecretariaRoute) {
+      <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria/consultas']">Voltar para a Lista</a>
+    } @else {
+      <a class="btn btn-secondary mt-4" [routerLink]="['/medico/consultas']">Voltar para a Lista</a>
+    }
   }
 
 </div>

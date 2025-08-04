@@ -93,6 +93,11 @@ export class ConsultasService {
     return this.http.get<ConsultasAgendadasApiResponse>(url);
   }
 
+  getConsultasDoMedicoAgendados(): Observable<ConsultasAgendadasApiResponse> {
+    const url = `${this.apiUrl}/medico/agendados`;
+    return this.http.get<ConsultasAgendadasApiResponse>(url);
+  }
+
   agendarConsulta(consultaData: any): Observable<any> {
     const url = `${this.apiUrl}/medico/agendar`;
     return this.http.post(url, consultaData);
@@ -100,5 +105,10 @@ export class ConsultasService {
 
   getPacientesAgendar(): Observable<PacientesApiResponse> {
     return this.http.get<PacientesApiResponse>(`${this.pacientesApiUrl}/ativos`);
+  }
+
+  concluirConsulta(id: number, data: any): Observable<UpdateConsultaResponse> {
+    const url = `${this.apiUrl}/${id}/concluir`;
+    return this.http.put<UpdateConsultaResponse>(url, data);
   }
 }

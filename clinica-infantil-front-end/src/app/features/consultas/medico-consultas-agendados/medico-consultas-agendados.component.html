@@ -1,6 +1,6 @@
 <div class="dashboard container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1 class="fw-bold">Minhas Consultas</h1>
+    <h1 class="fw-bold">Minhas Proximas Consultas</h1>
     <a
       [routerLink]="['/medico/agendar']"
       class="btn btn-success fw-bold d-flex align-items-center"
@@ -28,9 +28,9 @@
             <tr>
               <th>ID</th>
               <th>Data</th>
+              <th>Paciente</th>
               <th>Hora Início</th>
               <th>Hora Fim</th>
-              <th>Paciente</th>
               <th>Status</th>
               <th>Ações</th>
             </tr>
@@ -40,46 +40,42 @@
               <tr>
                 <td>{{ consulta.id }}</td>
                 <td>{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
+                <td>{{ consulta.paciente.cliente.nome }}</td>
                 <td>{{ consulta.hora_inicio | slice:0:5 }}</td>
                 <td>{{ consulta.hora_fim | slice:0:5 }}</td>
-                <td>{{ consulta.paciente.cliente.nome }}</td>
                 <td>
                     <span class="badge rounded-pill text-uppercase p-2" [ngClass]="{
-                    'bg-warning text-dark': consulta.status === 'agendada',
-                    'bg-success': consulta.status === 'concluida',
-                    'bg-danger': consulta.status === 'cancelada'
+                    'bg-warning text-dark': consulta.status === 'agendada'
                   }">
                     {{ consulta.status }}
                     </span>
                 </td>
-                @if (consulta.status === 'agendada') {
-                  <td class="text-nowrap">
-                    <button
-                      class="btn btn-warning btn-sm me-2"
-                      [routerLink]="['/medico/agendados', consulta.id, 'remarcar']"
-                      aria-label="Remarcar consulta"
-                    >
-                      <i class="bi bi-calendar-range"></i>
-                    </button>
-                    <button
-                      class="btn btn-danger btn-sm"
-                      (click)="openCancelModal(consulta.id)"
-                      aria-label="Cancelar consulta"
-                    >
-                      <i class="bi bi-x-circle"></i>
-                    </button>
-                  </td>
-                } @else {
-                  <td class="text-nowrap">
-                    <button
-                      class="btn btn-info btn-sm"
-                      [routerLink]="['/medico/consultas', consulta.id]"
-                      aria-label="Cancelar consulta"
-                    >
-                      <i class="bi bi-info-square"></i>
-                    </button>
-                  </td>
-                }
+                <td class="text-nowrap d-flex">
+                  <button
+                    class="btn btn-warning btn-sm me-2"
+                    [routerLink]="['/medico/agendados', consulta.id, 'remarcar']"
+                    aria-label="Remarcar consulta"
+                  >
+                    <i class="bi bi-calendar-range me-2"></i>
+                    <span>Remarcar</span>
+                  </button>
+                  <button
+                    class="btn btn-success btn-sm me-2"
+                    [routerLink]="['/medico/agendados', consulta.id, 'atender']"
+                    aria-label="Atender consulta"
+                  >
+                    <i class="bi bi-calendar-check me-2"></i>
+                    <span>Atender</span>
+                  </button>
+                  <button
+                    class="btn btn-danger btn-sm"
+                    (click)="openCancelModal(consulta.id)"
+                    aria-label="Cancelar consulta"
+                  >
+                    <i class="bi bi-calendar-x me-2"></i>
+                    <span>Cancelar</span>
+                  </button>
+                </td>
               </tr>
             }
           </tbody>

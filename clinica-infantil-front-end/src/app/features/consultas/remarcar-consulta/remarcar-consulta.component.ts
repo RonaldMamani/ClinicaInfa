@@ -34,6 +34,14 @@ export class RemarcarConsultaComponent implements OnInit {
     });
   }
 
+  get isSecretariaRoute(): boolean {
+    return this.router.url.startsWith('/secretaria');
+  }
+
+  get isMedicoRoute(): boolean {
+    return this.router.url.startsWith('/medico');
+  }
+
   ngOnInit(): void {
     // Pega o ID da consulta da URL
     this.route.paramMap.subscribe(params => {

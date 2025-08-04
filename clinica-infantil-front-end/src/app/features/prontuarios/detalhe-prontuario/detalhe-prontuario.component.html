@@ -1,0 +1,89 @@
+<div class="container my-5">
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando detalhes do prontuário...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (!isLoading && prontuario) {
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <h2>Detalhes do Prontuário de {{ prontuario.paciente?.cliente?.nome }}</h2>
+      <a class="btn btn-secondary" [routerLink]="['/medico/prontuarios']">Voltar para a Lista</a>
+    </div>
+
+    <!-- Informações do Paciente -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-primary text-white">
+        Informações do Paciente
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <strong>Nome:</strong> {{ prontuario.paciente?.cliente?.nome }}<br>
+            <strong>CPF:</strong> {{ prontuario.paciente?.cliente?.cpf }}<br>
+            <strong>RG:</strong> {{ prontuario.paciente?.cliente?.rg }}
+          </div>
+          <div class="col-md-6">
+            <strong>Idade:</strong> {{ calcularIdade(prontuario.paciente.data_nascimento) }} anos<br>
+            <strong>Sexo:</strong> {{ getGenero(prontuario.paciente?.cliente?.id_genero) }}<br>
+            <strong>Endereço:</strong> {{ prontuario.paciente?.cliente?.endereco }}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Detalhes do Prontuário -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-success text-white">
+        Prontuário
+      </div>
+      <div class="card-body">
+        <p><strong>Diagnóstico:</strong> {{ prontuario.diagnostico }}</p>
+        <p><strong>Prescrição:</strong> {{ prontuario.prescricao }}</p>
+        <p><strong>Observações:</strong> {{ prontuario.observacoes }}</p>
+        <p class="text-muted">
+          Última atualização em: {{ prontuario.updated_at | date:'dd/MM/yyyy HH:mm' }}
+        </p>
+      </div>
+    </div>
+    
+    <!-- Histórico de Consultas -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header bg-info text-dark fw-bold">
+        Histórico de Consultas
+      </div>
+      <div class="card-body">
+        @if (prontuario.paciente?.consultas.length) {
+          @for (consulta of prontuario.paciente.consultas; track consulta.id) {
+            <div class="card bg-light mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Consulta em {{ consulta.data_consulta | date:'dd/MM/yyyy' }}</h5>
+                <p class="card-text">
+                  <strong>Horário:</strong> {{ consulta.hora_inicio | slice:0:5  }} - {{ consulta.hora_fim | slice:0:5  }}<br>
+                  <strong>Médico:</strong> {{ consulta.medico?.usuario?.funcionario?.nome || 'N/A' }}<br>
+                  <strong>Status:</strong>
+                  <span class="badge rounded-pill text-uppercase p-1 ms-2" [ngClass]="{
+                    'bg-warning text-dark': consulta.status === 'agendada',
+                    'bg-success': consulta.status === 'concluida',
+                    'bg-danger': consulta.status === 'cancelada'
+                  }">
+                    {{ consulta.status }}
+                  </span>
+                </p>
+                <p><strong>Descrição:</strong> {{ consulta.descricao }}</p>
+              </div>
+            </div>
+          }
+        } @else {
+          <div class="alert alert-warning">Nenhuma consulta encontrada para este paciente.</div>
+        }
+      </div>
+    </div>
+  }
+
+  @if (!isLoading && !prontuario) {
+    <div class="alert alert-warning mt-3">Prontuário não encontrado.</div>
+  }
+</div>
