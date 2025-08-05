@@ -1,5 +1,14 @@
 <div class="dashboard container my-5">
-  <h2>Lista de Pacientes Ativos</h2>
+  @if (isAdministradorRoute) {
+    <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="">Lista de Pacientes Ativos</h2>
+    <a [routerLink]="['/administrador/pacientes/adicionar']" class="btn btn-primary fw-bold d-flex align-items-center">
+      <i class="bi bi-person-add me-2"></i> Criar Paciente
+    </a>
+  </div>
+  } @else {
+    <h2>Lista de Pacientes</h2>
+  }
   @if (isLoading) {
     <div class="alert alert-info">Carregando pacientes...</div>
   }
@@ -10,25 +19,44 @@
     <table class="table table-striped mt-3">
       <thead>
         <tr>
+          @if (isAdministradorRoute) {
+            <th>ID</th>
+          }
           <th>Nome do Paciente</th>
           <th>CPF</th>
           <th>Data de Nascimento</th>
           <th>Responsável</th>
+          <th>Grau Parentesco</th>
           <th>Ações</th>
         </tr>
       </thead>
       <tbody>
         @for (paciente of pacientesAtivos; track paciente.id) {
           <tr>
+            @if (isAdministradorRoute) {
+              <td>{{ paciente.id }}</td>
+            }
             <td>{{ paciente.cliente.nome }}</td>
             <td>{{ paciente.cliente.cpf }}</td>
-            <td>{{ paciente.data_nascimento }}</td>
+            <td>{{ paciente.data_nascimento | date:'dd/MM/yyyy' }}</td>
+            <td>{{ paciente.responsavel.cliente.nome }}</td>
             <td>{{ paciente.responsavel.grau_parentesco }}</td>
             <td>
-              <a class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
-                <i class="bi bi-info-circle"></i> </a>
-              <a class="btn btn-primary btn-sm me-2" [routerLink]="['/secretaria/pacientes/editar', paciente.id]">
-                <i class="bi bi-pencil"></i> </a>
+              @if (isAdministradorRoute) {
+                <a class="btn btn-info btn-sm me-2" [routerLink]="['/administrador/pacientes', paciente.id]">
+                  <i class="bi bi-info-circle"></i> 
+                </a>
+                <a class="btn btn-warning btn-sm me-2" [routerLink]="['/administrador/pacientes', paciente.id, 'editar']">
+                  <i class="bi bi-pencil"></i> 
+                </a>
+              } @else {
+                <a class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
+                  <i class="bi bi-info-circle"></i> 
+                </a>
+                <a class="btn btn-warning btn-sm me-2" [routerLink]="['/pacientes/editar', paciente.id]">
+                  <i class="bi bi-pencil"></i> 
+                </a>
+              }
               <button class="btn btn-danger btn-sm" (click)="excluirPaciente(paciente.id)">
                 <i class="bi bi-trash"></i> </button>
             </td>
@@ -40,42 +68,62 @@
     <div class="alert alert-warning mt-3">Nenhum paciente ativo encontrado.</div>
   }
 
-  <h2 class="my-5">Pacientes Inativos</h2>
-  @if (!isLoading && !error && pacientesInativos.length > 0) {
-    <table class="table table-striped mt-3">
-      <thead>
-        <tr>
-          <th>Nome do Paciente</th>
-          <th>CPF</th>
-          <th>Data de Nascimento</th>
-          <th>Responsável</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (paciente of pacientesInativos; track paciente.id) {
+  @if (isAdministradorRoute) {
+    <h2 class="my-5">Pacientes Inativos</h2>
+    @if (isLoading) {
+      <div class="alert alert-info">Carregando pacientes...</div>
+    }
+    @if (error) {
+      <div class="alert alert-danger">{{ error }}</div>
+    }
+    @if (!isLoading && !error && pacientesInativos.length > 0) {
+      <table class="table table-striped mt-3">
+        <thead>
           <tr>
-            <td>{{ paciente.cliente.nome }}</td>
-            <td>{{ paciente.cliente.cpf }}</td>
-            <td>{{ paciente.data_nascimento }}</td>
-            <td>{{ paciente.responsavel.grau_parentesco }}</td>
-            <td>
-              <a class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
-                <i class="bi bi-info-circle"></i>
-              </a>
-              <a class="btn btn-primary btn-sm me-2" [routerLink]="['/secretaria/pacientes/editar', paciente.id]">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <button class="btn btn-danger btn-sm" (click)="excluirPaciente(paciente.id)">
-                <i class="bi bi-trash"></i>
-              </button>
-            </td>
+            @if (isAdministradorRoute) {
+              <th>ID</th>
+            }
+            <th>Nome do Paciente</th>
+            <th>CPF</th>
+            <th>Data de Nascimento</th>
+            <th>Responsável</th>
+            <th>Grau Parentesco</th>
+            <th>Ações</th>
           </tr>
-        }
-      </tbody>
-    </table>
-  } @else if (!isLoading && !error) {
-    <div class="alert alert-info mt-3">Nenhum paciente inativo encontrado.</div>
+        </thead>
+        <tbody>
+          @for (paciente of pacientesInativos; track paciente.id) {
+            <tr>
+              @if (isAdministradorRoute) {
+                <td>{{ paciente.id }}</td>
+              }
+              <td>{{ paciente.cliente.nome }}</td>
+              <td>{{ paciente.cliente.cpf }}</td>
+              <td>{{ paciente.data_nascimento | date:'dd/MM/yyyy' }}</td>
+              <td>{{ paciente.responsavel.cliente.nome }}</td>
+              <td>{{ paciente.responsavel.grau_parentesco }}</td>
+              <td>
+                <a class="btn btn-info btn-sm me-2" [routerLink]="['/administrador/pacientes', paciente.id]">
+                  <i class="bi bi-info-circle"></i>
+                </a>
+                <a class="btn btn-warning btn-sm me-2" [routerLink]="['/administrador/pacientes/editar', paciente.id]">
+                  <i class="bi bi-pencil"></i>
+                </a>
+                <button class="btn btn-danger btn-sm" (click)="excluirPaciente(paciente.id)">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else if (!isLoading && !error) {
+      <div class="alert alert-info mt-3">Nenhum paciente inativo encontrado.</div>
+    }
   }
-  <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria']">Voltar</a>
+  @if (isAdministradorRoute) {
+    <a class="btn btn-secondary mt-4" [routerLink]="['/administrador']">Voltar</a>
+  } @else {
+    <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria']">Voltar</a>
+  }
 </div>

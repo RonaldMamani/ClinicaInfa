@@ -96,7 +96,11 @@
           Salvar Alterações
         }
       </button>
-      <button type="button" class="btn btn-secondary" (click)="voltar()">Cancelar</button>
+      @if (isAdministradorRoute) {
+        <button type="button" class="btn btn-secondary" (click)="voltarAdmin()">Cancelar</button>
+      } @else {
+        <button type="button" class="btn btn-secondary" (click)="voltarSecretaria()">Cancelar</button>
+      }
     </form>
   }
 </div>

@@ -29,6 +29,10 @@ export class ListarPacientesComponent implements OnInit {
     this.carregarPacientes();
   }
 
+  get isAdministradorRoute(): boolean {
+    return this.router.url.startsWith('/administrador');
+  }
+
   carregarPacientes(): void {
     this.isLoading = true;
     this.error = null;

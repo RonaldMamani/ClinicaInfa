@@ -34,6 +34,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('prontuarios/paciente/{idPaciente}/check', [ProntuarioController::class, 'checkProntuario']);
     Route::get('prontuarios/paciente/{idPaciente}', [ProntuarioController::class, 'showByPacienteId']);
     Route::post('/prontuarios', [ProntuarioController::class, 'storeMedico']);
+
+    Route::get('medico/consultas/count/total', [ConsultaController::class, 'countAllConsultas']);
+    Route::get('medico/consultas/count/agendadas', [ConsultaController::class, 'countAgendadasConsultas']);
 });
 
 // Rotas para Estados
@@ -47,6 +50,7 @@ Route::get('/estados/{estadoId}/cidades', [CidadeController::class, 'getCidadesB
 
 // Rotas para Gêneros
 Route::get('/generos', [GeneroController::class, 'index']);
+Route::get('generos/get', [GeneroController::class, 'getGenero']);
 Route::get('/generos/{genero}', [GeneroController::class, 'show']);
 
 // Rotas para Clientes
@@ -88,6 +92,7 @@ Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']); // DELET
 Route::get('/responsaveis', [ResponsavelController::class, 'index']);
 Route::get('/responsaveis/{id}', [ResponsavelController::class, 'show']);
 Route::post('/responsaveis', [ResponsavelController::class, 'store']);
+Route::put('responsaveis/{id}/status', [ResponsavelController::class, 'updateStatus']);
 Route::put('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PUT para atualizar (completo)
 Route::patch('/responsaveis/{id}', [ResponsavelController::class, 'update']); // PATCH para atualizar (parcial)
 Route::delete('/responsaveis/{id}', [ResponsavelController::class, 'destroy']); // DELETE para remover (físico)

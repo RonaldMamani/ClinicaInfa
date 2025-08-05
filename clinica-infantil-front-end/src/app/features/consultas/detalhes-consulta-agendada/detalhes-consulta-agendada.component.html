@@ -24,7 +24,7 @@
               <span class="ms-2">{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</span>
               <br>
               <span><strong>Horário:</strong></span>
-              <span class="ms-2">{{ consulta.hora_inicio }} - {{ consulta.hora_fim }}</span>
+              <span class="ms-2">{{ consulta.hora_inicio | slice:0:5 }} - {{ consulta.hora_fim | slice:0:5 }}</span>
               <br>
               <span><strong>Status:</strong></span>
               <span class="ms-2 badge rounded-pill text-uppercase" [ngClass]="{

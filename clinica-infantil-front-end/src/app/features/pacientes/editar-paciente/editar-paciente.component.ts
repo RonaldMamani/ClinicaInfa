@@ -55,6 +55,10 @@ export class EditarPacienteComponent implements OnInit {
     private responsaveisService: ResponsaveisService
   ) { }
 
+  get isAdministradorRoute(): boolean {
+    return this.router.url.startsWith('/administrador');
+  }
+
   ngOnInit(): void {
     this.pacienteId = +this.route.snapshot.paramMap.get('id')!;
     
@@ -168,8 +172,13 @@ export class EditarPacienteComponent implements OnInit {
     }
   }
 
-  voltar(): void {
+  voltarSecretaria(): void {
     // Caminho corrigido
     this.router.navigate(['/secretaria/pacientes']);
+  }
+
+  voltarAdmin(): void {
+    // Caminho corrigido
+    this.router.navigate(['/administrador/pacientes']);
   }
 }

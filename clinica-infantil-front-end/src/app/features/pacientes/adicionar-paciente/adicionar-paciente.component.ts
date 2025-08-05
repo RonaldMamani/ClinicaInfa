@@ -1,9 +1,7 @@
-// src/app/features/secretaria/clientes/adicionar-paciente/adicionar-paciente.component.ts
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 // Serviços
 import { ClientesService } from '../../../controllers/clientes/clientes.service';
@@ -24,7 +22,7 @@ import { InputMaskDirective } from '../../../shared/input-mask-directive';
 @Component({
   selector: 'app-adicionar-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, RouterLink],
   templateUrl: './adicionar-paciente.component.html',
   styleUrls: ['./adicionar-paciente.component.css']
 })
@@ -48,6 +46,10 @@ export class AdicionarPacienteComponent implements OnInit {
     private responsaveisService: ResponsaveisService,
     private router: Router
   ) { }
+
+  get isAdministradorRoute(): boolean {
+    return this.router.url.startsWith('/administrador');
+  }
 
   ngOnInit(): void {
     this.pacienteForm = this.fb.group({

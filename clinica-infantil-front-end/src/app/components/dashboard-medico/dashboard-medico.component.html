@@ -6,7 +6,13 @@
       <div class="card text-center bg-primary text-white mb-3 cardFeature">
         <div class="card-body">
           <h5 class="card-title fs-3 fw-bold">Minhas Consultas</h5>
-          <p class="card-text fs-2 fw-bold">3</p>
+          @if (isLoading) {
+            <p class="card-text">Carregando...</p>
+          } @else if (error) {
+            <p class="card-text text-danger">{{ error }}</p>
+          } @else {
+            <p class="card-text fs-2 fw-bold">{{ totalConsultas !== null ? totalConsultas : '-' }}</p>
+          }
           <a
             [routerLink]="['/medico/consultas']"
             class="btn btn-outline-light rounded-3 fs-5 btn-sm"
@@ -20,7 +26,13 @@
       <div class="card text-center bg-warning text-dark mb-3 cardFeature">
         <div class="card-body">
           <h5 class="card-title fs-3 fw-bold">Proximas Consultas</h5>
-          <p class="card-text fs-2 fw-bold">3</p>
+          @if (isLoading) {
+            <p class="card-text">Carregando...</p>
+          } @else if (error) {
+            <p class="card-text text-danger">{{ error }}</p>
+          } @else {
+            <p class="card-text fs-2 fw-bold">{{ proximasConsultas !== null ? proximasConsultas : '-' }}</p>
+          }
           <a
             [routerLink]="['/medico/agendados']"
             class="btn btn-outline-light rounded-3 text-dark border-dark fs-5 btn-sm"

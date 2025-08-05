@@ -31,3 +31,9 @@ export interface ConsultaDetailsResponse {
   message: string;
   consulta: Consulta;
 }
+
+export interface UpdateConsultaResponse {
+  status: boolean;
+  message: string;
+  consulta: any;
+}
