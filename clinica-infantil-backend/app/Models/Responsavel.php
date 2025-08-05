@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Responsavel extends Model
 {
@@ -23,8 +25,14 @@ class Responsavel extends Model
     ];
 
     public $timestamps = false;
-    public function cliente()
+
+    public function cliente(): BelongsTo
     {
         return $this->belongsTo(Cliente::class, 'id_cliente');
+    }
+
+    public function pacientes(): HasMany
+    {
+        return $this->hasMany(Paciente::class, 'id_responsavel');
     }
 }

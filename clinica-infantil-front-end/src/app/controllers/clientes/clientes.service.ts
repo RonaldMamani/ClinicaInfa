@@ -13,6 +13,13 @@ import {
   ResponsavelDetailsResponse
 } from '../../core/models/responsavel.model';
 import { PacienteDetailsResponse, PacientesApiResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
+import { Cidade } from '../responsaveis/responsaveis.service';
+
+export interface CidadesApiResponse {
+  status: boolean;
+  message: string;
+  cidades: Cidade[];
+}
 
 @Injectable({
   providedIn: 'root'

@@ -34,8 +34,8 @@
             <td>{{ consulta.medico?.usuario?.funcionario?.nome }}</td>
             <td>{{ consulta.medico?.especialidade }}</td>
             <td>{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
-            <td>{{ consulta.hora_inicio }}</td>
-            <td>{{ consulta.hora_fim }}</td>
+            <td>{{ consulta.hora_inicio | slice:0:5 }}</td>
+            <td>{{ consulta.hora_fim | slice:0:5 }}</td>
             <td>
               <span class="badge rounded-pill text-uppercase p-2" [ngClass]="{
                 'bg-warning text-dark': consulta.status === 'agendada',

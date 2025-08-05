@@ -7,8 +7,10 @@ use App\Http\Requests\ConcluirConsultaRequest;
 use App\Http\Requests\ConsultaRequest;
 use App\Http\Requests\RemarcarConsultaRequest;
 use App\Models\Consulta;
+use App\Models\Medico;
 use App\Models\Prontuario;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -494,5 +496,59 @@ class ConsultaController extends Controller
             'message' => 'Quantidade de consultas agendadas obtida com sucesso.',
             'quantidade_agendadas' => $agendadas,
         ], 200);
+    }
+
+    /**
+     * Retorna a contagem de todas as consultas do médico autenticado.
+     *
+     * @return JsonResponse
+     */
+    public function countAllConsultas(): JsonResponse
+    {
+        try {
+            $medicoId = Medico::where('id_usuario', Auth::id())->first()->id;
+            $count = Consulta::where('id_medico', $medicoId)->count();
+
+            return response()->json([
+                'status' => true,
+                'total_consultas' => $count,
+                'message' => 'Contagem de consultas totais obtida com sucesso.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erro ao contar consultas totais: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao obter a contagem de consultas totais.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Retorna a contagem de consultas agendadas do médico autenticado.
+     *
+     * @return JsonResponse
+     */
+    public function countAgendadasConsultas(): JsonResponse
+    {
+        try {
+            $medicoId = Medico::where('id_usuario', Auth::id())->first()->id;
+            $count = Consulta::where('id_medico', $medicoId)
+                ->where('status', 'agendada')
+                ->count();
+
+            return response()->json([
+                'status' => true,
+                'consultas_agendadas' => $count,
+                'message' => 'Contagem de consultas agendadas obtida com sucesso.'
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Erro ao contar consultas agendadas: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao obter a contagem de consultas agendadas.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
     }
 }

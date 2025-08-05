@@ -1,1 +1,83 @@
-<p>dashboard-administrador works!</p>
+<div class="dashboard container my-5">
+  <h1 class="mb-5">Dashboard da Administrador</h1>
+
+  <div class="row">
+    <div class="col-md-12 col-sm-12">
+      <div class="card text-center bg-primary text-white mb-3 cardFeature p-5">
+        <div class="card-body">
+          <h5 class="card-title fs-3 fw-bold">Dashboard</h5>
+            <p class="card-text fs-2 fw-bold">5</p>
+          <a
+            [routerLink]="['/medico/consultas']"
+            class="btn btn-outline-light rounded-3 fs-5 btn-sm"
+            >Ver Historico de Consultas</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-12 col-sm-12">
+      <div class="card text-center bg-info text-dark mb-3 p-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title fs-3 fw-bold">Todos os Funcionarios</h5>
+          <p>
+              <i class="bi bi-file-person display-6"></i>
+          </p>
+          <a
+            [routerLink]="['/administrador/funcionarios']"
+            class="btn btn-outline-light rounded-3 text-dark border-dark fs-5 btn-sm"
+            >Ver Consultas</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-12 col-sm-12">
+      <div class="card text-center bg-primary text-white mb-3 p-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title fs-3 fw-bold">Todos os Pacientes</h5>
+          <p>
+            <i class="bi bi-person-rolodex display-6"></i>
+          </p>
+          <a
+            [routerLink]="['/administrador/pacientes']"
+            class="btn btn-outline-light rounded-3 fs-5 btn-sm"
+            >Ver Prontuarios</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-12 col-sm-12">
+      <div class="card text-center bg-secondary text-white mb-3 p-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title fs-3 fw-bold">Todos os Responsaveis</h5>
+          <p>
+            <i class="bi bi-person-vcard display-6"></i>
+          </p>
+          <a
+            [routerLink]="['/administrador/responsaveis']"
+            class="btn btn-outline-light rounded-3 fs-5 btn-sm"
+            >Criar Consulta</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-12 col-sm-12">
+      <div class="card text-center bg-success text-white mb-3 p-3 cardFeature">
+        <div class="card-body">
+          <h5 class="card-title fs-3 fw-bold">Todas as Consultas</h5>
+          <p>
+            <i class="bi bi-files-alt display-6"></i>
+          </p>
+          <a
+            [routerLink]="['/administrador/consultas']"
+            class="btn btn-outline-light rounded-3 fs-5 btn-sm"
+            >Criar Consulta</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

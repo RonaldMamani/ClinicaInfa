@@ -109,6 +109,10 @@
         Adicionar Paciente
       }
     </button>
-    <button type="button" class="btn btn-secondary" (click)="voltar()">Voltar</button>
+    @if (isAdministradorRoute) {
+      <button type="button" class="btn btn-secondary" routerLink="/administrador/pacientes" >Voltar</button>
+    } @else {
+      <button type="button" class="btn btn-secondary" (click)="voltar()">Voltar</button>
+    }
   </form>
 </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 
 export interface UpdateConsultaResponse {
   status: boolean;
@@ -17,8 +17,10 @@ import { QuantidadeAgendadaResponse, QuantidadeTotalResponse } from '../../core/
 @Injectable({
   providedIn: 'root'
 })
+
 export class ConsultasService {
   // Use a URL base do seu backend diretamente, sem o arquivo de environment
+  private originApiUrl = 'http://localhost:8000/api';
   private apiUrl = 'http://localhost:8000/api/consultas';
   private pacientesApiUrl = 'http://localhost:8000/api/pacientes';
   private medicosApiUrl = 'http://localhost:8000/api/medicos';
@@ -105,6 +107,24 @@ export class ConsultasService {
 
   getPacientesAgendar(): Observable<PacientesApiResponse> {
     return this.http.get<PacientesApiResponse>(`${this.pacientesApiUrl}/ativos`);
+  }
+
+  getTotalConsultasCount(): Observable<number> {
+    return this.http.get<any>(`${this.originApiUrl}/medico/consultas/count/total`).pipe(
+      map(response => response.total_consultas),
+      catchError(error => {
+        return throwError(() => new Error(error.error?.message || 'Erro ao obter a contagem total de consultas.'));
+      })
+    );
+  }
+
+  getProximasConsultasCount(): Observable<number> {
+    return this.http.get<any>(`${this.originApiUrl}/medico/consultas/count/agendadas`).pipe(
+      map(response => response.consultas_agendadas),
+      catchError(error => {
+        return throwError(() => new Error(error.error?.message || 'Erro ao obter a contagem de consultas agendadas.'));
+      })
+    );
   }
 
   concluirConsulta(id: number, data: any): Observable<UpdateConsultaResponse> {

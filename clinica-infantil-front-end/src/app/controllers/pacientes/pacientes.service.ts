@@ -21,7 +21,7 @@ export class PacientesService {
     return this.http.get<PacienteDetailsResponse>(
       `${this.apiBaseUrl}/pacientes/${id}`
     );
-  } 
+  }
 
   updatePaciente(
     id: number,
