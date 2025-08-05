@@ -90,6 +90,9 @@ Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']); // DELET
 
 // Rotas para Responsáveis
 Route::get('/responsaveis', [ResponsavelController::class, 'index']);
+Route::get('responsaveis/ativos', [ResponsavelController::class, 'getActiveResponsaveis']);
+Route::get('responsaveis/inativos', [ResponsavelController::class, 'getInactiveResponsaveis']);
+Route::get('/responsaveis-page', [ResponsavelController::class, 'getResponsaveis']);
 Route::get('/responsaveis/{id}', [ResponsavelController::class, 'show']);
 Route::post('/responsaveis', [ResponsavelController::class, 'store']);
 Route::put('responsaveis/{id}/status', [ResponsavelController::class, 'updateStatus']);

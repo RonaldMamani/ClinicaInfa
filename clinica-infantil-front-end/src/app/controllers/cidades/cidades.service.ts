@@ -2,8 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
-import { Cidade } from '../../core/models/cliente.model';
-import { ApiResponseCidades } from '../../core/models/cidades.model';
+import { ApiResponseCidades, Cidade } from '../../core/models/cidades.model';
 
 export interface CidadesApiResponse {
   status: boolean;

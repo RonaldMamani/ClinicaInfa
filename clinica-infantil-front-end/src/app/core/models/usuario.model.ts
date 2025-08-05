@@ -1,18 +1,5 @@
-// Interface para o perfil (como retornado dentro de 'usuario')
-export interface Perfil {
-  id: number;
-  nome_perfil: string;
-  descricao: string;
-}
-
-export interface Funcionario {
-  id: number;
-  nome: string;
-  cpf: string;
-  cargo: string;
-  email_empresarial: string;
-  telefone_empresarial: string;
-}
+import { Funcionario } from "./funcionario.model";
+import { Perfil } from "./perfil.model";
 
 export interface Usuario {
   id: number;
@@ -20,8 +7,8 @@ export interface Usuario {
   id_funcionario: number;
   username: string;
   ativo: number;
-  perfil?: Perfil; // Opcional, pois pode não vir na resposta de login inicial
-  funcionario?: Funcionario; // Opcional, pois pode não vir na resposta de login inicial
+  perfil: Perfil;
+  funcionario: Funcionario;
 }
 
 // Interface para a resposta de login

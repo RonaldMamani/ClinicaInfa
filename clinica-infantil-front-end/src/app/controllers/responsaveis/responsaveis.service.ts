@@ -1,57 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { ResponsaveisApiResponse, ResponsavelDetailsResponse, UpdateResponsavelPayload } from '../../core/models/responsavel.model';
+import { ResponsaveisApiResponse, Responsavel, ResponsavelDetailsResponse, UpdateResponsavelPayload } from '../../core/models/responsavel.model';
 
-export interface Estado {
-  id: number;
-  nome_estado: string;
-  sigla: string;
-}
-
-export interface Cidade {
-  id: number;
-  id_estado: number;
-  nome_cidade: string;
-  estado?: Estado;
-}
-
-export interface Genero {
-  id: number;
-  genero: string;
-}
-
-// Cliente agora inclui o relacionamento com Cidade
-export interface ClienteResponsavel {
-  id: number;
-  nome: string;
-  cpf: string;
-  rg: string;
-  ativo: number;
-  endereco: string;
-  cidade?: Cidade; // Relacionamento com Cidade
-  // Adicione outras propriedades do cliente que você usa
-}
-
-// Paciente agora inclui o relacionamento com Cliente
-export interface PacienteAssociado {
-  id: number;
-  id_cliente: number;
-  data_nascimento: string;
-  historico_medico: string;
-  cliente?: ClienteResponsavel;
-}
-
-// Responsavel agora inclui o relacionamento com Pacientes e Cliente atualizado
-export interface Responsavel {
-  id: number;
-  id_cliente: number;
-  grau_parentesco: string;
-  email: string;
-  telefone: string;
-  cliente?: ClienteResponsavel; // Cliente do Responsável
-  pacientes?: PacienteAssociado[]; // Pacientes associados ao Responsável
-}
 
 export interface PaginatedData<T> {
   current_page: number;
@@ -92,7 +43,7 @@ export class ResponsaveisService {
   constructor(private http: HttpClient) { }
 
   getResponsaveis(): Observable<ResponsaveisApiResponse> {
-    return this.http.get<ResponsaveisApiResponse>(`${this.apiBaseUrl}/responsaveis`);
+    return this.http.get<ResponsaveisApiResponse>(`${this.apiBaseUrl}/responsaveis/ativos`);
   }
 
   getResponsavelById(id: number): Observable<ResponsavelDetailsResponse> {

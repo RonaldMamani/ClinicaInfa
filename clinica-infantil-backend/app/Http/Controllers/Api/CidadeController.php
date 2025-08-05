@@ -7,7 +7,6 @@ use App\Models\Cidade;
 use App\Models\Estado;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class CidadeController extends Controller

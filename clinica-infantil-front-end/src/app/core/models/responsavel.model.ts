@@ -1,4 +1,5 @@
 import { Cliente } from './cliente.model';
+import { Paciente } from './paciente.model';
 
 export interface Responsavel {
   id: number;
@@ -6,22 +7,20 @@ export interface Responsavel {
   grau_parentesco: string;
   email: string;
   telefone: string;
-}
-
-export interface ResponsavelComCliente extends Responsavel {
   cliente: Cliente;
+  pacientes: Paciente[];
 }
 
 export interface ResponsaveisApiResponse {
   status: boolean;
   message: string;
-  responsaveis: ResponsavelComCliente[];
+  responsaveis: Responsavel[];
 }
 
 export interface ResponsavelDetailsResponse {
   status: boolean;
   message: string;
-  responsavel: ResponsavelComCliente;
+  responsavel: Responsavel;
 }
 
 export interface UpdateResponsavelPayload {

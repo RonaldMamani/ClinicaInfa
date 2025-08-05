@@ -8,10 +8,10 @@ export interface Consulta {
   data_consulta: string;
   hora_inicio: string;
   hora_fim: string;
-  descricao: string;
   status: string;
+  descricao: string;
   paciente: Paciente;
-  medico?: Medico;
+  medico: Medico;
 }
 
 export interface ConsultasApiResponse {

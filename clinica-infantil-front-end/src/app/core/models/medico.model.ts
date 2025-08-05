@@ -1,3 +1,4 @@
+import { Consulta } from "./consultas.model";
 import { Usuario } from "./usuario.model";
 
 
@@ -9,6 +10,7 @@ export interface Medico {
   created_at: string;
   updated_at: string;
   usuario: Usuario;
+  consultas: Consulta[]
 }
 
 export interface MedicosApiResponse {

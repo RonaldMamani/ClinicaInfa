@@ -9,7 +9,7 @@
 
   @if (!isLoading && responsavel) {
     <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Detalhes do Responsável: {{ responsavel.cliente?.nome }}</h2>
+      <h2>Detalhes do Responsável: {{ responsavel.cliente.nome }}</h2>
       <a class="btn btn-secondary" [routerLink]="['/administrador/responsaveis']">Voltar para a Lista</a>
     </div>
 
@@ -21,17 +21,17 @@
       <div class="card-body">
         <div class="row">
           <div class="col-md-6">
-            <strong>Nome:</strong> {{ responsavel.cliente?.nome || 'N/A' }}<br>
-            <strong>CPF:</strong> {{ responsavel.cliente?.cpf || 'N/A' }}<br>
-            <strong>RG:</strong> {{ responsavel.cliente?.rg || 'N/A' }}<br>
+            <strong>Nome:</strong> {{ responsavel.cliente.nome || 'N/A' }}<br>
+            <strong>CPF:</strong> {{ responsavel.cliente.cpf || 'N/A' }}<br>
+            <strong>RG:</strong> {{ responsavel.cliente.rg || 'N/A' }}<br>
             <strong>Grau de Parentesco:</strong> {{ responsavel.grau_parentesco || 'N/A' }}
           </div>
           <div class="col-md-6">
             <strong>Email:</strong> {{ responsavel.email || 'N/A' }}<br>
             <strong>Telefone:</strong> {{ responsavel.telefone || 'N/A' }}<br>
-            <strong>Endereço:</strong> {{ responsavel.cliente?.endereco || 'N/A' }}<br>
-            <strong>Cidade:</strong> {{ responsavel.cliente?.cidade?.nome_cidade || 'N/A' }}<br>
-            <strong>Estado:</strong> {{ responsavel.cliente?.cidade?.estado?.nome_estado }}
+            <strong>Endereço:</strong> {{ responsavel.cliente.endereco || 'N/A' }}<br>
+            <strong>Cidade:</strong> {{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}<br>
+            <strong>Estado:</strong> {{ responsavel.cliente.cidade.estado.nome_estado }}
           </div>
         </div>
       </div>
@@ -59,7 +59,7 @@
                 @for (paciente of responsavel.pacientes; track paciente.id) {
                   <tr>
                     <td>{{ paciente.id }}</td>
-                    <td>{{ paciente.cliente?.nome || 'N/A' }}</td>
+                    <td>{{ paciente.cliente.nome || 'N/A' }}</td>
                     <td>{{ paciente.data_nascimento | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ paciente.historico_medico || 'N/A' }}</td>
                     <td>

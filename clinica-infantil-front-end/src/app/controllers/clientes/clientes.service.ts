@@ -7,13 +7,9 @@ import {
   UpdateClientePayload,
   CreateClientePayload
 } from '../../core/models/cliente.model';
-import {
-  ResponsaveisApiResponse,
-  ResponsavelComCliente,
-  ResponsavelDetailsResponse
-} from '../../core/models/responsavel.model';
+import { ResponsaveisApiResponse, Responsavel, ResponsavelDetailsResponse } from '../../core/models/responsavel.model';
 import { PacienteDetailsResponse, PacientesApiResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
-import { Cidade } from '../responsaveis/responsaveis.service';
+import { Cidade } from '../../core/models/cidades.model';
 
 export interface CidadesApiResponse {
   status: boolean;
@@ -37,7 +33,7 @@ export class ClientesService {
     return this.http.get<ClienteDetailsResponse>(`${this.apiBaseUrl}/clientes/${id}`);
   }
 
-  getResponsaveis(): Observable<ResponsavelComCliente[]> {
+  getResponsaveis(): Observable<Responsavel[]> {
     return this.http.get<ResponsaveisApiResponse>(`${this.apiBaseUrl}/responsaveis`).pipe(
       map(response => response.responsaveis)
     );
