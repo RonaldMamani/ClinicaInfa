@@ -1,15 +1,8 @@
+import { Cidade } from "./cidades.model";
+import { Genero } from "./generos.model";
+import { Paciente } from "./paciente.model";
 import { Responsavel } from "./responsavel.model";
 
-export interface Cidade {
-  id: number;
-  id_estado: number;
-  nome_cidade: string;
-}
-
-export interface Genero {
-  id: number;
-  genero: string;
-}
 
 export interface Cliente {
   id: number;
@@ -22,8 +15,10 @@ export interface Cliente {
   ativo: number;
   criado_em: string;
   atualizado_em: string;
-  cidade?: Cidade;
-  genero?: Genero;
+  cidade: Cidade;
+  genero: Genero;
+  responsavel: Responsavel;
+  paciente: Paciente;
 }
 
 export interface ApiResponseClientes {

@@ -16,34 +16,102 @@ class ResponsavelController extends Controller
 {
     protected $relations = ['cliente.cidade.estado', 'pacientes.cliente'];
 
-    public function index(Request $request): JsonResponse
+    public function index(): JsonResponse
     {
         try {
-            // Obtém os números de página para cada lista da requisição
-            $activePage = $request->query('active_page', 1);
-            $inactivePage = $request->query('inactive_page', 1);
-
-            // Responsáveis Ativos (onde o cliente associado está ativo)
             $responsaveisAtivos = Responsavel::whereHas('cliente', function ($query) {
                 $query->where('ativo', true);
-            })->with($this->relations)->paginate(10, ['*'], 'active_page', $activePage);
+            })->with($this->relations)->get();
 
-            // Responsáveis Inativos (onde o cliente associado está inativo)
             $responsaveisInativos = Responsavel::whereHas('cliente', function ($query) {
                 $query->where('ativo', false);
-            })->with($this->relations)->paginate(10, ['*'], 'inactive_page', $inactivePage);
+            })->with($this->relations)->get();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Responsáveis listados com sucesso.',
+                'message' => 'Todos os responsáveis listados com sucesso.',
                 'responsaveis_ativos' => $responsaveisAtivos,
                 'responsaveis_inativos' => $responsaveisInativos,
             ], 200);
         } catch (\Exception $e) {
-            Log::error('Erro ao listar responsáveis (index): ' . $e->getMessage());
+            Log::error('Erro ao listar todos os responsáveis (index): ' . $e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao listar os responsáveis.',
+                'message' => 'Ocorreu um erro ao listar todos os responsáveis.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getActiveResponsaveis(): JsonResponse
+    {
+        try {
+            $responsaveis = Responsavel::whereHas('cliente', function ($query) {
+                $query->where('ativo', true);
+            })->with($this->relations)->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Responsáveis ativos listados com sucesso.',
+                'responsaveis' => $responsaveis,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar responsáveis ativos: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao listar os responsáveis ativos.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getInactiveResponsaveis(): JsonResponse
+    {
+        try {
+            $responsaveis = Responsavel::whereHas('cliente', function ($query) {
+                $query->where('ativo', false);
+            })->with($this->relations)->get();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Responsáveis inativos listados com sucesso.',
+                'responsaveis' => $responsaveis,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar responsáveis inativos: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao listar os responsáveis inativos.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getPaginatedResponsaveis(Request $request, int $perPage = 10): JsonResponse
+    {
+        try {
+            $activePage = $request->query('active_page', 1);
+            $inactivePage = $request->query('inactive_page', 1);
+
+            $responsaveisAtivos = Responsavel::whereHas('cliente', function ($query) {
+                $query->where('ativo', true);
+            })->with($this->relations)->paginate($perPage, ['*'], 'active_page', $activePage);
+
+            $responsaveisInativos = Responsavel::whereHas('cliente', function ($query) {
+                $query->where('ativo', false);
+            })->with($this->relations)->paginate($perPage, ['*'], 'inactive_page', $inactivePage);
+
+            return response()->json([
+                'status' => true,
+                'message' => "Responsáveis paginados ({$perPage} por página) listados com sucesso.",
+                'responsaveis_ativos' => $responsaveisAtivos,
+                'responsaveis_inativos' => $responsaveisInativos,
+            ], 200);
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar responsáveis paginados: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao listar os responsáveis paginados.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
@@ -58,9 +126,7 @@ class ResponsavelController extends Controller
             $responsaveis = Responsavel::with([
                 'cliente.cidade.estado', // Cliente -> Cidade -> Estado
                 'pacientes.cliente'      // Responsavel -> Paciente -> Cliente do Paciente
-            ])->paginate(10)
-            ->where('')
-            ;
+            ])->paginate(10);
 
             return response()->json([
                 'status' => true,

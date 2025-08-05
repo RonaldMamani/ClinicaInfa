@@ -36,19 +36,19 @@
           @for (responsavel of responsaveisAtivos; track responsavel.id) {
             <tr>
               <td>{{ responsavel.id }}</td>
-              <td>{{ responsavel.cliente?.nome || 'N/A' }}</td>
+              <td>{{ responsavel.cliente.nome || 'N/A' }}</td>
               <td>{{ responsavel.grau_parentesco }}</td>
               <td>{{ responsavel.email }}</td>
               <td>{{ responsavel.telefone }}</td>
               <td>
                 {{ getNumeroPacientesAssociados(responsavel) }}
               </td>
-              <td>{{ responsavel.cliente?.cidade?.nome_cidade || 'N/A' }}</td>
-              <td>{{ responsavel.cliente?.cidade?.estado?.nome_estado }}</td>
+              <td>{{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}</td>
+              <td>{{ responsavel.cliente.cidade.estado.nome_estado }}</td>
               <td>
                 <a [routerLink]="['./detalhes', responsavel.id]" class="btn btn-sm btn-info text-white me-2">Ver Detalhes</a>
                 <a [routerLink]="['/administrador/responsaveis/', responsavel.id, 'editar']" class="btn btn-sm btn-warning text-white me-2">Editar</a>
-                @if (responsavel.cliente?.ativo) {
+                @if (responsavel.cliente.ativo) {
                     <button class="btn btn-sm btn-danger" (click)="openConfirmModal(responsavel, 'desativar')">Desativar</button>
                 }
               </td>
@@ -101,19 +101,19 @@
           @for (responsavel of responsaveisInativos; track responsavel.id) {
             <tr>
               <td>{{ responsavel.id }}</td>
-              <td>{{ responsavel.cliente?.nome || 'N/A' }}</td>
+              <td>{{ responsavel.cliente.nome || 'N/A' }}</td>
               <td>{{ responsavel.grau_parentesco }}</td>
               <td>{{ responsavel.email }}</td>
               <td>{{ responsavel.telefone }}</td>
               <td>
                 {{ getNumeroPacientesAssociados(responsavel) }}
               </td>
-              <td>{{ responsavel.cliente?.cidade?.nome_cidade || 'N/A' }}</td>
-              <td>{{ responsavel.cliente?.cidade?.estado?.nome_estado }}</td>
+              <td>{{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}</td>
+              <td>{{ responsavel.cliente.cidade.estado.nome_estado }}</td>
               <td>
                 <a [routerLink]="['./detalhes', responsavel.id]" class="btn btn-sm btn-info text-white me-2">Ver Detalhes</a>
                 <a [routerLink]="['./detalhes', responsavel.id]" class="btn btn-sm btn-warning text-white me-2">Editar</a>
-                @if (!responsavel.cliente?.ativo) {
+                @if (!responsavel.cliente.ativo) {
                     <button class="btn btn-sm btn-success" (click)="openConfirmModal(responsavel, 'reativar')">Reativar</button>
                 }
               </td>

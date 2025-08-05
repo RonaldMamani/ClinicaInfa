@@ -12,14 +12,14 @@ import { GenerosService } from '../../../controllers/generos/generos.service';
 
 // Modelos
 import { Estado } from '../../../core/models/estados.model';
-import { Cidade } from '../../../core/models/cliente.model';
 import { Genero } from '../../../core/models/generos.model';
-import { ResponsavelComCliente } from '../../../core/models/responsavel.model';
 import { Paciente, UpdatePacientePayload } from '../../../core/models/paciente.model';
 
 // Diretivas
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
+import { Cidade } from '../../../core/models/cidades.model';
+import { Responsavel } from '../../../core/models/responsavel.model';
 
 @Component({
   selector: 'app-editar-paciente',
@@ -39,7 +39,7 @@ export class EditarPacienteComponent implements OnInit {
   estados: Estado[] = [];
   cidades: Cidade[] = [];
   generos: Genero[] = [];
-  responsaveis: ResponsavelComCliente[] = [];
+  responsaveis: Responsavel[] = [];
 
   // Armazena o objeto paciente para ter acesso ao status 'ativo'
   private pacienteAtual: Paciente | null = null;

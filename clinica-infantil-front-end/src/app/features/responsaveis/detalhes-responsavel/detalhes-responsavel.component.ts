@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { ResponsaveisService, Responsavel } from '../../../controllers/responsaveis/responsaveis.service';
+import { ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
+import { Responsavel } from '../../../core/models/responsavel.model';
 
 @Component({
   selector: 'app-detalhes-responsavel',

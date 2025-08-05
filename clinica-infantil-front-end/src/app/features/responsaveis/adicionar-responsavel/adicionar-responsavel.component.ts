@@ -3,17 +3,15 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
-import {
-  Cidade,
-  CreateResponsavelPayload,
-  Genero
-} from '../../../core/models/cliente.model';
+import { CreateResponsavelPayload } from '../../../core/models/cliente.model';
 import { Estado } from '../../../core/models/estados.model';
 import { EstadosService } from '../../../controllers/estados/estados.service';
 import { CidadesService } from '../../../controllers/cidades/cidades.service';
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { GenerosService } from '../../../controllers/generos/generos.service';
 import { ClientesService } from '../../../controllers/clientes/clientes.service';
+import { Cidade } from '../../../core/models/cidades.model';
+import { Genero } from '../../../core/models/generos.model';
 
 
 @Component({

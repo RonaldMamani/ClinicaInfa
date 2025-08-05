@@ -11,13 +11,14 @@ import { GenerosService } from '../../../controllers/generos/generos.service';
 import { ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
 
 // Modelos
-import { Cidade, CreatePacientePayload } from '../../../core/models/cliente.model';
+import { CreatePacientePayload } from '../../../core/models/cliente.model';
 import { Estado } from '../../../core/models/estados.model';
 import { Genero } from '../../../core/models/generos.model';
-import { ResponsavelComCliente } from '../../../core/models/responsavel.model';
+import { Responsavel } from '../../../core/models/responsavel.model';
 
 // Diretivas
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
+import { Cidade } from '../../../core/models/cidades.model';
 
 @Component({
   selector: 'app-adicionar-paciente',
@@ -35,7 +36,7 @@ export class AdicionarPacienteComponent implements OnInit {
   estados: Estado[] = [];
   cidades: Cidade[] = [];
   generos: Genero[] = [];
-  responsaveis: ResponsavelComCliente[] = [];
+  responsaveis: Responsavel[] = [];
 
   constructor(
     private fb: FormBuilder,

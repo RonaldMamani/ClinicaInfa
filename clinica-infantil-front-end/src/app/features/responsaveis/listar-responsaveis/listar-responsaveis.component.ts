@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
-import { FullResponsaveisApiResponse, ResponsaveisService, Responsavel } from '../../../controllers/responsaveis/responsaveis.service';
+import { FullResponsaveisApiResponse, ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Responsavel } from '../../../core/models/responsavel.model';
 
 @Component({
   selector: 'app-listar-responsaveis',

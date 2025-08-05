@@ -54,7 +54,7 @@ export class DetalhePacienteComponent implements OnInit {
           this.calcularIdade();
 
           // Encontrar a sigla do estado
-          const estado = estados.find(e => e.id === this.paciente?.cliente.cidade.id_estado);
+          const estado = estados.find(e => e.id === this.paciente?.cliente.cidade?.id_estado);
           this.estadoSigla = estado ? estado.sigla : 'Estado não encontrado';
 
           // Busca o nome do responsável
