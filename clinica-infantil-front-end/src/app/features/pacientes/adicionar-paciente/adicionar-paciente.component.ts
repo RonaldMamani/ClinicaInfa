@@ -20,6 +20,7 @@ import { Responsavel } from '../../../core/models/responsavel.model';
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { Cidade } from '../../../core/models/cidades.model';
 
+
 @Component({
   selector: 'app-adicionar-paciente',
   standalone: true,
@@ -76,7 +77,7 @@ export class AdicionarPacienteComponent implements OnInit {
         error: (err) => this.error = 'Não foi possível carregar os gêneros.'
     });
 
-    this.responsaveisService.getResponsaveis().subscribe({
+    this.responsaveisService.getTodosResponsaveisAtivos().subscribe({
       next: (response) => {
         if (response && response.responsaveis) {
           this.responsaveis = response.responsaveis;

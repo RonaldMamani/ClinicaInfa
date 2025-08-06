@@ -31,8 +31,8 @@
               <tr class="">
                 <td>{{ consulta.id }}</td>
                 <td>{{ consulta.paciente.cliente.nome }}</td>
-                <td>{{ consulta.medico?.usuario?.funcionario?.nome }}</td>
-                <td>{{ consulta.medico?.especialidade }}</td>
+                <td>{{ consulta.medico.usuario.funcionario.nome }}</td>
+                <td>{{ consulta.medico.especialidade }}</td>
                 <td>{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
                 <td>{{ consulta.hora_inicio | slice:0:5 }}</td>
                 <td>{{ consulta.hora_fim | slice:0:5 }}</td>

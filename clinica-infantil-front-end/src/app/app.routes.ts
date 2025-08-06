@@ -34,6 +34,7 @@ import { DashboardAdministradorComponent } from './components/dashboard-administ
 import { ListarResponsaveisComponent } from './features/responsaveis/listar-responsaveis/listar-responsaveis.component';
 import { ListarFuncionariosComponent } from './features/funcionarios/listar-funcionarios/listar-funcionarios.component';
 import { DetalhesResponsavelComponent } from './features/responsaveis/detalhes-responsavel/detalhes-responsavel.component';
+import { EditarResponsavelComponent } from './features/responsaveis/editar-responsavel/editar-responsavel.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -51,7 +52,7 @@ export const routes: Routes = [
       { path: '', component: DashboardSecretariaComponent },
       { path: 'pacientes', component: ListarPacientesComponent },
       { path: 'pacientes/:id', component: DetalhePacienteComponent },
-      { path: 'pacientes/editar/:id', component: EditarPacienteComponent },
+      { path: 'pacientes/:id/editar', component: EditarPacienteComponent },
       { path: 'clientes/adicionar', component: AdicionarClienteComponent },
       { path: 'clientes/adicionar/paciente', component: AdicionarPacienteComponent },
       { path: 'clientes/adicionar/responsavel', component: AdicionarResponsavelComponent },
@@ -99,7 +100,9 @@ export const routes: Routes = [
       { path: 'pacientes/:id', component: DetalhePacienteComponent },
       { path: 'pacientes/:id/editar', component: EditarPacienteComponent },
       { path: 'responsaveis', component: ListarResponsaveisComponent },
+      { path: 'responsaveis/adicionar', component: AdicionarResponsavelComponent },
       { path: 'responsaveis/:id', component: DetalhesResponsavelComponent },
+      { path: 'responsaveis/:id/editar', component: EditarResponsavelComponent },
       { path: 'funcionarios', component: ListarFuncionariosComponent },
 
       { path: '**', redirectTo: '' }

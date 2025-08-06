@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
-import { Consulta, ConsultasAgendadasApiResponse } from '../../../core/models/consultas.model';
+import { Consulta, ConsultasApiResponse } from '../../../core/models/consultas.model';
 
 @Component({
   selector: 'app-listar-consultas-agendadas',
@@ -31,7 +31,7 @@ export class ListarConsultasAgendadasComponent implements OnInit {
     this.error = null;
 
     this.consultasService.getConsultasAgendadas().subscribe({
-      next: (response: ConsultasAgendadasApiResponse) => {
+      next: (response: ConsultasApiResponse) => {
         // CORRIGIDO: Acessando a propriedade 'consultas'
         this.consultas = response.consultas || [];
         this.isLoading = false;

@@ -1,37 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { ResponsaveisApiResponse, Responsavel, ResponsavelDetailsResponse, UpdateResponsavelPayload } from '../../core/models/responsavel.model';
-
-
-export interface PaginatedData<T> {
-  current_page: number;
-  data: T[];
-  last_page: number;
-  total: number;
-  first_page_url: string;
-  from: number;
-  last_page_url: string;
-  links: any[];
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number;
-}
-
-export interface FullResponsaveisApiResponse {
-  status: boolean;
-  message: string;
-  responsaveis_ativos: PaginatedData<Responsavel>;
-  responsaveis_inativos: PaginatedData<Responsavel>;
-}
-
-export interface SingleResponsavelApiResponse {
-  status: boolean;
-  message: string;
-  responsavel: Responsavel;
-}
+import { FullResponsaveisApiResponse, ResponsaveisApiResponse, Responsavel, ResponsavelApiResponse, ResponsavelDetailsResponse, SingleResponsavelApiResponse, UpdateResponsavelPayload } from '../../core/models/responsavel.model';
 
 @Injectable({
   providedIn: 'root'
@@ -42,16 +12,19 @@ export class ResponsaveisService {
 
   constructor(private http: HttpClient) { }
 
-  getResponsaveis(): Observable<ResponsaveisApiResponse> {
-    return this.http.get<ResponsaveisApiResponse>(`${this.apiBaseUrl}/responsaveis/ativos`);
+  getTodosResponsaveisAtivos(): Observable<ResponsaveisApiResponse> {
+    return this.http.get<ResponsaveisApiResponse>(`${this.apiUrl}/ativos`);
   }
 
   getResponsavelById(id: number): Observable<ResponsavelDetailsResponse> {
     return this.http.get<ResponsavelDetailsResponse>(`${this.apiBaseUrl}/responsaveis/${id}`);
   }
 
-  updateResponsavel(id: number, payload: UpdateResponsavelPayload): Observable<ResponsavelDetailsResponse> {
-    return this.http.put<ResponsavelDetailsResponse>(`${this.apiBaseUrl}/responsaveis/${id}`, payload);
+  updateResponsavel(id: number, data: any): Observable<any> {
+    const url = `${this.apiUrl}/${id}`;
+    return this.http.put<any>(url, data).pipe(
+      catchError(this.handleError)
+    );
   }
 
   deleteResponsavel(id: number): Observable<any> {
@@ -66,6 +39,24 @@ export class ResponsaveisService {
       .set('inactive_page', inactivePage.toString());
 
     return this.http.get<FullResponsaveisApiResponse>(this.apiUrl, { params }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getResponsaveisAtivosPaginados(page: number = 1, perPage: number = 10): Observable<ResponsavelApiResponse> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+    return this.http.get<ResponsavelApiResponse>(`${this.apiUrl}/page-ativos`, { params }).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  getResponsaveisInativosPaginados(page: number = 1, perPage: number = 10): Observable<ResponsavelApiResponse> {
+    let params = new HttpParams()
+      .set('page', page.toString())
+      .set('per_page', perPage.toString());
+    return this.http.get<ResponsavelApiResponse>(`${this.apiUrl}/page-inativos`, { params }).pipe(
       catchError(this.handleError)
     );
   }

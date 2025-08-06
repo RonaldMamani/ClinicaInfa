@@ -1,5 +1,5 @@
-import { Cliente } from './cliente.model';
-import { Paciente } from './paciente.model';
+import { Cliente } from "./cliente.model";
+import { Paciente } from "./paciente.model";
 
 export interface Responsavel {
   id: number;
@@ -24,7 +24,66 @@ export interface ResponsavelDetailsResponse {
 }
 
 export interface UpdateResponsavelPayload {
-  grau_parentesco?: string;
-  email?: string;
-  telefone?: string;
+  grau_parentesco: string;
+  email: string;
+  telefone: string;
+}
+
+// Interfaces de paginação (se usadas em outros lugares, mantidas aqui para referência)
+export interface PaginatedData<T> {
+  current_page: number;
+  data: T[];
+  last_page: number;
+  total: number;
+  first_page_url: string;
+  from: number;
+  last_page_url: string;
+  links: Array<{
+    url: string | null;
+    label: string;
+    active: boolean;
+  }>;
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+}
+
+export interface ResponsaveisAtivosApiResponse {
+  status: boolean;
+  message: string;
+  responsaveis: PaginatedData<Responsavel>;
+}
+
+export interface ResponsaveisInativosApiResponse {
+  status: boolean;
+  message: string;
+  responsaveis: PaginatedData<Responsavel>;
+}
+
+export interface AllResponsaveisApiResponse {
+  status: boolean;
+  message: string;
+  responsaveis_ativos: Responsavel[];
+  responsaveis_inativos: Responsavel[];
+}
+
+export interface ResponsavelApiResponse {
+  status: boolean;
+  message: string;
+  responsaveis: PaginatedData<Responsavel>;
+}
+
+export interface SingleResponsavelApiResponse {
+  status: boolean;
+  message: string;
+  responsavel: Responsavel;
+}
+
+export interface FullResponsaveisApiResponse {
+  status: boolean;
+  message: string;
+  responsaveis_ativos: PaginatedData<Responsavel>;
+  responsaveis_inativos: PaginatedData<Responsavel>;
 }

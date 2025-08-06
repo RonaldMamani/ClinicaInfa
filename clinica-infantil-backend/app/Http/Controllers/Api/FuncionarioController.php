@@ -128,40 +128,4 @@ class FuncionarioController extends Controller
             ], 500);
         }
     }
-
-    public function destroy($id)
-    {
-        DB::beginTransaction(); // Inicia a transação
-        try {
-            // Encontra o funcionário pelo ID
-            $funcionario = Funcionario::find($id);
-
-            // Se o funcionário não for encontrado, retorna 404 Not Found
-            if (!$funcionario) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Funcionário não encontrado para exclusão.',
-                ], 404);
-            }
-
-            // Tenta deletar o funcionário
-            $funcionario->delete();
-            DB::commit(); // Confirma a transação
-
-            // Retorna a confirmação de exclusão
-            return response()->json([
-                'status' => true,
-                'message' => 'Funcionário excluído com sucesso!',
-            ], 200); // Código 200 OK
-
-        } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
-            Log::error('Erro ao excluir funcionário: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao excluir o funcionário. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
 }

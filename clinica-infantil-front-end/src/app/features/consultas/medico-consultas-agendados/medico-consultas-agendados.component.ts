@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { AuthService } from '../../../controllers/auth/auth.service';
-import { Consulta, ConsultasAgendadasApiResponse } from '../../../core/models/consultas.model';
+import { Consulta, ConsultasApiResponse } from '../../../core/models/consultas.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 
@@ -35,7 +35,7 @@ export class MedicoConsultasAgendadosComponent {
       this.successMessage = null;
       
       this.consultasService.getConsultasDoMedicoAgendados().subscribe({
-        next: (response: ConsultasAgendadasApiResponse) => {
+        next: (response: ConsultasApiResponse) => {
           this.consultas = response.consultas || [];
           this.isLoading = false;
         },

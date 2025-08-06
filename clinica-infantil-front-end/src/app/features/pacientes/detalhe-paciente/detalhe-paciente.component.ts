@@ -30,6 +30,10 @@ export class DetalhePacienteComponent implements OnInit {
     private estadosService: EstadosService
   ) { }
 
+  get isAdministradorRoute(): boolean {
+    return this.router.url.startsWith('/administrador');
+  }
+
   ngOnInit(): void {
     const pacienteId = +this.route.snapshot.paramMap.get('id')!;
     if (pacienteId) {
@@ -90,7 +94,11 @@ export class DetalhePacienteComponent implements OnInit {
     }
   }
 
-  voltar(): void {
+  voltarSecretaria(): void {
     this.router.navigate(['/secretaria/pacientes']);
+  }
+
+  voltarAdmin(): void {
+    this.router.navigate(['/administrador/pacientes']);
   }
 }

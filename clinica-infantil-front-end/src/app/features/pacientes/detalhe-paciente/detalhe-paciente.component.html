@@ -11,7 +11,7 @@
 
   @if (paciente) {
     <div class="card mt-3">
-      <div class="card-header">
+      <div class="card-header bg-primary text-white">
         Dados do Paciente
       </div>
       <div class="card-body">
@@ -34,7 +34,7 @@
     </div>
 
     <div class="card mt-4">
-      <div class="card-header">
+      <div class="card-header bg-secondary text-white">
         Dados do Responsável
       </div>
       <div class="card-body">
@@ -51,6 +51,10 @@
       </div>
     </div>
 
-    <button class="btn btn-secondary mt-4" (click)="voltar()">Voltar</button>
+    @if (isAdministradorRoute) {
+      <button class="btn btn-secondary mt-4" (click)="voltarAdmin()">Voltar</button>
+    } @else {
+      <button class="btn btn-secondary mt-4" (click)="voltarSecretaria()">Voltar</button>
+    }
   }
 </div>

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicoRequest;
 use App\Models\Medico;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -156,48 +155,6 @@ class MedicoController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao atualizar o médico. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
-     * Remove um médico do banco de dados (delete físico).
-     *
-     * @param int $id O ID do médico a ser removido.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id)
-    {
-        DB::beginTransaction(); // Inicia a transação
-        try {
-            // Encontra o médico pelo ID
-            $medico = Medico::find($id);
-
-            // Se o médico não for encontrado, retorna 404 Not Found
-            if (!$medico) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Médico não encontrado para exclusão.',
-                ], 404);
-            }
-
-            // Tenta deletar o médico (delete físico)
-            $medico->delete();
-            DB::commit(); // Confirma a transação
-
-            // Retorna a confirmação de exclusão
-            return response()->json([
-                'status' => true,
-                'message' => 'Médico excluído com sucesso!',
-            ], 200); // Código 200 OK
-
-        } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
-            Log::error('Erro ao excluir médico: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao excluir o médico. Verifique os logs do servidor.',
                 'error_details' => $e->getMessage()
             ], 500);
         }

@@ -39,33 +39,6 @@ class CidadeController extends Controller
     }
 
     /**
-     * Exibe uma cidade específica pelo seu ID.
-     *
-     * @param \App\Models\Cidade $cidade O modelo Cidade injetado pela rota.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show(Cidade $cidade) : JsonResponse
-    {
-        try {
-            // Carrega o relacionamento com o Estado antes de retornar a cidade
-            $cidade->load('estado');
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Cidade obtida com sucesso.',
-                'cidade' => $cidade
-            ], 200);
-        } catch (Exception $e) {
-            Log::error('Erro ao buscar cidade por ID: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao buscar a cidade. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    /**
      * Lista cidades por um determinado ID de estado.
      *
      * @param int $estadoId O ID do estado para filtrar as cidades.
