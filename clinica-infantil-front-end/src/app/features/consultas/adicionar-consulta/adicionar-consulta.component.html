@@ -38,7 +38,7 @@
                   [class.is-invalid]="criarForm.get('id_medico')?.invalid && criarForm.get('id_medico')?.touched">
             <option value="" disabled selected>Selecione um médico</option>
             @for (medico of medicos; track medico.id) {
-              <option [value]="medico.id">{{ medico.usuario.funcionario?.nome }} ({{ medico.especialidade }})</option>
+              <option [value]="medico.id">{{ medico.usuario.funcionario.nome }} ({{ medico.especialidade }})</option>
             }
           </select>
           @if (criarForm.get('id_medico')?.errors?.['required'] && criarForm.get('id_medico')?.touched) {

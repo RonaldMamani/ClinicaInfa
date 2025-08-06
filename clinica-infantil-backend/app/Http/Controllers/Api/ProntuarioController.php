@@ -198,30 +198,4 @@ class ProntuarioController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Remove um prontuário do banco de dados.
-     *
-     * @param Prontuario $prontuario
-     * @return JsonResponse
-     */
-    public function destroy(Prontuario $prontuario): JsonResponse
-    {
-        try {
-            $prontuario->delete();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Prontuário excluído com sucesso.'
-            ]);
-
-        } catch (Exception $e) {
-            Log::error("Erro ao excluir prontuário: " . $e->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao excluir o prontuário.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
 }

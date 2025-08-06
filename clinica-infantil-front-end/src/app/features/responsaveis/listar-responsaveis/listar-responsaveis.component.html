@@ -1,22 +1,26 @@
-<div class="container my-5">
+<div class="dashboard container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Todos os Responsáveis</h2>
-    <a class="btn btn-secondary" [routerLink]="['/administrador/dashboard']">Voltar para o Dashboard</a>
+    <h2>Lista de Responsaveis</h2>
+    <a class="btn btn-outline-primary fw-bold d-flex align-items-center" [routerLink]="['/administrador/responsaveis/adicionar']">
+      <i class="bi bi-person-fill-add me-2"></i>
+      Adicionar Responsavel
+    </a>
   </div>
 
   @if (isLoading) {
     <div class="alert alert-info mt-3">Carregando responsáveis...</div>
   }
-
   @if (error) {
     <div class="alert alert-danger mt-3">{{ error }}</div>
   }
-
+  @if (successMessage) {
+    <div class="alert alert-success mt-3">{{ successMessage }}</div>
+  }
   <!-- Seção de Responsáveis Ativos -->
-  <h3 class="mt-5 mb-3 text-primary">Responsáveis Ativos</h3>
   @if (!isLoading && responsaveisAtivos.length === 0) {
     <div class="alert alert-warning mt-3">Nenhum responsável ativo encontrado.</div>
   } @else if (!isLoading && responsaveisAtivos.length > 0) {
+    <h3 class="mt-5 mb-3">Responsáveis Ativos</h3>
     <div class="table-responsive">
       <table class="table table-hover table-striped">
         <thead class="table-dark">
@@ -44,13 +48,21 @@
                 {{ getNumeroPacientesAssociados(responsavel) }}
               </td>
               <td>{{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}</td>
-              <td>{{ responsavel.cliente.cidade.estado.nome_estado }}</td>
+              <td>{{ responsavel.cliente.cidade.estado.sigla }}</td>
               <td>
-                <a [routerLink]="['./detalhes', responsavel.id]" class="btn btn-sm btn-info text-white me-2">Ver Detalhes</a>
-                <a [routerLink]="['/administrador/responsaveis/', responsavel.id, 'editar']" class="btn btn-sm btn-warning text-white me-2">Editar</a>
-                @if (responsavel.cliente.ativo) {
-                    <button class="btn btn-sm btn-danger" (click)="openConfirmModal(responsavel, 'desativar')">Desativar</button>
-                }
+                <div class="d-flex flex-column flex-md-row gap-2">
+                  <a [routerLink]="['/administrador/responsaveis', responsavel.id]" class="btn btn-sm btn-info text-white">
+                    <i class="bi bi-info-circle"></i>
+                  </a>
+                  <a [routerLink]="['/administrador/responsaveis', responsavel.id , 'editar']" class="btn btn-sm btn-warning text-dark">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  @if (responsavel.cliente.ativo === 1) {
+                    <button class="btn btn-sm btn-danger" (click)="openConfirmModal(responsavel, 'desativar')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  }
+                </div>
               </td>
             </tr>
           }
@@ -60,14 +72,14 @@
     <!-- Controles de Paginação para Ativos -->
     @if (!isLoading && !error && totalResponsaveisAtivos > 0) {
       <div class="d-flex justify-content-between align-items-center mt-4">
-        <button 
+        <button
             class="btn btn-primary"
             (click)="goToPreviousPageAtivos()"
             [disabled]="currentPageAtivos === 1">
             Página Anterior
         </button>
         <span class="text-muted">Página {{ currentPageAtivos }} de {{ lastPageAtivos }} (Total: {{ totalResponsaveisAtivos }})</span>
-        <button 
+        <button
             class="btn btn-primary"
             (click)="goToNextPageAtivos()"
             [disabled]="currentPageAtivos === lastPageAtivos">
@@ -78,20 +90,20 @@
   }
 
   <!-- Seção de Responsáveis Inativos -->
-  <h3 class="mt-5 mb-3 text-danger">Responsáveis Inativos</h3>
   @if (!isLoading && responsaveisInativos.length === 0) {
-    <div class="alert alert-warning mt-3">Nenhum responsável inativo encontrado.</div>
+    <div class="alert alert-primary mt-3">Nenhum responsável inativo encontrado.</div>
   } @else if (!isLoading && responsaveisInativos.length > 0) {
+    <h3 class="mt-5 mb-3">Responsáveis Inativos</h3>
     <div class="table-responsive">
       <table class="table table-hover table-striped">
         <thead class="table-dark">
           <tr>
             <th>ID</th>
-            <th>Nome do Responsável</th>
-            <th>Grau de Parentesco</th>
+            <th>Nome</th>
+            <th>Parentesco</th>
             <th>Email</th>
             <th>Telefone</th>
-            <th>Número de Pacientes Associados</th>
+            <th>Pacientes Associados</th>
             <th>Cidade</th>
             <th>Estado</th>
             <th>Ações</th>
@@ -109,13 +121,21 @@
                 {{ getNumeroPacientesAssociados(responsavel) }}
               </td>
               <td>{{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}</td>
-              <td>{{ responsavel.cliente.cidade.estado.nome_estado }}</td>
+              <td>{{ responsavel.cliente.cidade.estado.sigla }}</td>
               <td>
-                <a [routerLink]="['./detalhes', responsavel.id]" class="btn btn-sm btn-info text-white me-2">Ver Detalhes</a>
-                <a [routerLink]="['./detalhes', responsavel.id]" class="btn btn-sm btn-warning text-white me-2">Editar</a>
-                @if (!responsavel.cliente.ativo) {
-                    <button class="btn btn-sm btn-success" (click)="openConfirmModal(responsavel, 'reativar')">Reativar</button>
-                }
+                <div class="d-flex flex-column flex-md-row gap-2">
+                  <a [routerLink]="['/administrador/responsaveis', responsavel.id]" class="btn btn-sm btn-info text-white">
+                    <i class="bi bi-info-circle"></i>
+                  </a>
+                  <a [routerLink]="['/administrador/responsaveis', responsavel.id, 'editar']" class="btn btn-sm btn-warning text-dark">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  @if (responsavel.cliente.ativo === 0) {
+                    <button class="btn btn-sm btn-success" (click)="openConfirmModal(responsavel, 'reativar')">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  }
+                </div>
               </td>
             </tr>
           }
@@ -125,14 +145,14 @@
     <!-- Controles de Paginação para Inativos -->
     @if (!isLoading && !error && totalResponsaveisInativos > 0) {
       <div class="d-flex justify-content-between align-items-center mt-4">
-        <button 
+        <button
             class="btn btn-primary"
             (click)="goToPreviousPageInativos()"
             [disabled]="currentPageInativos === 1">
             Página Anterior
         </button>
         <span class="text-muted">Página {{ currentPageInativos }} de {{ lastPageInativos }} (Total: {{ totalResponsaveisInativos }})</span>
-        <button 
+        <button
             class="btn btn-primary"
             (click)="goToNextPageInativos()"
             [disabled]="currentPageInativos === lastPageInativos">
@@ -142,6 +162,7 @@
     }
   }
 
+  <!-- Modal de Confirmação -->
   @if (showConfirmModal) {
     <div class="modal d-block" tabindex="-1" role="dialog" style="background-color: rgba(0,0,0,0.5);">
       <div class="modal-dialog modal-dialog-centered" role="document">
@@ -167,4 +188,5 @@
     </div>
   }
 
+  <a class="btn btn-secondary" [routerLink]="['/administrador']">Voltar para o Dashboard</a>
 </div>

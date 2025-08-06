@@ -20,12 +20,6 @@ export interface ConsultasApiResponse {
   consultas: Consulta[];
 }
 
-export interface ConsultasAgendadasApiResponse {
-  status: boolean;
-  message: string;
-  consultas: Consulta[];
-}
-
 export interface ConsultaDetailsResponse {
   status: boolean;
   message: string;
@@ -35,5 +29,5 @@ export interface ConsultaDetailsResponse {
 export interface UpdateConsultaResponse {
   status: boolean;
   message: string;
-  consulta: any;
+  consulta: Consulta;
 }

@@ -87,7 +87,7 @@ export class EditarPacienteComponent implements OnInit {
       paciente: this.pacientesService.getPacienteById(this.pacienteId),
       estados: this.estadosService.getEstados(),
       generos: this.generosService.getGeneros(),
-      responsaveis: this.responsaveisService.getResponsaveis()
+      responsaveis: this.responsaveisService.getTodosResponsaveisAtivos()
     }).subscribe({
       next: (results) => {
         const pacienteData = results.paciente.paciente;
@@ -173,12 +173,10 @@ export class EditarPacienteComponent implements OnInit {
   }
 
   voltarSecretaria(): void {
-    // Caminho corrigido
     this.router.navigate(['/secretaria/pacientes']);
   }
 
   voltarAdmin(): void {
-    // Caminho corrigido
     this.router.navigate(['/administrador/pacientes']);
   }
 }

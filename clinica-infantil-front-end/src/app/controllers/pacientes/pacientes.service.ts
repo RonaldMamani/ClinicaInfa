@@ -23,10 +23,7 @@ export class PacientesService {
     );
   }
 
-  updatePaciente(
-    id: number,
-    payload: UpdatePacientePayload
-  ): Observable<PacienteDetailsResponse> {
+  updatePaciente( id: number, payload: UpdatePacientePayload ): Observable<PacienteDetailsResponse> {
     return this.http.put<PacienteDetailsResponse>(
       `${this.apiBaseUrl}/pacientes/${id}`,
       payload

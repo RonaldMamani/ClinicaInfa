@@ -12,7 +12,7 @@
   @if (!isLoading && !error && consulta) {
     <div class="card p-4">
       <h4 class="card-title">Paciente: {{ consulta.paciente.cliente.nome }}</h4>
-      <h5 class="card-subtitle mb-4 text-muted">Especialidade: {{ consulta.medico?.especialidade }}</h5>
+      <h5 class="card-subtitle mb-4 text-muted">Especialidade: {{ consulta.medico.especialidade }}</h5>
 
       <form [formGroup]="formConsulta" (ngSubmit)="onSubmit()">
         <div class="mb-3">

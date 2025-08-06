@@ -9,7 +9,7 @@ export interface UpdateConsultaResponse {
   consulta: any;
 }
 
-import { ConsultasApiResponse, ConsultasAgendadasApiResponse, ConsultaDetailsResponse, Consulta } from '../../core/models/consultas.model';
+import { ConsultasApiResponse, ConsultaDetailsResponse } from '../../core/models/consultas.model';
 import { Paciente, PacientesApiResponse } from '../../core/models/paciente.model';
 import { Medico } from '../../core/models/medico.model';
 import { QuantidadeAgendadaResponse, QuantidadeTotalResponse } from '../../core/models/quantidades.model';
@@ -33,9 +33,9 @@ export class ConsultasService {
     return this.http.get<ConsultasApiResponse>(url);
   }
 
-  getConsultasAgendadas(): Observable<ConsultasAgendadasApiResponse> {
+  getConsultasAgendadas(): Observable<ConsultasApiResponse> {
     const url = `${this.apiUrl}/agendadas`;
-    return this.http.get<ConsultasAgendadasApiResponse>(url);
+    return this.http.get<ConsultasApiResponse>(url);
   }
 
   getConsultaById(id: number): Observable<ConsultaDetailsResponse> {
@@ -90,14 +90,14 @@ export class ConsultasService {
     return this.http.get<QuantidadeAgendadaResponse>(url);
   }
 
-  getConsultasDoMedico(): Observable<ConsultasAgendadasApiResponse> {
+  getConsultasDoMedico(): Observable<ConsultasApiResponse> {
     const url = `${this.apiUrl}/medico`;
-    return this.http.get<ConsultasAgendadasApiResponse>(url);
+    return this.http.get<ConsultasApiResponse>(url);
   }
 
-  getConsultasDoMedicoAgendados(): Observable<ConsultasAgendadasApiResponse> {
+  getConsultasDoMedicoAgendados(): Observable<ConsultasApiResponse> {
     const url = `${this.apiUrl}/medico/agendados`;
-    return this.http.get<ConsultasAgendadasApiResponse>(url);
+    return this.http.get<ConsultasApiResponse>(url);
   }
 
   agendarConsulta(consultaData: any): Observable<any> {

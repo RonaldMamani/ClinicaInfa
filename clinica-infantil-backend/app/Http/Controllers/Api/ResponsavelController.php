@@ -117,53 +117,51 @@ class ResponsavelController extends Controller
         }
     }
 
-    public function responsaveisAtivos(): JsonResponse
+    public function responsaveisAtivos(Request $request): JsonResponse
     {
         try {
-            // Carrega os responsáveis com:
-            // - cliente (que tem cidade e estado)
-            // - pacientes (que tem cliente)
-            $responsaveis = Responsavel::with([
-                'cliente.cidade.estado', // Cliente -> Cidade -> Estado
-                'pacientes.cliente'      // Responsavel -> Paciente -> Cliente do Paciente
-            ])->paginate(10);
+            $perPage = $request->query('per_page', 10); // Padrão de 10 itens por página
+            $page = $request->query('page', 1);
+
+            $responsaveis = Responsavel::whereHas('cliente', function ($query) {
+                $query->where('ativo', true);
+            })->with($this->relations)->paginate($perPage, ['*'], 'page', $page);
 
             return response()->json([
                 'status' => true,
-                'message' => 'Responsáveis listados com sucesso.',
+                'message' => 'Responsáveis ativos listados com sucesso.',
                 'responsaveis' => $responsaveis,
             ], 200);
         } catch (\Exception $e) {
-            Log::error('Erro ao listar responsáveis: ' . $e->getMessage());
+            Log::error('Erro ao listar responsáveis ativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao listar os responsáveis.',
+                'message' => 'Ocorreu um erro ao listar os responsáveis ativos.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
     }
     
-    public function responsaveisInativos(): JsonResponse
+    public function responsaveisInativos(Request $request): JsonResponse
     {
         try {
-            // Carrega os responsáveis com:
-            // - cliente (que tem cidade e estado)
-            // - pacientes (que tem cliente)
-            $responsaveis = Responsavel::with([
-                'cliente.cidade.estado', // Cliente -> Cidade -> Estado
-                'pacientes.cliente'      // Responsavel -> Paciente -> Cliente do Paciente
-            ])->paginate(10);
+            $perPage = $request->query('per_page', 10); // Padrão de 10 itens por página
+            $page = $request->query('page', 1);
+
+            $responsaveis = Responsavel::whereHas('cliente', function ($query) {
+                $query->where('ativo', false);
+            })->with($this->relations)->paginate($perPage, ['*'], 'page', $page);
 
             return response()->json([
                 'status' => true,
-                'message' => 'Responsáveis listados com sucesso.',
+                'message' => 'Responsáveis inativos listados com sucesso.',
                 'responsaveis' => $responsaveis,
             ], 200);
         } catch (\Exception $e) {
-            Log::error('Erro ao listar responsáveis: ' . $e->getMessage());
+            Log::error('Erro ao listar responsáveis inativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao listar os responsáveis.',
+                'message' => 'Ocorreu um erro ao listar os responsáveis inativos.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
@@ -246,13 +244,16 @@ class ResponsavelController extends Controller
      * @param int $id O ID do responsável a ser atualizado.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateResponsavelRequest $request, int $id): JsonResponse
+    public function update(Request $request, int $id): JsonResponse
     {
         try {
-            DB::beginTransaction(); // Inicia uma transação de banco de dados
+            // Inicia uma transação de banco de dados para garantir a atomicidade das operações
+            DB::beginTransaction();
 
+            // 1. Tenta encontrar o responsável pelo ID fornecido, carregando o cliente associado
             $responsavel = Responsavel::with('cliente')->find($id);
 
+            // 2. VERIFICAÇÃO CRUCIAL: Verifica se o responsável foi encontrado
             if (!$responsavel) {
                 DB::rollBack(); // Reverte a transação em caso de erro
                 return response()->json([
@@ -261,23 +262,41 @@ class ResponsavelController extends Controller
                 ], 404);
             }
 
-            // Atualiza os dados do Responsável
+            // 3. Atualiza os dados do próprio Responsável
+            // O método `only()` garante que apenas os campos permitidos sejam usados do request
             $responsavel->update($request->only(['grau_parentesco', 'email', 'telefone']));
 
-            // Atualiza os dados do Cliente associado
+            // 4. Atualiza os dados do Cliente associado ao Responsável
+            // O `UpdateResponsavelRequest` já valida que 'cliente' é um array com os campos necessários
             $clienteData = $request->input('cliente');
+
+            // Verifica se o cliente associado existe antes de tentar atualizá-lo
+            if (!$responsavel->cliente) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cliente associado ao responsável não encontrado.'
+                ], 404);
+            }
+
             $responsavel->cliente->update($clienteData);
 
-            DB::commit(); // Confirma a transação
+            // 5. Confirma a transação se todas as operações foram bem-sucedidas
+            DB::commit();
 
+            // 6. Recarrega o responsável com os dados atualizados e suas relações para a resposta
+            $responsavel->refresh()->load($this->relations);
+
+            // 7. Retorna uma resposta de sucesso com o responsável atualizado
             return response()->json([
                 'status' => true,
                 'message' => 'Responsável atualizado com sucesso.',
-                'responsavel' => $responsavel->load($this->relations) // Recarrega com as relações
+                'responsavel' => $responsavel
             ], 200);
 
         } catch (\Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+            // Em caso de qualquer erro, reverte a transação
+            DB::rollBack();
             Log::error("Erro ao atualizar responsável: " . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -325,45 +344,4 @@ class ResponsavelController extends Controller
         }
     }
 
-    /**
-     * Remove um responsável do banco de dados (delete físico).
-     *
-     * @param int $id O ID do responsável a ser removido.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function destroy($id)
-    {
-        DB::beginTransaction(); // Inicia a transação
-        try {
-            // Encontra o responsável pelo ID
-            $responsavel = Responsavel::find($id);
-
-            // Se o responsável não for encontrado, retorna 404 Not Found
-            if (!$responsavel) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Responsável não encontrado para exclusão.',
-                ], 404);
-            }
-
-            // Tenta deletar o responsável (delete físico)
-            $responsavel->delete();
-            DB::commit(); // Confirma a transação
-
-            // Retorna a confirmação de exclusão
-            return response()->json([
-                'status' => true,
-                'message' => 'Responsável excluído com sucesso!',
-            ], 200); // Código 200 OK
-
-        } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
-            Log::error('Erro ao excluir responsável: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao excluir o responsável. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
 }

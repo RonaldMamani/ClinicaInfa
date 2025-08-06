@@ -1,9 +1,6 @@
 import { Cliente } from './cliente.model';
-import { Genero } from './generos.model';
 import { Responsavel } from './responsavel.model';
 
-// Representa o objeto completo de um paciente, incluindo o cliente e o responsável
-// O tipo do 'responsavel' é o simples 'Responsavel' que não tem o cliente aninhado
 export interface Paciente {
   id: number;
   id_cliente: number;
@@ -14,7 +11,6 @@ export interface Paciente {
   responsavel: Responsavel;
 }
 
-// Representa a resposta completa da API para a lista de pacientes
 export interface PacientesApiResponse {
   status: boolean;
   message: string;
@@ -45,4 +41,3 @@ export interface PatientsCountResponse {
   message: string;
   total: number;
 }
-

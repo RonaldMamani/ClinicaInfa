@@ -1,6 +1,23 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
+import { ProntuarioDetailResponse, ProntuariosApiResponse } from '../../core/models/prontuarios.model';
+
+export interface PaginatedData<Prontuario> {
+  current_page: number;
+  data: Prontuario[];
+  last_page: number;
+  total: number;
+  first_page_url: string;
+  from: number;
+  last_page_url: string;
+  links: any[];
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +27,7 @@ export class ProntuariosService {
 
   constructor(private http: HttpClient) { }
 
-  getTodosProntuarios(): Observable<any> {
+  getTodosProntuarios(): Observable<ProntuariosApiResponse> {
     const url = `${this.apiUrl}`;
     return this.http.get<any>(url).pipe(
       catchError(error => {
@@ -19,17 +36,7 @@ export class ProntuariosService {
     );
   }
 
-  /**
-   * Verifica se um paciente já tem um prontuário.
-   * @param pacienteId O ID do paciente.
-   * @returns Um Observable com a resposta da API.
-   */
-  checkProntuario(pacienteId: number): Observable<any> {
-    const url = `${this.apiUrl}/paciente/${pacienteId}/check`;
-    return this.http.get<any>(url);
-  }
-
-  getProntuarioDetalhes(id: number): Observable<any> {
+  getProntuarioDetalhes(id: number): Observable<ProntuarioDetailResponse> {
     const url = `${this.apiUrl}/${id}`;
     return this.http.get<any>(url).pipe(
       catchError(error => {
@@ -41,9 +48,6 @@ export class ProntuariosService {
   getProntuarioByPacienteId(pacienteId: number): Observable<any> {
     const url = `${this.apiUrl}/paciente/${pacienteId}`;
     return this.http.get<any>(url).pipe(
-      // Se a API retornar 404 (Prontuário não encontrado), tratamos como sucesso
-      // para não quebrar o fluxo de inicialização do componente.
-      // O componente irá verificar se a resposta tem um prontuário ou não.
       catchError(error => {
         if (error.status === 404) {
           console.log('Prontuário não encontrado para este paciente. (Isso é esperado para novos pacientes)');
