@@ -1,0 +1,91 @@
+<div class="dashboard container my-5">
+  <h2 class="fw-bold fs-2">Finalizar Consulta</h2>
+
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando detalhes da consulta...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success mt-3">{{ successMessage }}</div>
+  }
+
+  @if (!isLoading && !error && consulta) {
+    <div class="card shadow-sm my-4">
+      <div class="card-header fw-bold fs-5">
+        Detalhes da Consulta #{{ consulta.id }}
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6">
+            <strong>Paciente:</strong> {{ consulta.paciente.cliente.nome }}<br>
+            <strong>Médico:</strong> {{ consulta.medico.usuario.funcionario.nome }}<br>
+            <strong>Especialidade:</strong> {{ consulta.medico.especialidade }}<br>
+            <strong>Descrição</strong> {{ consulta.descricao }}<br>
+          </div>
+          <div class="col-md-6">
+            <strong>Data:</strong> {{ consulta.data_consulta | date:'dd/MM/yyyy' }}<br>
+            <strong>Horário:</strong> {{ consulta.hora_inicio | slice:0:5 }} - {{ consulta.hora_fim | slice:0:5 }}<br>
+            <strong>Status:</strong>
+            <span class="badge rounded-pill text-uppercase ms-2" [ngClass]="{
+              'bg-success': consulta.status === 'concluida'
+            }">
+              {{ consulta.status }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Formulário de Finalização -->
+    <div class="card shadow-sm">
+      <div class="card-header fw-bold fs-5">
+        Informações do Pagamento
+      </div>
+      <div class="card-body">
+        <form [formGroup]="finalizarForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="valor" class="form-label">Valor do Pagamento <span class="text-danger">*</span></label>
+              <input type="number" id="valor" formControlName="valor" class="form-control"
+                [ngClass]="{'is-invalid': finalizarForm.get('valor')?.invalid && finalizarForm.get('valor')?.touched}">
+              @if (finalizarForm.get('valor')?.invalid && finalizarForm.get('valor')?.touched) {
+                <div class="invalid-feedback">O valor é obrigatório e deve ser maior que zero.</div>
+              }
+            </div>
+            <div class="col-md-6 mb-3">
+              <label for="metodo_pagamento" class="form-label">Método de Pagamento <span class="text-danger">*</span></label>
+              <select id="metodo_pagamento" formControlName="metodo_pagamento" class="form-select"
+                [ngClass]="{'is-invalid': finalizarForm.get('metodo_pagamento')?.invalid && finalizarForm.get('metodo_pagamento')?.touched}">
+                <option [value]="''" disabled>Selecione o método</option>
+                <option value="Cartao de Credito">Cartão de Crédito</option>
+                <option value="Cartao de Debito">Cartão de Debito</option>
+                <option value="Dinheiro">Dinheiro</option>
+                <option value="Pix">Pix</option>
+                <option value="Transferencia">Transferência</option>
+              </select>
+              @if (finalizarForm.get('metodo_pagamento')?.invalid && finalizarForm.get('metodo_pagamento')?.touched) {
+                <div class="invalid-feedback">O método de pagamento é obrigatório.</div>
+              }
+            </div>
+          </div>
+          
+          <div class="d-flex justify-content-end gap-2 mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="finalizarForm.invalid || isSubmitting">
+              @if (isSubmitting) {
+                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                Finalizando...
+              } @else {
+                Confirmar Finalização
+              }
+            </button>
+            <a class="btn btn-outline-secondary" [routerLink]="['/secretaria/consultas/agendadas']">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  }
+</div>

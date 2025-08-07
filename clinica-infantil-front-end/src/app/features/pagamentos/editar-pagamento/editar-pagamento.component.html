@@ -1,0 +1,82 @@
+<div class="dashboard container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Editar Pagamento</h2>
+    </div>
+
+    @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando dados do pagamento...</div>
+    }
+
+    @if (errorMessage) {
+    <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
+    }
+
+    @if (!isLoading && !errorMessage && pagamento) {
+    <div class="card p-4 shadow-sm">
+        <h4 class="mb-4">Detalhes do Pagamento #{{ pagamento.id }}</h4>
+        <div class="mb-3">
+            <strong>Paciente:</strong> {{ pagamento.consulta.paciente.cliente.nome }}
+        </div>
+        <div class="mb-4">
+            <strong>Médico:</strong> {{ pagamento.consulta.medico.usuario.funcionario.nome }}
+        </div>
+
+        <form [formGroup]="pagamentoForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+                <label for="valor" class="form-label">Valor do Pagamento</label>
+                <input
+                    type="number"
+                    id="valor"
+                    formControlName="valor"
+                    class="form-control"
+                    [class.is-invalid]="pagamentoForm.get('valor')?.invalid && pagamentoForm.get('valor')?.touched"
+                />
+                @if (pagamentoForm.get('valor')?.errors?.['required']) {
+                <div class="invalid-feedback">O valor é obrigatório.</div>
+                }
+                @if (pagamentoForm.get('valor')?.errors?.['min']) {
+                <div class="invalid-feedback">O valor deve ser no mínimo 0.</div>
+                }
+            </div>
+
+            <div class="mb-3">
+                <label for="metodo_pagamento" class="form-label">Método de Pagamento</label>
+                <select
+                    id="metodo_pagamento"
+                    formControlName="metodo_pagamento"
+                    class="form-control"
+                    [class.is-invalid]="pagamentoForm.get('metodo_pagamento')?.invalid && pagamentoForm.get('metodo_pagamento')?.touched"
+                >
+                    <option value="" disabled>Selecione um método</option>
+                    <option value="Cartao de Credito">Cartão de Crédito</option>
+                    <option value="Cartao de Debito">Cartão de Débito</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="Pix">Pix</option>
+                    <option value="Transferencia">Transferência</option>
+                </select>
+                @if (pagamentoForm.get('metodo_pagamento')?.errors?.['required']) {
+                <div class="invalid-feedback">O método de pagamento é obrigatório.</div>
+                }
+            </div>
+
+            @if (successMessage) {
+            <div class="alert alert-success mt-3">{{ successMessage }}</div>
+            }
+
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button type="button" class="btn btn-secondary" [routerLink]="['/pagamentos']">Cancelar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="pagamentoForm.invalid || isUpdating">
+                    @if (isUpdating) {
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    <span class="ms-2">Atualizando...</span>
+                    } @else {
+                    Salvar Alterações
+                    }
+                </button>
+            </div>
+        </form>
+    </div>
+    }
+
+    <a class="btn btn-secondary mt-4" [routerLink]="['../..']">Voltar para a Lista de Pagamentos</a>
+</div>

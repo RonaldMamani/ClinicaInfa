@@ -6,30 +6,36 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\PagamentoRequest;
 use App\Models\Pagamento;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PagamentoController extends Controller
 {
-    public function index()
+    public function index(): JsonResponse
     {
         try {
-            // Busca todos os pagamentos, carregando os dados relacionados da consulta
-            $pagamentos = Pagamento::with('consulta')->orderBy('data_pagamento', 'DESC')->get();
+            // Carrega os pagamentos e as consultas relacionadas,
+            // garantindo que os dados do paciente e médico também sejam carregados
+            $pagamentos = Pagamento::with([
+                'consulta.paciente.cliente',
+                'consulta.medico.usuario.funcionario'
+            ])
+            ->orderBy('data_pagamento', 'desc')
+            ->paginate(10); // Pagina 10 resultados por página
 
-            // Retorna a lista de pagamentos em formato JSON
             return response()->json([
                 'status' => true,
-                'message' => 'Lista de pagamentos obtida com sucesso.',
+                'message' => 'Pagamentos listados com sucesso.',
                 'pagamentos' => $pagamentos,
             ], 200);
 
-        } catch (\Exception $e) {
-            Log::error('Erro ao listar pagamentos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+        } catch (Exception $e) {
+            Log::error('Erro ao listar pagamentos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao buscar os pagamentos. Verifique os logs do servidor.',
+                'message' => 'Ocorreu um erro ao listar os pagamentos.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
@@ -41,32 +47,30 @@ class PagamentoController extends Controller
      * @param int $id O ID do pagamento a ser exibido.
      * @return \Illuminate\Http\JsonResponse
      */
-    public function show($id)
+    public function show(int $id): JsonResponse
     {
         try {
-            // Busca o pagamento pelo ID, carregando o relacionamento com a consulta
-            $pagamento = Pagamento::with('consulta')->find($id);
+            // Usando findOrFail para retornar 404 automaticamente se não encontrar
+            $pagamento = Pagamento::with([
+                'consulta.paciente.cliente',
+                'consulta.medico.usuario.funcionario'
+            ])->findOrFail($id);
 
-            // Verifica se o pagamento foi encontrado
-            if (!$pagamento) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Pagamento não encontrado.',
-                ], 404);
-            }
-
-            // Retorna os detalhes do pagamento em formato JSON
             return response()->json([
                 'status' => true,
-                'message' => 'Pagamento obtido com sucesso.',
+                'message' => 'Detalhes do pagamento carregados com sucesso.',
                 'pagamento' => $pagamento,
             ], 200);
-
-        } catch (\Exception $e) {
-            Log::error('Erro ao buscar pagamento por ID: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
             return response()->json([
                 'status' => false,
-                'message' => 'Ocorreu um erro ao buscar o pagamento. Verifique os logs do servidor.',
+                'message' => 'Pagamento não encontrado.'
+            ], 404);
+        } catch (Exception $e) {
+            Log::error('Erro ao buscar pagamento: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao buscar o pagamento.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
@@ -100,6 +104,38 @@ class PagamentoController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao criar o pagamento. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function update(PagamentoRequest $request, int $id): JsonResponse
+    {
+        try {
+            // Usando findOrFail para retornar 404 automaticamente se não encontrar
+            $pagamento = Pagamento::findOrFail($id);
+
+            $pagamento->update($request->validated());
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Pagamento atualizado com sucesso.',
+                'pagamento' => $pagamento->load([
+                    'consulta.paciente.cliente',
+                    'consulta.medico.usuario.funcionario'
+                ]),
+            ], 200);
+
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Pagamento não encontrado.'
+            ], 404);
+        } catch (Exception $e) {
+            Log::error('Erro ao atualizar pagamento: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao atualizar o pagamento.',
                 'error_details' => $e->getMessage()
             ], 500);
         }

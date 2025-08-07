@@ -50,4 +50,9 @@ class Consulta extends Model
     {
         return $this->belongsTo(Medico::class, 'id_medico');
     }
+
+    public function pagamento()
+    {
+        return $this->hasOne(Pagamento::class, 'id_consulta');
+    }
 }

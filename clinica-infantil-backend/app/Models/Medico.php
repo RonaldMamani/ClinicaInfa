@@ -17,7 +17,6 @@ class Medico extends Model
         'id_usuario',
         'CRM',
         'especialidade',
-        // Adicione outros campos preenchíveis aqui
     ];
 
     public $timestamps = false; // Supondo que você não tenha timestamps

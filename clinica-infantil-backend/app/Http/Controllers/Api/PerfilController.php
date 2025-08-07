@@ -30,7 +30,7 @@ class PerfilController extends Controller
                 'perfis' => $perfis,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar perfis: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -67,7 +67,7 @@ class PerfilController extends Controller
                 'perfil' => $perfil,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao buscar perfil por ID: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,

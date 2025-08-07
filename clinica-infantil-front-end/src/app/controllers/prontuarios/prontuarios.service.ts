@@ -3,22 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { ProntuarioDetailResponse, ProntuariosApiResponse } from '../../core/models/prontuarios.model';
 
-export interface PaginatedData<Prontuario> {
-  current_page: number;
-  data: Prontuario[];
-  last_page: number;
-  total: number;
-  first_page_url: string;
-  from: number;
-  last_page_url: string;
-  links: any[];
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number;
-}
-
 @Injectable({
   providedIn: 'root'
 })

@@ -35,6 +35,12 @@ import { ListarResponsaveisComponent } from './features/responsaveis/listar-resp
 import { ListarFuncionariosComponent } from './features/funcionarios/listar-funcionarios/listar-funcionarios.component';
 import { DetalhesResponsavelComponent } from './features/responsaveis/detalhes-responsavel/detalhes-responsavel.component';
 import { EditarResponsavelComponent } from './features/responsaveis/editar-responsavel/editar-responsavel.component';
+import { DetalheFuncionarioComponent } from './features/funcionarios/detalhe-funcionario/detalhe-funcionario.component';
+import { EditarFuncionarioComponent } from './features/funcionarios/editar-funcionario/editar-funcionario.component';
+import { AdicionarFuncionarioComponent } from './features/funcionarios/adicionar-funcionario/adicionar-funcionario.component';
+import { FinalizarConsultaComponent } from './features/consultas/finalizar-consulta/finalizar-consulta.component';
+import { ListarPagamentosComponent } from './features/pagamentos/listar-pagamentos/listar-pagamentos.component';
+import { EditarPagamentoComponent } from './features/pagamentos/editar-pagamento/editar-pagamento.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -59,10 +65,11 @@ export const routes: Routes = [
       { path: 'consultas/agendadas', component: ListarConsultasAgendadasComponent },
       { path: 'consultas/agendadas/:id', component: DetalhesConsultaAgendadaComponent},
       { path: 'consultas/agendadas/:id/remarcar', component: RemarcarConsultaComponent },
+      { path: 'consultas/agendadas/:id/finalizar', component: FinalizarConsultaComponent },
       { path: 'consultas', component: ListarTodasConsultasComponent },
       { path: 'consultas/:id', component: DetalhesConsultaComponent},
       { path: 'consultas/editar/:id', component: EditarConsultaComponent },
-      { path: 'consultas/adicionar', component: AdicionarConsultaComponent },
+      { path: 'agendar', component: AdicionarConsultaComponent },
       // O redirectTo deve ser o último elemento, redirecionando para a rota padrão
       { path: '**', redirectTo: '' }
     ]
@@ -95,6 +102,7 @@ export const routes: Routes = [
       { path: '', component: DashboardAdministradorComponent },
       { path: 'consultas', component: ListarTodasConsultasComponent },
       { path: 'consultas/:id', component: DetalhesConsultaComponent},
+      { path: 'consultas/:id/editar', component: EditarConsultaComponent },
       { path: 'pacientes', component: ListarPacientesComponent },
       { path: 'pacientes/adicionar', component: AdicionarPacienteComponent },
       { path: 'pacientes/:id', component: DetalhePacienteComponent },
@@ -104,6 +112,12 @@ export const routes: Routes = [
       { path: 'responsaveis/:id', component: DetalhesResponsavelComponent },
       { path: 'responsaveis/:id/editar', component: EditarResponsavelComponent },
       { path: 'funcionarios', component: ListarFuncionariosComponent },
+      { path: 'funcionarios/adicionar', component: AdicionarFuncionarioComponent},
+      { path: 'funcionarios/:id', component: DetalheFuncionarioComponent},
+      { path: 'funcionarios/:id/editar', component: EditarFuncionarioComponent },
+      { path: 'pagamentos', component: ListarPagamentosComponent },
+      { path: 'pagamentos/:id', component: DetalhesConsultaComponent},
+      { path: 'pagamentos/:id/editar', component: EditarPagamentoComponent },
 
       { path: '**', redirectTo: '' }
     ]

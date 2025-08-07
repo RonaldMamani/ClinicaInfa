@@ -82,6 +82,9 @@ Route::delete('/funcionarios/{id}', [FuncionarioController::class, 'destroy']); 
 
 // Rotas para Usuários
 Route::get('/usuarios', [UsuarioController::class, 'index']);
+Route::get('usuarios/todos', [UsuarioController::class, 'getTodosUsuarios']);
+Route::get('usuarios/ativos', [UsuarioController::class, 'getUsuariosAtivos']);
+Route::get('usuarios/inativos', [UsuarioController::class, 'getUsuariosInativos']);
 Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
 Route::post('/usuarios', [UsuarioController::class, 'store']);
 Route::put('/usuarios/{id}', [UsuarioController::class, 'update']); // PUT para atualizar (completo)
@@ -122,6 +125,7 @@ Route::delete('/medicos/{id}', [MedicoController::class, 'destroy']); // DELETE 
 
 // Rotas para Consultas
 Route::get('/consultas/agendadas', [ConsultaController::class, 'consultasAgendadas']); // NOVA ROTA: Consultas agendadas
+Route::get('/consultas/concluidas', [ConsultaController::class, 'consultasConcluidas']);
 Route::get('/consultas/agendadas/{id}', [ConsultaController::class, 'showAgendada']); // GET para mostrar consulta agendada por ID
 Route::get('/consultas/quantidades/todas', [ConsultaController::class, 'quantidadeTotal']); // NOVA ROTA: Contagem total de consultas
 Route::get('/consultas/quantidades/agendadas', [ConsultaController::class, 'quantidadeAgendadas']); // NOVA ROTA: Contagem de consultas agendadas
@@ -131,6 +135,7 @@ Route::get('/consultas/{id}', [ConsultaController::class, 'show']); // GET para 
 Route::post('/consultas', [ConsultaController::class, 'store']); // POST para criar
 Route::put('/consultas/agendadas/{id}/remarcar', [ConsultaController::class, 'remarcar']);
 Route::put('/consultas/{id}', [ConsultaController::class, 'update']); // PUT para atualizar (completo)
+Route::post('/consultas/{id}/finalizar', [ConsultaController::class, 'finalizarConsulta']); 
 Route::patch('/consultas/{id}/status', [ConsultaController::class, 'updateStatus']);
 Route::patch('/consultas/{id}', [ConsultaController::class, 'update']); // PATCH para atualizar (parcial)
 Route::delete('/consultas/{id}', [ConsultaController::class, 'destroy']);

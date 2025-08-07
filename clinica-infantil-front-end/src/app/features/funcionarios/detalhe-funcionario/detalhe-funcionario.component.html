@@ -1,0 +1,82 @@
+<div class="dashboard container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Detalhes do Usuário</h2>
+    <a class="btn btn-secondary" [routerLink]="['/administrador/funcionarios']">
+      Voltar para a Lista
+    </a>
+  </div>
+
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando detalhes do usuário...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (!isLoading && usuario) {
+    <div class="row">
+      <!-- Card de Detalhes do Usuário -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-warning text-white">
+            <h5 class="mb-0">Informações de Login e Acesso</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item"><strong>ID do Usuário:</strong> {{ usuario.id }}</li>
+              <li class="list-group-item"><strong>Username:</strong> {{ usuario.username }}</li>
+              <li class="list-group-item"><strong>Perfil:</strong> {{ usuario.perfil.nome_perfil || 'N/A' }}</li>
+              <li class="list-group-item">
+                <strong>Status:</strong>
+                <span class="badge rounded-pill bg-{{ usuario.ativo === 1 ? 'success' : 'danger' }} ms-2">
+                  {{ usuario.ativo === 1 ? 'Ativo' : 'Inativo' }}
+                </span>
+              </li>
+              <li class="list-group-item"><strong>Descrição:</strong> {{ usuario.perfil.descricao || 'N/A' }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card de Detalhes do Funcionário -->
+      <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+          <div class="card-header bg-info">
+            <h5 class="mb-0">Detalhes do Funcionário</h5>
+          </div>
+          <div class="card-body">
+            @if (usuario.funcionario) {
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>Nome:</strong> {{ usuario.funcionario.nome || 'N/A' }}</li>
+                <li class="list-group-item"><strong>Cargo:</strong> {{ usuario.funcionario.cargo || 'N/A' }}</li>
+                <li class="list-group-item"><strong>CPF:</strong> {{ usuario.funcionario.cpf || 'N/A' }}</li>
+                <li class="list-group-item"><strong>Email Empresarial:</strong> {{ usuario.funcionario.email_empresarial || 'N/A' }}</li>
+                <li class="list-group-item"><strong>Telefone Empresarial:</strong> {{ usuario.funcionario.telefone_empresarial || 'N/A' }}</li>
+              </ul>
+            } @else {
+              <div class="alert alert-warning">Nenhum detalhe de funcionário associado.</div>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Card de Detalhes do Médico (se aplicável) -->
+      @if (usuario.medico) {
+        <div class="col-md-12 mb-4">
+          <div class="card shadow-sm">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0">Detalhes do Médico</h5>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item"><strong>CRM:</strong> {{ usuario.medico.CRM }}</li>
+                <li class="list-group-item"><strong>Especialidade:</strong> {{ usuario.medico.especialidade || 'N/A' }}</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

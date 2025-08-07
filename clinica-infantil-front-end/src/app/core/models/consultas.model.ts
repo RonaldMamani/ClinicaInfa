@@ -1,5 +1,6 @@
 import { Paciente } from './paciente.model';
 import { Medico } from './medico.model';
+import { Pagamento } from './pagamento.model';
 
 export interface Consulta {
   id: number;
@@ -12,6 +13,7 @@ export interface Consulta {
   descricao: string;
   paciente: Paciente;
   medico: Medico;
+  pagamento: Pagamento;
 }
 
 export interface ConsultasApiResponse {
@@ -30,4 +32,10 @@ export interface UpdateConsultaResponse {
   status: boolean;
   message: string;
   consulta: Consulta;
+}
+
+export interface FinalizarConsultaPayload {
+  valor: number;
+  metodo_pagamento: string;
+  data_pagamento: string;
 }

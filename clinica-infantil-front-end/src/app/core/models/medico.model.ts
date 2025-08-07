@@ -7,8 +7,6 @@ export interface Medico {
   id_usuario: number;
   CRM: string;
   especialidade: string;
-  created_at: string;
-  updated_at: string;
   usuario: Usuario;
   consultas: Consulta[]
 }

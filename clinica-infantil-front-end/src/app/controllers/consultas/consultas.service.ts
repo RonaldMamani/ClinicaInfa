@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ export interface UpdateConsultaResponse {
   consulta: any;
 }
 
-import { ConsultasApiResponse, ConsultaDetailsResponse } from '../../core/models/consultas.model';
+import { ConsultasApiResponse, ConsultaDetailsResponse, FinalizarConsultaPayload } from '../../core/models/consultas.model';
 import { Paciente, PacientesApiResponse } from '../../core/models/paciente.model';
 import { Medico } from '../../core/models/medico.model';
 import { QuantidadeAgendadaResponse, QuantidadeTotalResponse } from '../../core/models/quantidades.model';
@@ -22,8 +22,6 @@ export class ConsultasService {
   // Use a URL base do seu backend diretamente, sem o arquivo de environment
   private originApiUrl = 'http://localhost:8000/api';
   private apiUrl = 'http://localhost:8000/api/consultas';
-  private pacientesApiUrl = 'http://localhost:8000/api/pacientes';
-  private medicosApiUrl = 'http://localhost:8000/api/medicos';
 
   constructor(private http: HttpClient) {}
 
@@ -35,6 +33,11 @@ export class ConsultasService {
 
   getConsultasAgendadas(): Observable<ConsultasApiResponse> {
     const url = `${this.apiUrl}/agendadas`;
+    return this.http.get<ConsultasApiResponse>(url);
+  }
+
+  getConsultasConcluidas(): Observable<ConsultasApiResponse> {
+    const url = `${this.apiUrl}/concluidas`;
     return this.http.get<ConsultasApiResponse>(url);
   }
 
@@ -64,20 +67,20 @@ export class ConsultasService {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
 
+  finalizarConsulta(id: number, payload: FinalizarConsultaPayload): Observable<any> {
+    const url = `${this.apiUrl}/${id}/finalizar`;
+    return this.http.post<any>(url, payload).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  concluirConsulta(id: number, data: any): Observable<UpdateConsultaResponse> {
+    const url = `${this.apiUrl}/${id}/concluir`;
+    return this.http.put<UpdateConsultaResponse>(url, data);
+  }
+
   criarConsulta(dados: any): Observable<any> {
     return this.http.post(`${this.apiUrl}`, dados);
-  }
-
-  getPacientes(): Observable<Paciente[]> {
-    return this.http.get<{ pacientes: Paciente[] }>(this.pacientesApiUrl).pipe(
-      map(response => response.pacientes)
-    );
-  }
-
-  getMedicos(): Observable<Medico[]> {
-    return this.http.get<{ medicos: Medico[] }>(this.medicosApiUrl).pipe(
-      map(response => response.medicos)
-    );
   }
 
   getQuantidadeTodasConsultas(): Observable<QuantidadeTotalResponse> {
@@ -105,10 +108,6 @@ export class ConsultasService {
     return this.http.post(url, consultaData);
   }
 
-  getPacientesAgendar(): Observable<PacientesApiResponse> {
-    return this.http.get<PacientesApiResponse>(`${this.pacientesApiUrl}/ativos`);
-  }
-
   getTotalConsultasCount(): Observable<number> {
     return this.http.get<any>(`${this.originApiUrl}/medico/consultas/count/total`).pipe(
       map(response => response.total_consultas),
@@ -127,8 +126,16 @@ export class ConsultasService {
     );
   }
 
-  concluirConsulta(id: number, data: any): Observable<UpdateConsultaResponse> {
-    const url = `${this.apiUrl}/${id}/concluir`;
-    return this.http.put<UpdateConsultaResponse>(url, data);
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = 'Ocorreu um erro desconhecido!';
+    if (error.error instanceof ErrorEvent) {
+      // Erro do lado do cliente ou de rede.
+      errorMessage = `Erro: ${error.error.message}`;
+    } else {
+      // Erro do lado do servidor.
+      errorMessage = `Código do erro: ${error.status}, Mensagem: ${error.error.message}`;
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error(errorMessage));
   }
 }

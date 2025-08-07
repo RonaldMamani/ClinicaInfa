@@ -25,7 +25,7 @@ class FuncionarioController extends Controller
                 'funcionarios' => $funcionarios,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar funcionários: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -56,7 +56,7 @@ class FuncionarioController extends Controller
                 'funcionario' => $funcionario,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao buscar funcionário por ID: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
