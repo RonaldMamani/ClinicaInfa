@@ -5,16 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ConcluirConsultaRequest;
 use App\Http\Requests\ConsultaRequest;
+use App\Http\Requests\PagamentoRequest;
 use App\Http\Requests\RemarcarConsultaRequest;
 use App\Models\Consulta;
 use App\Models\Medico;
+use App\Models\Pagamento;
 use App\Models\Prontuario;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ConsultaController extends Controller
 {
@@ -30,6 +34,7 @@ class ConsultaController extends Controller
         'medico',
         'medico.usuario.perfil', 
         'medico.usuario.funcionario',
+        'pagamento'
     ];
 
     /**
@@ -281,11 +286,80 @@ class ConsultaController extends Controller
                 'consulta' => $consulta
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao concluir consulta: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao concluir a consulta.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function finalizarConsulta(PagamentoRequest $request, int $id): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            Log::info('Dados da requisição para finalizar consulta:', $request->all());
+
+            $consulta = Consulta::find($id);
+
+            if (!$consulta) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Consulta não encontrada.'
+                ], 404);
+            }
+
+            if ($consulta->status !== 'concluida') {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'A consulta só pode ser finalizada se o status for "concluida".'
+                ], 400);
+            }
+
+            $consulta->status = 'finalizada';
+            $consulta->save();
+
+            $dataPagamentoRaw = $request->input('data_pagamento');
+            $dataPagamentoFormatada = null;
+
+            if ($dataPagamentoRaw) {
+                // Converte a string de data UTC para um objeto Carbon.
+                // Em seguida, converte para o fuso horário da aplicação
+                // (configurado em config/app.php, idealmente 'America/Sao_Paulo')
+                // e formata para o padrão do MySQL.
+                $dataPagamentoFormatada = Carbon::parse($dataPagamentoRaw)
+                                               ->setTimezone(config('app.timezone'))
+                                               ->format('Y-m-d H:i:s');
+
+                Log::info('Data de pagamento convertida de ' . $dataPagamentoRaw . ' (UTC) para ' . $dataPagamentoFormatada . ' (Local)');
+            }
+
+            $pagamento = Pagamento::create([
+                'id_consulta' => $consulta->id,
+                'valor' => $request->valor,
+                'metodo_pagamento' => $request->metodo_pagamento,
+                'data_pagamento' => $dataPagamentoFormatada,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Consulta finalizada e pagamento registrado com sucesso.',
+                'consulta' => $consulta->load($this->relations),
+                'pagamento' => $pagamento,
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Erro ao finalizar consulta: ' . $e->getMessage() . ' na linha ' . $e->getLine() . ' no arquivo ' . $e->getFile());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao finalizar a consulta.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
@@ -420,11 +494,11 @@ class ConsultaController extends Controller
     public function consultasAgendadas()
     {
         try {
-            $consultas = Consulta::with($this->relations)->where('status', 'agendada')->get();
+            $consultas = Consulta::with($this->relations)->whereIn('status', ['agendada', 'concluida'])->get(); //concluida
 
             return response()->json([
                 'status' => true,
-                'message' => 'Consultas agendadas obtidas com sucesso.',
+                'message' => 'Consultas agendadas e concluidas obtidas com sucesso.',
                 'consultas' => $consultas,
             ], 200);
         } catch (\Exception $e) {
@@ -437,13 +511,13 @@ class ConsultaController extends Controller
         }
     }
 
-    public function showAgendada($id)
+    public function showAgendada($id): JsonResponse
     {
         try {
             $consulta = Consulta::with($this->relations)
-                                ->where('id', $id)
-                                ->where('status', 'agendada')
-                                ->first();
+                ->where('id', $id)
+                ->whereIn('status', ['agendada', 'concluida'])
+                ->first();
 
             if (!$consulta) {
                 return response()->json([
@@ -458,7 +532,7 @@ class ConsultaController extends Controller
                 'consulta' => $consulta,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao buscar consulta agendada: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -490,7 +564,7 @@ class ConsultaController extends Controller
      */
     public function quantidadeAgendadas()
     {
-        $agendadas = Consulta::where('status', 'agendada')->count();
+        $agendadas = Consulta::whereIn('status', ['agendada', 'concluida'])->count();
         return response()->json([
             'status' => true,
             'message' => 'Quantidade de consultas agendadas obtida com sucesso.',

@@ -1,5 +1,9 @@
 <div class="dashboard container my-5">
-  <h2>Detalhes da Consulta</h2>
+  @if (isPagamentosRoute) {
+    <h2>Detalhes de Pagamento</h2>
+  } @else {
+    <h2>Detalhes da Consulta</h2>
+  }
 
   @if (isLoading) {
     <div class="alert alert-info mt-3">Carregando detalhes...</div>
@@ -30,7 +34,8 @@
               <span class="ms-2 badge rounded-pill text-uppercase" [ngClass]="{
                 'bg-warning text-dark': consulta.status === 'agendada',
                 'bg-success': consulta.status === 'concluida',
-                'bg-danger': consulta.status === 'cancelada'
+                'bg-danger': consulta.status === 'cancelada',
+                'bg-dark': consulta.status === 'finalizada'
               }">
                 {{ consulta.status }}
               </span>
@@ -38,6 +43,29 @@
           </div>
         </div>
       </div>
+
+      <!-- Detalhes do Pagamento (Novo Card) -->
+      @if (consulta.status === 'finalizada' && consulta.pagamento) {
+        <div class="col-12 my-4">
+          <div class="card">
+            <div class="card-header bg-success text-white">
+              Detalhes do Pagamento
+            </div>
+            <div class="card-body">
+              <div class="card-text">
+                <span><strong>Valor:</strong></span>
+                <span class="ms-2">{{ consulta.pagamento.valor | currency:'BRL':'symbol':'1.2-2' }}</span>
+                <br>
+                <span><strong>Método de Pagamento:</strong></span>
+                <span class="ms-2">{{ consulta.pagamento.metodo_pagamento }}</span>
+                <br>
+                <span><strong>Data do Pagamento:</strong></span>
+                <span class="ms-2">{{ consulta.pagamento.data_pagamento | date:'dd/MM/yyyy HH:mm' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
 
       <div class="col-md-6 my-4">
         <div class="card">
@@ -120,7 +148,8 @@
     @if (isSecretariaRoute) {
       <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria/consultas']">Voltar para a Lista</a>
     } @else if (isAdministradorRoute) {
-      <a class="btn btn-secondary mt-4" [routerLink]="['/administrador/consultas']">Voltar para a Lista</a>
+      @if (isPagamentosRoute) {}
+      <a class="btn btn-secondary mt-4" [routerLink]="['../']">Voltar para a Lista</a>
     } @else {
       <a class="btn btn-secondary mt-4" [routerLink]="['/medico/consultas']">Voltar para a Lista</a>
     }

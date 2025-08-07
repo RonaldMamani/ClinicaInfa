@@ -35,6 +35,10 @@ export class DetalhesConsultaComponent implements OnInit {
     return this.router.url.startsWith('/administrador');
   }
 
+  get isPagamentosRoute(): boolean {
+    return this.router.url.startsWith('/administrador/pagamentos');
+  }
+
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {

@@ -50,14 +50,21 @@
                 <i class="bi bi-info-circle"></i>
                 <span class="ms-2">Detalhes</span>
               </a>
-              <a class="btn btn-primary btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'remarcar']" title="Remarcar">
-                <i class="bi bi-pencil"></i>
-                <span class="ms-2">Remarcar</span>
-              </a>
-              <button class="btn btn-danger btn-sm align-items-center" title="Cancelar" (click)="openCancelModal(consulta.id)">
-                <i class="bi bi-trash"></i>
-                <span class="ms-2">Cancelar</span>
-              </button>
+              @if (consulta.status == 'concluida') {
+                <a class="btn btn-success btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'finalizar']" title="Finalizar Consulta">
+                  <i class="bi bi-clipboard2-check"></i>
+                  <span class="ms-2">Finalizar</span>
+                </a>
+              } @else {
+                <a class="btn btn-primary btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'remarcar']" title="Remarcar">
+                  <i class="bi bi-pencil"></i>
+                  <span class="ms-2">Remarcar</span>
+                </a>
+                <button class="btn btn-danger btn-sm align-items-center" title="Cancelar" (click)="openCancelModal(consulta.id)">
+                  <i class="bi bi-trash"></i>
+                  <span class="ms-2">Cancelar</span>
+                </button>
+              }
             </td>
           </tr>
         }

@@ -1,23 +1,18 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { catchError, map, Observable, throwError } from 'rxjs';
-import { FullResponsaveisApiResponse, ResponsaveisApiResponse, Responsavel, ResponsavelApiResponse, ResponsavelDetailsResponse, SingleResponsavelApiResponse, UpdateResponsavelPayload } from '../../core/models/responsavel.model';
+import { catchError, Observable, throwError } from 'rxjs';
+import { FullResponsaveisApiResponse, ResponsaveiPaginateResponse, ResponsaveisApiResponse, ResponsavelDetailsResponse } from '../../core/models/responsavel.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResponsaveisService {
-  private apiBaseUrl = 'http://localhost:8000/api';
   private apiUrl = 'http://localhost:8000/api/responsaveis';
 
   constructor(private http: HttpClient) { }
 
   getTodosResponsaveisAtivos(): Observable<ResponsaveisApiResponse> {
     return this.http.get<ResponsaveisApiResponse>(`${this.apiUrl}/ativos`);
-  }
-
-  getResponsavelById(id: number): Observable<ResponsavelDetailsResponse> {
-    return this.http.get<ResponsavelDetailsResponse>(`${this.apiBaseUrl}/responsaveis/${id}`);
   }
 
   updateResponsavel(id: number, data: any): Observable<any> {
@@ -28,42 +23,30 @@ export class ResponsaveisService {
   }
 
   deleteResponsavel(id: number): Observable<any> {
-    return this.http.delete<any>(`${this.apiBaseUrl}/responsaveis/${id}`);
+    return this.http.delete<any>(`${this.apiUrl}/${id}`);
   }
 
-
-  //pagina admin
-  getTodosResponsaveis(activePage: number = 1, inactivePage: number = 1): Observable<FullResponsaveisApiResponse> {
-    let params = new HttpParams()
-      .set('active_page', activePage.toString())
-      .set('inactive_page', inactivePage.toString());
-
-    return this.http.get<FullResponsaveisApiResponse>(this.apiUrl, { params }).pipe(
-      catchError(this.handleError)
-    );
-  }
-
-  getResponsaveisAtivosPaginados(page: number = 1, perPage: number = 10): Observable<ResponsavelApiResponse> {
+  getResponsaveisAtivosPaginados(page: number = 1, perPage: number = 10): Observable<ResponsaveiPaginateResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
-    return this.http.get<ResponsavelApiResponse>(`${this.apiUrl}/page-ativos`, { params }).pipe(
+    return this.http.get<ResponsaveiPaginateResponse>(`${this.apiUrl}/page-ativos`, { params }).pipe(
       catchError(this.handleError)
     );
   }
 
-  getResponsaveisInativosPaginados(page: number = 1, perPage: number = 10): Observable<ResponsavelApiResponse> {
+  getResponsaveisInativosPaginados(page: number = 1, perPage: number = 10): Observable<ResponsaveiPaginateResponse> {
     let params = new HttpParams()
       .set('page', page.toString())
       .set('per_page', perPage.toString());
-    return this.http.get<ResponsavelApiResponse>(`${this.apiUrl}/page-inativos`, { params }).pipe(
+    return this.http.get<ResponsaveiPaginateResponse>(`${this.apiUrl}/page-inativos`, { params }).pipe(
       catchError(this.handleError)
     );
   }
 
-  getResponsavelDetalhes(id: number): Observable<SingleResponsavelApiResponse> {
+  getResponsavelDetalhes(id: number): Observable<ResponsavelDetailsResponse> {
     const url = `${this.apiUrl}/${id}`;
-    return this.http.get<SingleResponsavelApiResponse>(url).pipe(
+    return this.http.get<ResponsavelDetailsResponse>(url).pipe(
       catchError(this.handleError)
     );
   }

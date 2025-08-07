@@ -6,6 +6,8 @@ import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.mo
 import { CommonModule } from '@angular/common';
 import { Medico } from '../../../core/models/medico.model';
 import { forkJoin } from 'rxjs';
+import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
+import { MedicosService } from '../../../controllers/medicos/medicos.service';
 
 @Component({
   selector: 'app-adicionar-consulta',
@@ -30,7 +32,9 @@ export class AdicionarConsultaComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private consultasService: ConsultasService
+    private consultasService: ConsultasService,
+    private pacientesService: PacientesService,
+    private medicosService: MedicosService
   ) {
     this.criarForm = this.fb.group({
       id_paciente: ['', Validators.required],
@@ -52,8 +56,8 @@ export class AdicionarConsultaComponent implements OnInit {
     this.errorMessage = null;
 
     forkJoin({
-      pacientes: this.consultasService.getPacientes(),
-      medicos: this.consultasService.getMedicos()
+      pacientes: this.pacientesService.getPacientes(),
+      medicos: this.medicosService.GetMedicos()
     }).subscribe({
       next: (results) => {
         this.pacientes = results.pacientes;

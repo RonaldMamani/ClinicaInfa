@@ -40,7 +40,8 @@
                   <span class="badge rounded-pill text-uppercase p-2" [ngClass]="{
                     'bg-warning text-dark': consulta.status === 'agendada',
                     'bg-success': consulta.status === 'concluida',
-                    'bg-danger': consulta.status === 'cancelada'
+                    'bg-danger': consulta.status === 'cancelada',
+                    'bg-dark': consulta.status === 'finalizada'
                   }">
                     {{ consulta.status }}
                   </span>
@@ -51,11 +52,22 @@
                         <span class="ms-2">Detalhes</span>
                     </a>
                     @if (isAdministradorRoute) {
-                      @if (consulta.status != 'cancelada') {
-                        <a class="btn btn-danger btn-sm" [routerLink]="[ consulta.id]" title="Cancelar Consulta">
-                          <i class="bi bi-trash"></i>
-                          <span class="ms-2">Cancelar</span>
-                        </a>
+                      @if (consulta.status != 'cancelada' ) {
+                        @if (consulta.status == 'concluida') {
+                          <a class="btn btn-success btn-sm me-2 align-items-center" [routerLink]="['/administrador/consultas', consulta.id, 'finalizar']" title="Finalizar Consulta">
+                            <i class="bi bi-clipboard2-check"></i>
+                            <span class="ms-2">Finalizar</span>
+                          </a>
+                        } @else if (consulta.status == 'agendada') {
+                          <a class="btn btn-warning btn-sm me-2 align-items-center" [routerLink]="['/administrador/consultas', consulta.id, 'editar']" title="Editar Consulta">
+                            <i class="bi bi-pencil"></i>
+                            <span class="ms-2">Editar</span>
+                          </a>
+                          <a class="btn btn-danger btn-sm" [routerLink]="[ consulta.id]" title="Cancelar Consulta">
+                            <i class="bi bi-trash"></i>
+                            <span class="ms-2">Cancelar</span>
+                          </a>
+                        }
                       }
                     }
                 </td>

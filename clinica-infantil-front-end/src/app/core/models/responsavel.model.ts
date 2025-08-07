@@ -50,35 +50,10 @@ export interface PaginatedData<T> {
   to: number;
 }
 
-export interface ResponsaveisAtivosApiResponse {
+export interface ResponsaveiPaginateResponse {
   status: boolean;
   message: string;
   responsaveis: PaginatedData<Responsavel>;
-}
-
-export interface ResponsaveisInativosApiResponse {
-  status: boolean;
-  message: string;
-  responsaveis: PaginatedData<Responsavel>;
-}
-
-export interface AllResponsaveisApiResponse {
-  status: boolean;
-  message: string;
-  responsaveis_ativos: Responsavel[];
-  responsaveis_inativos: Responsavel[];
-}
-
-export interface ResponsavelApiResponse {
-  status: boolean;
-  message: string;
-  responsaveis: PaginatedData<Responsavel>;
-}
-
-export interface SingleResponsavelApiResponse {
-  status: boolean;
-  message: string;
-  responsavel: Responsavel;
 }
 
 export interface FullResponsaveisApiResponse {

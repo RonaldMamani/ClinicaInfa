@@ -2,12 +2,17 @@
   <h2>Adicionar Novo Cliente</h2>
   <p class="lead">Selecione o tipo de cliente que você deseja adicionar.</p>
 
-  <div class="d-grid gap-2 col-6 mx-auto mt-5">
-    <button class="btn btn-primary btn-lg" (click)="navigateTo('/secretaria/clientes/adicionar/paciente')">
-      Adicionar Paciente
-    </button>
-    <button class="btn btn-secondary btn-lg" (click)="navigateTo('/secretaria/clientes/adicionar/responsavel')">
-      Adicionar Responsável
-    </button>
+  <div class="row ">
+    <div class="col-lg-6 bg-primary h-100">
+      <button class="btn btn-primary btn-lg" (click)="navigateTo('/secretaria/clientes/adicionar/paciente')">
+        Adicionar Paciente
+      </button>
+    </div>
+
+    <div class="col-lg-6 bg-primary-subtle">
+      <button class="btn btn-secondary btn-lg" (click)="navigateTo('/secretaria/clientes/adicionar/responsavel')">
+        Adicionar Responsável
+      </button>
+    </div>
   </div>
 </div>

@@ -4,6 +4,7 @@ import { ConsultasService } from '../../../controllers/consultas/consultas.servi
 import { Router, RouterModule } from '@angular/router';
 import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
 import { CommonModule } from '@angular/common';
+import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
 
 @Component({
   selector: 'app-agendar-consulta',
@@ -23,6 +24,7 @@ export class AgendarConsultaComponent implements OnInit{
     private fb: FormBuilder,
     private consultasService: ConsultasService,
     private router: Router,
+    private pacientesService: PacientesService
   ) {}
 
   ngOnInit(): void {
@@ -43,7 +45,7 @@ export class AgendarConsultaComponent implements OnInit{
 
   carregarPacientes(): void {
     this.isLoading = true;
-    this.consultasService.getPacientesAgendar().subscribe({
+    this.pacientesService.getPacientesAtivos().subscribe({
       next: (response: PacientesApiResponse) => {
         this.pacientes = response.pacientes;
         this.isLoading = false;

@@ -1,0 +1,71 @@
+<!-- src/app/pagamentos-list/pagamentos-list.component.html -->
+<div class="dashboard container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Lista de Pagamentos</h2>
+    </div>
+
+    @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando pagamentos...</div>
+    }
+    @if (errorMessage) {
+    <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
+    }
+    @if (!isLoading && !errorMessage && pagamentos.length === 0) {
+    <div class="alert alert-warning mt-3">Nenhum pagamento encontrado.</div>
+    } @else if (!isLoading && !errorMessage && pagamentos.length > 0) {
+    <div class="table-responsive">
+        <table class="table table-hover table-striped">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID Pagamento</th>
+                    <th>Paciente</th>
+                    <th>Médico</th>
+                    <th>Valor</th>
+                    <th>Data</th>
+                    <th>Forma de Pagamento</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (pagamento of pagamentos; track pagamento.id) {
+                <tr>
+                    <td>{{ pagamento.id }}</td>
+                    <td>{{ pagamento.consulta.paciente.cliente.nome }}</td>
+                    <td>{{ pagamento.consulta.medico.usuario.funcionario.nome }}</td>
+                    <td>R$ {{ pagamento.valor | number:'1.2-2' }}</td>
+                    <td>{{ pagamento.data_pagamento | date:'dd/MM/yyyy' }}</td>
+                    <td>{{ pagamento.metodo_pagamento }}</td>
+                    <td>
+                        <a class="btn btn-info me-2 btn-sm" [routerLink]="[pagamento.consulta.id]" title="Ver Detalhes">
+                            <i class="bi bi-info-circle"></i>
+                            <span class="ms-2">Detalhes</span>
+                        </a>
+                        <a class="btn btn-warning me-2 btn-sm" [routerLink]="[pagamento.id, 'editar']" title="Ver Detalhes">
+                            <i class="bi bi-pencil"></i>
+                            <span class="ms-2">Editar</span>
+                        </a>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (pagamentos.length >10) {
+        <!-- Controles de Paginação -->
+        @if (paginator) {
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <button class="btn btn-primary" (click)="prevPage()" [disabled]="!paginator.prev_page_url">
+                Página Anterior
+            </button>
+            <span class="text-muted">Página {{ currentPage }} de {{ paginator.last_page }} (Total: {{ paginator.total }})</span>
+            <button class="btn btn-primary" (click)="nextPage()" [disabled]="!paginator.next_page_url">
+                Próxima Página
+            </button>
+        </div>
+        }
+    }
+    }
+
+    <a class="btn btn-secondary mt-4" [routerLink]="['/administrador']">Voltar para o Dashboard</a>
+</div>

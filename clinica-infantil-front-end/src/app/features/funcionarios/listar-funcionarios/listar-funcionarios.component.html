@@ -1,1 +1,147 @@
-<p>listar-funcionarios works!</p>
+<div class="dashboard container my-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Lista de Funcionarios</h2>
+    <a class="btn btn-info text-dark fw-bold" [routerLink]="['/administrador/funcionarios/adicionar']">
+        <i class="bi bi-person-plus-fill me-1"></i>
+        Adicionar Funcionario
+    </a>
+  </div>
+
+  @if (isLoading) {
+    <div class="alert alert-info mt-3">Carregando Funcionarios...</div>
+  }
+
+  @if (error) {
+    <div class="alert alert-danger mt-3">{{ error }}</div>
+  }
+
+  @if (successMessage) {
+    <div class="alert alert-success mt-3">{{ successMessage }}</div>
+  }
+
+  <!-- Seção de Usuários Ativos -->
+  @if (!isLoading && usuariosAtivos.length === 0) {
+    <div class="alert alert-warning mt-3">Nenhum usuário ativo encontrado.</div>
+  } @else if (!isLoading && usuariosAtivos.length > 0) {
+    <h3 class="mt-5 mb-3">Funcionarios Ativos</h3>
+    <div class="table-responsive">
+      <table class="table table-hover table-striped">
+        <thead class="table-dark">
+          <tr class="">
+            <th>ID</th>
+            <th>Nome do Funcionário</th>
+            <th>Cargo</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuariosAtivos; track usuario.id) {
+            <tr>
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.funcionario.nome || 'N/A' }}</td>
+              <td>{{ usuario.funcionario.cargo }}</td>
+              <td>{{ usuario.funcionario.email_empresarial || 'N/A' }}</td>
+              <td>{{ usuario.funcionario.telefone_empresarial || 'N/A' }}</td>
+              <td>
+                <div class="d-flex flex-column flex-md-row gap-2">
+                  <a [routerLink]="['/administrador/funcionarios', usuario.id]" class="btn btn-sm btn-info">
+                        <i class="bi bi-info-circle"></i> 
+                        Detalhes
+                    </a>
+                    <a [routerLink]="['/administrador/funcionarios', usuario.id, 'editar']" class="btn btn-sm btn-warning">
+                         <i class="bi bi-pencil"></i> 
+                        Editar
+                    </a>
+                  @if (usuario.ativo === 1) {
+                    <button class="btn btn-sm btn-danger" (click)="openConfirmModal(usuario, 'desativar')">
+                        <i class="bi bi-trash"></i>
+                        Desativar
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Seção de Usuários Inativos -->
+  @if (!isLoading && usuariosInativos.length === 0) {
+    <div class="alert alert-info mt-3">Nenhum usuário inativo encontrado.</div>
+  } @else if (!isLoading && usuariosInativos.length > 0) {
+    <h3 class="mt-5 mb-3">Funcionarios Inativos</h3>
+    <div class="table-responsive">
+      <table class="table table-hover table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Nome do Funcionário</th>
+            <th>Cargo</th>
+            <th>Email</th>
+            <th>Telefone</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (usuario of usuariosInativos; track usuario.id) {
+            <tr>
+              <td>{{ usuario.id }}</td>
+              <td>{{ usuario.funcionario.nome || 'N/A' }}</td>
+              <td>{{ usuario.funcionario.cargo }}</td>
+              <td>{{ usuario.funcionario.email_empresarial || 'N/A' }}</td>
+              <td>{{ usuario.funcionario.telefone_empresarial || 'N/A' }}</td>
+              <td>
+                <div class="d-flex flex-column flex-md-row gap-2">
+                    <a [routerLink]="['/administrador/funcionarios', usuario.id]" class="btn btn-sm btn-info">
+                        Detalhes
+                    </a>
+                    <a [routerLink]="['/administrador/funcionarios', usuario.id, 'editar']" class="btn btn-sm btn-warning">
+                        Editar
+                    </a>
+                    @if (usuario.ativo === 0) {
+                        <button class="btn btn-sm btn-success" (click)="openConfirmModal(usuario, 'reativar')">
+                            Reativar
+                        </button>
+                    }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+
+  <!-- Modal de Confirmação -->
+  @if (showConfirmModal) {
+    <div class="modal d-block" tabindex="-1" role="dialog" style="background-color: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-{{ actionType === 'desativar' ? 'danger' : 'success' }} text-white">
+            <h5 class="modal-title">Confirmar {{ actionType === 'desativar' ? 'Desativação' : 'Reativação' }}</h5>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeConfirmModal()"></button>
+          </div>
+          <div class="modal-body">
+            <p>Você tem certeza que deseja {{ actionType }} o usuário <strong>{{ selectedUsuario?.username }}</strong>?</p>
+            @if (error) {
+              <div class="alert alert-danger mt-3">{{ error }}</div>
+            }
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeConfirmModal()">Cancelar</button>
+            <button type="button" class="btn btn-{{ actionType === 'desativar' ? 'danger' : 'success' }}" (click)="confirmAction()">
+              {{ actionType === 'desativar' ? 'Desativar' : 'Reativar' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+    <a class="btn btn-secondary" [routerLink]="['/administrador/dashboard']">
+        Voltar para o Dashboard
+    </a>
+</div>

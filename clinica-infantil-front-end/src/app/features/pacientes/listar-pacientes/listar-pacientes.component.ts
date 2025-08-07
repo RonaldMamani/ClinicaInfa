@@ -38,8 +38,8 @@ export class ListarPacientesComponent implements OnInit {
     this.error = null;
 
     forkJoin({
-      ativos: this.pacientesService.getActivePatients(),
-      inativos: this.pacientesService.getInactivePatients()
+      ativos: this.pacientesService.getPacientesAtivos(),
+      inativos: this.pacientesService.getPacientesInativos()
     }).subscribe({
       next: (results) => {
         if (results.ativos && results.ativos.pacientes) {
