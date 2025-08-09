@@ -1,4 +1,5 @@
 import { Consulta } from "./consultas.model";
+import { PaginatedApiResponse } from "./Paginate.model";
 
 export interface Pagamento {
     id: number;
@@ -9,18 +10,14 @@ export interface Pagamento {
     consulta: Consulta
 }
 
-export interface PaginatedResponse {
-    current_page: number;
-    data: Pagamento[];
-    first_page_url: string;
-    from: number;
-    last_page: number;
-    last_page_url: string;
-    links: any[];
-    next_page_url: string | null;
-    path: string;
-    per_page: number;
-    prev_page_url: string | null;
-    to: number;
-    total: number;
+export interface PagamentoResponse {
+    status: boolean;
+    message: string;
+    pagamento: Pagamento;
+}
+
+export interface PagamentosPaginateApiResponse {
+    status: boolean;
+    message: string;
+    pagamentos: PaginatedApiResponse<Pagamento[]>;
 }

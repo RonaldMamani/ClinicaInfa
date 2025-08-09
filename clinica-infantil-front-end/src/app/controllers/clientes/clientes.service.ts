@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { ClienteDetailsResponse, CreateClientePayload
-} from '../../core/models/cliente.model';
+import { ClienteDetailsResponse, CreateClientePayload } from '../../core/models/cliente.model';
 import { Cidade } from '../../core/models/cidades.model';
 
 export interface CidadesApiResponse {

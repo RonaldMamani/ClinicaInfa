@@ -72,7 +72,7 @@ export class DashboardSecretariaComponent implements OnInit {
           this.quantidadeTotal = results.totalConsultas.quantidade_total;
         }
         if (results.agendadas) {
-          this.quantidadeAgendadas = results.agendadas.quantidade_agendadas;
+          this.quantidadeAgendadas = results.agendadas.quantidade;
         }
         if (results.pacientes) {
           this.pacientesAtivos = results.pacientes.dados.ativos;

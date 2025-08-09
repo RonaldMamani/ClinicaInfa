@@ -1,4 +1,4 @@
-<div class="container my-5">
+<div class="dashboard container my-5">
   <h2>Atender Consulta</h2>
 
   @if (isLoading) {
@@ -80,7 +80,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <a class="btn btn-secondary" [routerLink]="['/consultas/agendadas']">Cancelar</a>
+        <a class="btn btn-secondary" [routerLink]="['/medico/agendados']">Cancelar</a>
         <button type="submit" class="btn btn-success" [disabled]="atenderConsultaForm.invalid || isSubmitting">
           @if (isSubmitting) {
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

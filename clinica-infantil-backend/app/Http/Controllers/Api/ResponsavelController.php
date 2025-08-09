@@ -87,36 +87,6 @@ class ResponsavelController extends Controller
         }
     }
 
-    public function getPaginatedResponsaveis(Request $request, int $perPage = 10): JsonResponse
-    {
-        try {
-            $activePage = $request->query('active_page', 1);
-            $inactivePage = $request->query('inactive_page', 1);
-
-            $responsaveisAtivos = Responsavel::whereHas('cliente', function ($query) {
-                $query->where('ativo', true);
-            })->with($this->relations)->paginate($perPage, ['*'], 'active_page', $activePage);
-
-            $responsaveisInativos = Responsavel::whereHas('cliente', function ($query) {
-                $query->where('ativo', false);
-            })->with($this->relations)->paginate($perPage, ['*'], 'inactive_page', $inactivePage);
-
-            return response()->json([
-                'status' => true,
-                'message' => "Responsáveis paginados ({$perPage} por página) listados com sucesso.",
-                'responsaveis_ativos' => $responsaveisAtivos,
-                'responsaveis_inativos' => $responsaveisInativos,
-            ], 200);
-        } catch (\Exception $e) {
-            Log::error('Erro ao listar responsáveis paginados: ' . $e->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao listar os responsáveis paginados.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     public function responsaveisAtivos(Request $request): JsonResponse
     {
         try {
@@ -167,6 +137,53 @@ class ResponsavelController extends Controller
         }
     }
 
+    public function responsaveisListar(Request $request): JsonResponse
+    {
+        try {
+            $perPage = $request->query('per_page', 10);
+            $page = $request->query('page', 1);
+            $status = $request->query('status'); // Pega o parâmetro 'status' da requisição
+
+            // Inicia a query com as relações necessárias
+            $query = Responsavel::with($this->relations);
+
+            // Aplica o filtro de status se o parâmetro for fornecido
+            if (isset($status)) {
+                // Converte a string do parâmetro para booleano
+                $ativo = filter_var($status, FILTER_VALIDATE_BOOLEAN);
+
+                $query->whereHas('cliente', function ($q) use ($ativo) {
+                    $q->where('ativo', $ativo);
+                });
+            }
+
+            // Aplica a paginação
+            $responsaveis = $query->paginate($perPage, ['*'], 'page', $page);
+
+            // Define a mensagem de sucesso com base no filtro
+            $message = 'Responsáveis listados com sucesso.';
+            if ($status === 'true') {
+                $message = 'Responsáveis ativos listados com sucesso.';
+            } elseif ($status === 'false') {
+                $message = 'Responsáveis inativos listados com sucesso.';
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => $message,
+                'responsaveis' => $responsaveis,
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao listar responsáveis: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao listar os responsáveis.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Exibe um responsável específico pelo seu ID.
      *
@@ -202,40 +219,6 @@ class ResponsavelController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Cria um novo responsável no banco de dados.
-     * A validação dos dados é realizada automaticamente pelo ResponsavelRequest.
-     *
-     * @param \App\Http\Requests\ResponsavelRequest $request A requisição validada pelo ResponsavelRequest.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(ResponsavelRequest $request)
-    {
-        DB::beginTransaction(); // Inicia a transação
-        try {
-            // Cria um novo responsável com os dados validados
-            $responsavel = Responsavel::create($request->validated());
-            DB::commit(); // Confirma a transação
-
-            // Retorna a confirmação de criação do responsável
-            return response()->json([
-                'status' => true,
-                'message' => 'Responsável criado com sucesso!',
-                'responsavel' => $responsavel,
-            ], 201); // Código 201 Created
-
-        } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
-            Log::error('Erro ao criar responsável: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao criar o responsável. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     /**
      * Atualiza um responsável existente no banco de dados.
      * A validação dos dados é realizada automaticamente pelo ResponsavelRequest.

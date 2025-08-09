@@ -1,4 +1,3 @@
-<!-- src/app/pagamentos-list/pagamentos-list.component.html -->
 <div class="dashboard container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2>Lista de Pagamentos</h2>
@@ -51,19 +50,29 @@
         </table>
     </div>
 
-    @if (pagamentos.length >10) {
-        <!-- Controles de Paginação -->
-        @if (paginator) {
-        <div class="d-flex justify-content-between align-items-center mt-4">
-            <button class="btn btn-primary" (click)="prevPage()" [disabled]="!paginator.prev_page_url">
-                Página Anterior
-            </button>
-            <span class="text-muted">Página {{ currentPage }} de {{ paginator.last_page }} (Total: {{ paginator.total }})</span>
-            <button class="btn btn-primary" (click)="nextPage()" [disabled]="!paginator.next_page_url">
-                Próxima Página
-            </button>
-        </div>
-        }
+    <!-- Controles de Paginação -->
+    @if (paginator && paginator.links.length > 10) {
+      <nav aria-label="Navegação da tabela de pagamentos" class="mt-4">
+        <ul class="pagination justify-content-center">
+          @for (link of paginator.links; track $index) {
+            <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
+              <button
+                type="button"
+                class="page-link"
+                (click)="onPageChange(link.url)"
+                [disabled]="!link.url">
+                @if (link.label === '&laquo; Previous') {
+                  <span aria-hidden="true">&laquo; Anterior</span>
+                } @else if (link.label === 'Next &raquo;') {
+                  <span aria-hidden="true">Próximo &raquo;</span>
+                } @else {
+                  {{ link.label }}
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
     }
     }
 

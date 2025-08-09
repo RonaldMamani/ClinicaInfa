@@ -6,16 +6,16 @@
   }
 
   @if (hasError) {
-    <div class="alert alert-danger mt-3">{{ hasError }}</div>
+    <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
   }
 
-  @if (!isLoading && !prontuarios.length) {
+  @if (!isLoading && prontuarios.length === 0) {
     <div class="alert alert-warning mt-3">Nenhum prontuário encontrado.</div>
   }
 
-  @if (!isLoading && prontuarios.length) {
+  @if (!isLoading && prontuarios.length > 0) {
     <div class="row">
-      @for (prontuario of prontuarios; track prontuario.id) {
+      @for (prontuario of prontuarios; track prontuario.id; let i = $index) {
         <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-4">
           <div class="card h-100 shadow-sm prontuario-card">
             <div class="card-body d-flex flex-column align-items-center text-center">
@@ -38,6 +38,31 @@
         </div>
       }
     </div>
+
+    <!-- Adição da Paginação -->
+    @if (pagination && pagination.links.length > 10) {
+      <nav aria-label="Navegação da tabela de prontuários" class="mt-4">
+        <ul class="pagination justify-content-center">
+          @for (link of pagination.links; track $index) {
+            <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
+              <button
+                type="button"
+                class="page-link"
+                (click)="onPageChange(link.url)"
+                [disabled]="!link.url">
+                @if (link.label === '&laquo; Previous') {
+                  <span aria-hidden="true">&laquo; Anterior</span>
+                } @else if (link.label === 'Next &raquo;') {
+                  <span aria-hidden="true">Próximo &raquo;</span>
+                } @else {
+                  {{ link.label }}
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
+    }
   }
-  <a class="btn btn-secondary mb-auto" [routerLink]="['/medico']">Voltar</a>
+  <a class="btn btn-secondary mt-4" [routerLink]="['/medico']">Voltar</a>
 </div>

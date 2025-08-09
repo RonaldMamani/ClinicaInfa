@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
-import { Consulta, ConsultasApiResponse } from '../../../core/models/consultas.model';
+import { Consulta, ConsultasPaginationApiResponse, Pagination } from '../../../core/models/consultas.model';
 
 @Component({
   selector: 'app-listar-consultas-agendadas',
@@ -13,6 +13,7 @@ import { Consulta, ConsultasApiResponse } from '../../../core/models/consultas.m
 })
 export class ListarConsultasAgendadasComponent implements OnInit {
   consultas: Consulta[] = [];
+  pagination: Pagination | null = null;
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
@@ -26,14 +27,15 @@ export class ListarConsultasAgendadasComponent implements OnInit {
     this.carregarConsultasAgendadas();
   }
 
-  carregarConsultasAgendadas(): void {
+  carregarConsultasAgendadas(page: number = 1): void {
     this.isLoading = true;
     this.error = null;
 
-    this.consultasService.getConsultasAgendadas().subscribe({
-      next: (response: ConsultasApiResponse) => {
-        // CORRIGIDO: Acessando a propriedade 'consultas'
-        this.consultas = response.consultas || [];
+    this.consultasService.getConsultasAgendadasListar(page).subscribe({
+      next: (response: ConsultasPaginationApiResponse) => {
+        // Acessa o array de consultas dentro do objeto de paginação
+        this.consultas = response.consultas.data || [];
+        this.pagination = response.consultas;
         this.isLoading = false;
       },
       error: (err) => {
@@ -44,38 +46,51 @@ export class ListarConsultasAgendadasComponent implements OnInit {
     });
   }
 
+  onPageChange(url: string | null): void {
+    if (url) {
+      this.isLoading = true;
+      const pageNumber = this.extractPageNumberFromUrl(url);
+      if (pageNumber) {
+        this.carregarConsultasAgendadas(pageNumber);
+      }
+    }
+  }
+
+  private extractPageNumberFromUrl(url: string): number | null {
+    const params = new URLSearchParams(new URL(url).search);
+    const page = params.get('page');
+    return page ? parseInt(page, 10) : null;
+  }
+
   openCancelModal(id: number): void {
     this.consultaToCancelId = id;
     this.showCancelModal = true;
   }
 
-  // Fecha o modal de confirmação
   closeCancelModal(): void {
     this.showCancelModal = false;
     this.consultaToCancelId = null;
   }
 
-  // Método que executa o cancelamento após a confirmação no modal
   confirmCancel(): void {
     if (this.consultaToCancelId) {
       this.isLoading = true;
       this.consultasService.cancelarConsulta(this.consultaToCancelId).subscribe({
         next: (response) => {
           this.successMessage = response.message || 'Consulta cancelada com sucesso!';
-          this.closeCancelModal(); // Fecha o modal após o sucesso
+          this.closeCancelModal();
           this.carregarConsultasAgendadas(); // Recarrega a lista
         },
         error: (err) => {
           this.error = 'Erro ao cancelar a consulta.';
           this.isLoading = false;
-          this.closeCancelModal(); // Fecha o modal e exibe o erro
+          this.closeCancelModal();
           console.error(err);
         }
       });
     }
   }
 
-  // O método antigo, agora apenas abre o modal
   cancelarConsulta(id: number): void {
     this.openCancelModal(id);
   }

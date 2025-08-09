@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
-import { FullResponsaveisApiResponse, ResponsaveiPaginateResponse, ResponsaveisApiResponse, ResponsavelDetailsResponse } from '../../core/models/responsavel.model';
+import { ResponsaveiPaginateResponse, ResponsaveisApiResponse, ResponsavelDetailsResponse } from '../../core/models/responsavel.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +10,19 @@ export class ResponsaveisService {
   private apiUrl = 'http://localhost:8000/api/responsaveis';
 
   constructor(private http: HttpClient) { }
+
+  getResponsaveisPaginados(page: number = 1, status: boolean | undefined = undefined): Observable<ResponsaveiPaginateResponse> {
+    let params = new HttpParams().set('page', page.toString());
+
+    // Adiciona o parâmetro 'status' apenas se ele for fornecido
+    if (status !== undefined) {
+      params = params.set('status', status.toString());
+    }
+
+    return this.http.get<ResponsaveiPaginateResponse>(`${this.apiUrl}/listar`, { params }).pipe(
+      catchError(this.handleError)
+    );
+  }
 
   getTodosResponsaveisAtivos(): Observable<ResponsaveisApiResponse> {
     return this.http.get<ResponsaveisApiResponse>(`${this.apiUrl}/ativos`);
@@ -27,9 +40,7 @@ export class ResponsaveisService {
   }
 
   getResponsaveisAtivosPaginados(page: number = 1, perPage: number = 10): Observable<ResponsaveiPaginateResponse> {
-    let params = new HttpParams()
-      .set('page', page.toString())
-      .set('per_page', perPage.toString());
+    let params = new HttpParams().set('page', page.toString()).set('per_page', perPage.toString());
     return this.http.get<ResponsaveiPaginateResponse>(`${this.apiUrl}/page-ativos`, { params }).pipe(
       catchError(this.handleError)
     );

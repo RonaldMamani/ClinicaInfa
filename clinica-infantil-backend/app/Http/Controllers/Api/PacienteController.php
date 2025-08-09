@@ -42,44 +42,6 @@ class PacienteController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Retorna a quantidade total de pacientes.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function contarPacientes()
-    {
-        try {
-            // Conta os pacientes cujo cliente relacionado tem 'ativo' = true
-            $ativos = Paciente::whereHas('cliente', function ($query) {
-                $query->where('ativo', true);
-            })->count();
-            
-            // Conta os pacientes cujo cliente relacionado tem 'ativo' = false
-            $inativos = Paciente::whereHas('cliente', function ($query) {
-                $query->where('ativo', false);
-            })->count();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Contagem de pacientes ativos e inativos realizada com sucesso.',
-                'dados' => [
-                    'ativos' => $ativos,
-                    'inativos' => $inativos
-                ]
-            ], 200);
-
-        } catch (\Exception $e) {
-            Log::error('Erro ao contar pacientes: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao contar os pacientes. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     /**
      * Retorna todos os pacientes cujo cliente associado está ativo.
      *
@@ -109,6 +71,46 @@ class PacienteController extends Controller
         }
     }
 
+    public function pacientesPaginacao(Request $request)
+    {
+        try {
+            // Inicia a query do Paciente e carrega os relacionamentos necessários
+            $query = Paciente::with($this->relations);
+
+            // Filtra os pacientes com base no parâmetro 'ativo' na URL
+            // Ex: /api/pacientes/paginacao?ativo=true ou /api/pacientes/paginacao?ativo=false
+            if ($request->has('ativo')) {
+                $ativo = filter_var($request->input('ativo'), FILTER_VALIDATE_BOOLEAN);
+                $query->whereHas('cliente', function ($q) use ($ativo) {
+                    $q->where('ativo', $ativo);
+                });
+            }
+
+            // Pagina os resultados, 10 por página por padrão
+            $pacientes = $query->paginate(10);
+
+            // Monta a mensagem de sucesso com base no filtro aplicado
+            $message = 'Lista de pacientes paginada obtida com sucesso.';
+            if ($request->has('ativo')) {
+                $message = $ativo ? 'Lista de pacientes ativos paginada obtida com sucesso.' : 'Lista de pacientes inativos paginada obtida com sucesso.';
+            }
+
+            return response()->json([
+                'status' => true,
+                'message' => $message,
+                'pacientes' => $pacientes,
+            ], 200);
+
+        } catch (Exception $e) {
+            Log::error('Erro ao listar pacientes paginados: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao buscar os pacientes. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     /**
      * Retorna todos os pacientes cujo cliente associado está inativo.
      *
@@ -128,7 +130,7 @@ class PacienteController extends Controller
                 'pacientes' => $pacientes,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar pacientes inativos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -162,7 +164,7 @@ class PacienteController extends Controller
                 'paciente' => $paciente,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao buscar paciente por ID: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -292,5 +294,42 @@ class PacienteController extends Controller
             'status' => true,
             'message' => 'Paciente desativado com sucesso.'
         ]);
+    }
+
+    /**
+     * Retorna a quantidade total de pacientes.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function contarPacientes()
+    {
+        try {
+            // Conta os pacientes cujo cliente relacionado tem 'ativo' = true
+            $ativos = Paciente::whereHas('cliente', function ($query) {
+                $query->where('ativo', true);
+            })->count();
+            
+            // Conta os pacientes cujo cliente relacionado tem 'ativo' = false
+            $inativos = Paciente::whereHas('cliente', function ($query) {
+                $query->where('ativo', false);
+            })->count();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Contagem de pacientes ativos e inativos realizada com sucesso.',
+                'dados' => [
+                    'ativos' => $ativos,
+                    'inativos' => $inativos
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erro ao contar pacientes: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao contar os pacientes. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
     }
 }

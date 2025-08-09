@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { AuthService } from '../../../controllers/auth/auth.service';
-import { Consulta, ConsultasApiResponse } from '../../../core/models/consultas.model';
+import { Consulta, ConsultasApiResponse, ConsultasPaginationApiResponse, Pagination } from '../../../core/models/consultas.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 
@@ -13,6 +13,7 @@ import { RouterLink, RouterModule } from '@angular/router';
 })
 export class MedicoConsultasComponent {
   consultas: Consulta[] = [];
+  pagination: Pagination | null = null;
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
@@ -29,15 +30,23 @@ export class MedicoConsultasComponent {
     this.carregarConsultasDoMedico();
   }
 
-  carregarConsultasDoMedico(): void {
+  carregarConsultasDoMedico(pageUrl: string | null = null): void {
     this.isLoading = true;
     this.error = null;
     this.successMessage = null;
     
-    this.consultasService.getConsultasDoMedico().subscribe({
-      next: (response: ConsultasApiResponse) => {
-        this.consultas = response.consultas || [];
+    // O tipo de resposta esperado agora é ConsultasPaginationApiResponse
+    this.consultasService.getConsultasDoMedico(pageUrl).subscribe({
+      next: (response: ConsultasPaginationApiResponse) => {
+        // Acessamos os dados da consulta de dentro do objeto de paginação
+        this.consultas = response.consultas.data || [];
+        // Armazenamos o objeto de paginação completo para uso no template
+        this.pagination = response.consultas;
         this.isLoading = false;
+        
+        // --- ADIÇÃO PARA DEBUG ---
+        console.log('Objeto de paginação recebido:', this.pagination);
+        // ------------------------
       },
       error: (err) => {
         this.error = 'Falha ao carregar as consultas do médico.';
@@ -45,6 +54,12 @@ export class MedicoConsultasComponent {
         console.error(err);
       }
     });
+  }
+
+  onPageChange(pageUrl: string | null): void {
+    if (pageUrl) {
+      this.carregarConsultasDoMedico(pageUrl);
+    }
   }
   
   // Métodos para o modal de cancelamento
@@ -58,7 +73,7 @@ export class MedicoConsultasComponent {
     this.consultaToCancelId = null;
   }
   
-  cancelarConsulta(): void {
+  confirmCancel(): void {
     if (this.consultaToCancelId) {
       this.consultasService.cancelarConsulta(this.consultaToCancelId).subscribe({
         next: (response) => {

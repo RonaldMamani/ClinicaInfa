@@ -114,49 +114,4 @@ class MedicoController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Atualiza um médico existente no banco de dados.
-     * A validação dos dados é realizada automaticamente pelo MedicoRequest.
-     *
-     * @param \App\Http\Requests\MedicoRequest $request A requisição validada pelo MedicoRequest.
-     * @param int $id O ID do médico a ser atualizado.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function update(MedicoRequest $request, $id)
-    {
-        DB::beginTransaction(); // Inicia a transação
-        try {
-            // Encontra o médico pelo ID
-            $medico = Medico::find($id);
-
-            // Se o médico não for encontrado, retorna 404 Not Found
-            if (!$medico) {
-                return response()->json([
-                    'status' => false,
-                    'message' => 'Médico não encontrado para atualização.',
-                ], 404);
-            }
-
-            // Atualiza o médico com os dados validados
-            $medico->update($request->validated());
-            DB::commit(); // Confirma a transação
-
-            // Retorna a confirmação de atualização do médico
-            return response()->json([
-                'status' => true,
-                'message' => 'Médico atualizado com sucesso!',
-                'medico' => $medico,
-            ], 200); // Código 200 OK
-
-        } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
-            Log::error('Erro ao atualizar médico: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao atualizar o médico. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
 }

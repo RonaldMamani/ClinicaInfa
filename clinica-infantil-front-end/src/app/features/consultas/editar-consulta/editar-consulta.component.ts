@@ -32,6 +32,10 @@ export class EditarConsultaComponent implements OnInit {
     });
   }
 
+  get isSecretariaRoute(): boolean {
+    return this.router.url.startsWith('/secretaria');
+  }
+
   ngOnInit(): void {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {

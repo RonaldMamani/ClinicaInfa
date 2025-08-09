@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
-import { Paciente, PacienteDetailsResponse, PacientesApiResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { forkJoin, map, Observable } from 'rxjs';
+import { Paciente, PacienteDetailsResponse, PacientesApiResponse, PacientesPaginadosResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
 import { PacientesContagemResponse } from '../../core/models/quantidades.model';
 
 
@@ -17,6 +17,16 @@ export class PacientesService {
       return this.http.get<{ pacientes: Paciente[] }>(this.apiBaseUrl).pipe(
         map(response => response.pacientes)
       );
+  }
+
+  getPacientesPaginados(page: number = 1, ativo?: boolean): Observable<PacientesPaginadosResponse> {
+    let params = new HttpParams().set('page', page.toString());
+
+    if (ativo !== undefined) {
+      params = params.set('ativo', ativo.toString());
+    }
+
+    return this.http.get<PacientesPaginadosResponse>(`${this.apiBaseUrl}/paginacao`, { params });
   }
 
   getPacientesAtivos(): Observable<PacientesApiResponse> {

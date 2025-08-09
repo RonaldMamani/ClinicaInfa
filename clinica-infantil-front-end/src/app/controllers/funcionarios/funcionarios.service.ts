@@ -14,7 +14,6 @@ export class FuncionariosService {
 
   /**
    * Obtém a lista de todos os funcionários.
-   * CORRIGIDO: Agora mapeia a resposta da API para extrair o array de 'funcionarios'.
    * @returns Um Observable com um array de Funcionarios.
    */
   getFuncionarios(): Observable<Funcionario[]> {

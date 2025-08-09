@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable } from 'rxjs';
+import { catchError, map, Observable, throwError } from 'rxjs';
 import { Medico } from '../../core/models/medico.model';
 
 @Injectable({
@@ -11,13 +11,28 @@ export class MedicosService {
 
   constructor(private http: HttpClient) {}
 
-  getMedicos(): Observable<any> {
-    return this.http.get(this.apiUrl);
-  }
-
-  GetMedicos(): Observable<Medico[]> {
+  getMedicos(): Observable<Medico[]> {
       return this.http.get<{ medicos: Medico[] }>(this.apiUrl).pipe(
         map(response => response.medicos)
       );
   }
+
+  getTotalConsultasCount(): Observable<number> {
+      return this.http.get<any>(`${this.apiUrl}/consultas/count/total`).pipe(
+        map(response => response.total_consultas),
+        catchError(error => {
+          return throwError(() => new Error(error.error?.message || 'Erro ao obter a contagem total de consultas.'));
+        })
+      );
+    }
+  
+    getProximasConsultasCount(): Observable<number> {
+      return this.http.get<any>(`${this.apiUrl}/consultas/count/agendadas`).pipe(
+        map(response => response.consultas_agendadas),
+        catchError(error => {
+          return throwError(() => new Error(error.error?.message || 'Erro ao obter a contagem de consultas agendadas.'));
+        })
+      );
+    }
+
 }

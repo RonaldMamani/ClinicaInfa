@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { Genero, GeneroApiResponse } from '../../core/models/generos.model';
 
 export interface GenerosApiResponse {

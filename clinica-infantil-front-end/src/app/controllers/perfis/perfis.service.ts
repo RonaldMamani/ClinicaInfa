@@ -14,7 +14,6 @@ export class PerfisService {
 
   /**
    * Obtém a lista de todos os perfis.
-   * CORRIGIDO: Agora mapeia a resposta da API para extrair o array de 'perfis'.
    * @returns Um Observable com um array de Perfis.
    */
   getPerfis(): Observable<Perfil[]> {

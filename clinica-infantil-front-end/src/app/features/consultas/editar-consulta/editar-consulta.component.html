@@ -1,4 +1,4 @@
-<div class="container mt-4">
+<div class="dashboard container py-5">
   <h2>Editar Consulta</h2>
 
   @if (isLoading) {
@@ -40,10 +40,17 @@
             </select>
         </div>
 
-        <div class="d-flex justify-content-between">
-          <a class="btn btn-secondary" [routerLink]="['/secretaria/consultas/agendadas']">Voltar</a>
-          <button type="submit" class="btn btn-primary" [disabled]="formConsulta.invalid">Salvar Alterações</button>
-        </div>
+        @if (isSecretariaRoute) {
+          <div class="d-flex justify-content-between">
+            <a class="btn btn-secondary" [routerLink]="['/secretaria/consultas/agendadas']">Voltar</a>
+            <button type="submit" class="btn btn-primary" [disabled]="formConsulta.invalid">Salvar Alterações</button>
+          </div>
+        } @else {
+          <div class="d-flex justify-content-between">
+            <a class="btn btn-secondary" [routerLink]="['/administrador/consultas']">Voltar</a>
+            <button type="submit" class="btn btn-primary" [disabled]="formConsulta.invalid">Salvar Alterações</button>
+          </div>
+        }
       </form>
     </div>
   }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Pagamento, PaginatedResponse } from '../../core/models/pagamento.model';
-import { Observable } from 'rxjs';
+import { Pagamento, PagamentosPaginateApiResponse } from '../../core/models/pagamento.model';
+import { catchError, Observable, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -17,9 +17,13 @@ export class PagamentosService {
      * @param page O número da página a ser buscada.
      * @returns Observable<PaginatedResponse>
      */
-    getPagamentos(page: number): Observable<{ status: boolean; message: string; pagamentos: PaginatedResponse }> {
-        const params = new HttpParams().set('page', page.toString());
-        return this.http.get<{ status: boolean; message: string; pagamentos: PaginatedResponse }>(`${this.apiUrl}`, { params });
+    getPagamentos(pageUrl: string | null = null): Observable<PagamentosPaginateApiResponse> {
+        const url = pageUrl ? pageUrl : this.apiUrl;
+        return this.http.get<PagamentosPaginateApiResponse>(url).pipe(
+        catchError(error => {
+            return throwError(() => new Error(error.error.message || 'Erro ao carregar pagamentos.'));
+        })
+        );
     }
 
     getPagamentoById(id: number): Observable<{ status: boolean; message: string; pagamento: Pagamento }> {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
-import { ProntuarioDetailResponse, ProntuariosApiResponse } from '../../core/models/prontuarios.model';
+import { ProntuarioDetailResponse, ProntuariosPaginateApiResponse } from '../../core/models/prontuarios.model';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +11,18 @@ export class ProntuariosService {
 
   constructor(private http: HttpClient) { }
 
-  getTodosProntuarios(): Observable<ProntuariosApiResponse> {
+  getTodosProntuarios(): Observable<ProntuariosPaginateApiResponse> {
     const url = `${this.apiUrl}`;
-    return this.http.get<any>(url).pipe(
+    return this.http.get<ProntuariosPaginateApiResponse>(url).pipe(
+      catchError(error => {
+        return throwError(() => new Error(error.error.message || 'Erro ao carregar prontuários.'));
+      })
+    );
+  }
+
+  getProntuarios(pageUrl: string | null = null): Observable<ProntuariosPaginateApiResponse> {
+    const url = pageUrl ? pageUrl : this.apiUrl;
+    return this.http.get<ProntuariosPaginateApiResponse>(url).pipe(
       catchError(error => {
         return throwError(() => new Error(error.error.message || 'Erro ao carregar prontuários.'));
       })

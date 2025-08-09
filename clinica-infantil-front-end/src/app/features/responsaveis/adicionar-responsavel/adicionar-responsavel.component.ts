@@ -40,6 +40,10 @@ export class AdicionarResponsavelComponent implements OnInit {
     private router: Router
   ) { }
 
+  get isAdministradorRoute(): boolean {
+    return this.router.url.startsWith('/administrador');
+  }
+
   ngOnInit(): void {
     this.responsavelForm = this.fb.group({
       nome: ['', Validators.required],
@@ -112,6 +116,10 @@ export class AdicionarResponsavelComponent implements OnInit {
   }
 
   voltar(): void {
-    this.router.navigate(['/secretaria/clientes/adicionar']);
+    this.router.navigate(['/secretaria']);
+  }
+
+  voltarAdmin(): void {
+    this.router.navigate(['/administrador/responsaveis']);
   }
 }

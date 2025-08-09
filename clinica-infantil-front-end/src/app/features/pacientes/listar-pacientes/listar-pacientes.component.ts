@@ -4,7 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { forkJoin } from 'rxjs';
 
 import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
-import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
+import { Paciente, PacientesPaginadosResponse } from '../../../core/models/paciente.model';
 
 @Component({
   selector: 'app-listar-pacientes',
@@ -14,8 +14,12 @@ import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.mo
   styleUrls: ['./listar-pacientes.component.css']
 })
 export class ListarPacientesComponent implements OnInit {
-  pacientesAtivos: Paciente[] = [];
-  pacientesInativos: Paciente[] = [];
+  pacientes: Paciente[] = []; // Lista para a página atual
+  currentPage: number = 1;
+  totalPages: number = 0;
+  totalItems: number = 0;
+  filtroAtivo: boolean | undefined = true; // Carrega pacientes ativos por padrão
+
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
@@ -36,51 +40,40 @@ export class ListarPacientesComponent implements OnInit {
   carregarPacientes(): void {
     this.isLoading = true;
     this.error = null;
+    this.pacientes = [];
 
-    forkJoin({
-      ativos: this.pacientesService.getPacientesAtivos(),
-      inativos: this.pacientesService.getPacientesInativos()
-    }).subscribe({
-      next: (results) => {
-        if (results.ativos && results.ativos.pacientes) {
-          this.pacientesAtivos = results.ativos.pacientes;
+    this.pacientesService.getPacientesPaginados(this.currentPage, this.filtroAtivo).subscribe({
+      next: (response: PacientesPaginadosResponse) => {
+        if (response.status && response.pacientes) {
+          this.pacientes = response.pacientes.data;
+          this.currentPage = response.pacientes.current_page;
+          this.totalPages = response.pacientes.last_page;
+          this.totalItems = response.pacientes.total;
+          this.successMessage = response.message;
         } else {
-          this.pacientesAtivos = [];
+          this.pacientes = [];
+          this.error = response.message || 'Nenhum paciente encontrado.';
         }
-
-        if (results.inativos && results.inativos.pacientes) {
-          this.pacientesInativos = results.inativos.pacientes;
-        } else {
-          this.pacientesInativos = [];
-        }
-        
         this.isLoading = false;
       },
       error: (err) => {
-        this.error = 'Falha ao carregar a lista de pacientes.';
+        this.error = 'Falha ao carregar a lista de pacientes. Tente novamente mais tarde.';
         this.isLoading = false;
-        console.error(err);
+        console.error('Erro ao buscar pacientes paginados:', err);
       }
     });
   }
 
-  editarPaciente(id: number): void {
-    this.router.navigate(['/secretaria/pacientes/editar', id]);
-  }
-
-  // Lógica de exclusão/desativação completa
   excluirPaciente(id: number): void {
     this.error = null;
     this.successMessage = null;
 
-    // Adiciona uma confirmação para evitar exclusões acidentais
     if (confirm('Tem certeza que deseja desativar este paciente?')) {
       this.pacientesService.deletePaciente(id).subscribe({
         next: (response) => {
           if (response.status) {
             this.successMessage = response.message;
-            // Recarrega a lista para atualizar a visualização
-            this.carregarPacientes();
+            this.carregarPacientes(); // Recarrega a lista para atualizar a visualização
           } else {
             this.error = response.message;
           }
@@ -91,5 +84,23 @@ export class ListarPacientesComponent implements OnInit {
         }
       });
     }
+  }
+
+  editarPaciente(id: number): void {
+    const routePrefix = this.isAdministradorRoute ? '/administrador' : '/secretaria';
+    this.router.navigate([`${routePrefix}/pacientes/editar`, id]);
+  }
+
+  onPageChange(newPage: number): void {
+    if (newPage > 0 && newPage <= this.totalPages) {
+      this.currentPage = newPage;
+      this.carregarPacientes();
+    }
+  }
+
+  aplicarFiltro(status: boolean | undefined): void {
+    this.filtroAtivo = status;
+    this.currentPage = 1; // Reseta para a primeira página
+    this.carregarPacientes();
   }
 }

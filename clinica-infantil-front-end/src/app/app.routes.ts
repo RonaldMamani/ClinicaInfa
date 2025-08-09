@@ -41,6 +41,8 @@ import { AdicionarFuncionarioComponent } from './features/funcionarios/adicionar
 import { FinalizarConsultaComponent } from './features/consultas/finalizar-consulta/finalizar-consulta.component';
 import { ListarPagamentosComponent } from './features/pagamentos/listar-pagamentos/listar-pagamentos.component';
 import { EditarPagamentoComponent } from './features/pagamentos/editar-pagamento/editar-pagamento.component';
+import { EstatisticasComponent } from './features/estatisticas/estatisticas.component';
+import { EstatisticasConsultasComponent } from './components/estatisticas/estatisticas-consultas/estatisticas-consultas.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -103,6 +105,7 @@ export const routes: Routes = [
       { path: 'consultas', component: ListarTodasConsultasComponent },
       { path: 'consultas/:id', component: DetalhesConsultaComponent},
       { path: 'consultas/:id/editar', component: EditarConsultaComponent },
+      { path: 'consultas/:id/finalizar', component: FinalizarConsultaComponent },
       { path: 'pacientes', component: ListarPacientesComponent },
       { path: 'pacientes/adicionar', component: AdicionarPacienteComponent },
       { path: 'pacientes/:id', component: DetalhePacienteComponent },
@@ -118,6 +121,7 @@ export const routes: Routes = [
       { path: 'pagamentos', component: ListarPagamentosComponent },
       { path: 'pagamentos/:id', component: DetalhesConsultaComponent},
       { path: 'pagamentos/:id/editar', component: EditarPagamentoComponent },
+      { path: 'estatisticas', component: EstatisticasComponent },
 
       { path: '**', redirectTo: '' }
     ]
