@@ -75,6 +75,31 @@
             }
           </tbody>
         </table>
+
+        <!-- Adição da Paginação -->
+        @if (pagination && pagination.links.length > 10) {
+          <nav aria-label="Navegação da tabela de consultas agendadas" class="mt-4">
+            <ul class="pagination justify-content-center">
+              @for (link of pagination.links; track $index) {
+                <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
+                  <button
+                    type="button"
+                    class="page-link"
+                    (click)="onPageChange(link.url)"
+                    [disabled]="!link.url">
+                    @if (link.label === '&laquo; Previous') {
+                      <span aria-hidden="true">&laquo; Anterior</span>
+                    } @else if (link.label === 'Next &raquo;') {
+                      <span aria-hidden="true">Próximo &raquo;</span>
+                    } @else {
+                      {{ link.label }}
+                    }
+                  </button>
+                </li>
+              }
+            </ul>
+          </nav>
+        }
       } @else if (!isLoading && !error) {
         <div class="alert alert-warning mt-3">Nenhuma consulta encontrada.</div>
       }

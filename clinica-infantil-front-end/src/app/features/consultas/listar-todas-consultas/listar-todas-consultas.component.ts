@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
-import { Consulta } from '../../../core/models/consultas.model';
+import { Router, RouterLink, RouterModule } from '@angular/router';
+import { Consulta, Pagination } from '../../../core/models/consultas.model';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 
 @Component({
@@ -13,6 +13,7 @@ import { ConsultasService } from '../../../controllers/consultas/consultas.servi
 })
 export class ListarTodasConsultasComponent implements OnInit {
   consultas: Consulta[] = [];
+  pagination: Pagination | null = null; // Propriedade para armazenar os dados de paginação
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
@@ -22,11 +23,12 @@ export class ListarTodasConsultasComponent implements OnInit {
 
   constructor(
     private consultasService: ConsultasService,
-    private router: Router) 
-  {}
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
-    this.carregarTodasConsultas();
+    // Carrega a primeira página por padrão
+    this.carregarConsultas();
   }
 
   get isSecretariaRoute(): boolean {
@@ -37,13 +39,18 @@ export class ListarTodasConsultasComponent implements OnInit {
     return this.router.url.startsWith('/administrador');
   }
 
-  carregarTodasConsultas(): void {
+  /**
+   * Carrega a lista de consultas para uma página específica.
+   */
+  carregarConsultas(page: number = 1): void {
     this.isLoading = true;
     this.error = null;
 
-    this.consultasService.getTodasConsultas().subscribe({
+    this.consultasService.getConsultasListar(page).subscribe({
       next: (response) => {
-        this.consultas = response.consultas || [];
+        // Armazena a lista de consultas e o objeto de paginação
+        this.consultas = response.consultas.data || [];
+        this.pagination = response.consultas;
         this.isLoading = false;
       },
       error: (err) => {
@@ -54,38 +61,61 @@ export class ListarTodasConsultasComponent implements OnInit {
     });
   }
 
+  /**
+   * Método chamado quando um link de paginação é clicado.
+   * Ele extrai o número da página da URL e chama o carregarConsultas.
+   * @param url A URL completa do link de paginação.
+   */
+  onPageChange(url: string | null): void {
+    if (url) {
+      this.isLoading = true;
+      const pageNumber = this.extractPageNumberFromUrl(url);
+      if (pageNumber) {
+        this.carregarConsultas(pageNumber);
+      }
+    }
+  }
+
+  /**
+   * Extrai o número da página de uma URL de paginação.
+   * @param url A URL contendo o parâmetro 'page'.
+   * @returns O número da página ou null se não for encontrado.
+   */
+  private extractPageNumberFromUrl(url: string): number | null {
+    const params = new URLSearchParams(new URL(url).search);
+    const page = params.get('page');
+    return page ? parseInt(page, 10) : null;
+  }
+
   openCancelModal(id: number): void {
     this.consultaToCancelId = id;
     this.showCancelModal = true;
   }
 
-  // Fecha o modal de confirmação
   closeCancelModal(): void {
     this.showCancelModal = false;
     this.consultaToCancelId = null;
   }
 
-  // Método que executa o cancelamento após a confirmação no modal
   confirmCancel(): void {
     if (this.consultaToCancelId) {
       this.isLoading = true;
       this.consultasService.cancelarConsulta(this.consultaToCancelId).subscribe({
         next: (response) => {
           this.successMessage = response.message || 'Consulta cancelada com sucesso!';
-          this.closeCancelModal(); // Fecha o modal após o sucesso
-          this.carregarTodasConsultas(); // Recarrega a lista
+          this.closeCancelModal();
+          this.carregarConsultas(); // Recarrega a lista após o cancelamento
         },
         error: (err) => {
           this.error = 'Erro ao cancelar a consulta.';
           this.isLoading = false;
-          this.closeCancelModal(); // Fecha o modal e exibe o erro
+          this.closeCancelModal();
           console.error(err);
         }
       });
     }
   }
 
-  // O método antigo, agora apenas abre o modal
   cancelarConsulta(id: number): void {
     this.openCancelModal(id);
   }

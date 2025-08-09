@@ -57,7 +57,7 @@ export class AdicionarConsultaComponent implements OnInit {
 
     forkJoin({
       pacientes: this.pacientesService.getPacientes(),
-      medicos: this.medicosService.GetMedicos()
+      medicos: this.medicosService.getMedicos()
     }).subscribe({
       next: (results) => {
         this.pacientes = results.pacientes;

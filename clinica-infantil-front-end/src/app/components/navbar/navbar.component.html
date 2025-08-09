@@ -12,13 +12,13 @@
               <a class="nav-link active" aria-current="page" [routerLink]="['/secretaria']">Dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/secretaria/pacientes']">Pacientes</a>
+              <a class="nav-link" [routerLink]="['./pacientes']">Pacientes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/secretaria/clientes/adicionar']">Adicionar Cliente</a>
+              <a class="nav-link" [routerLink]="['.a/clientes/adicionar']">Adicionar Cliente</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/secretaria/agendar']">Agendar Consulta</a>
+              <a class="nav-link" [routerLink]="['./agendar']">Agendar Consulta</a>
             </li>
           }
           @if (profile === 'medico') {
@@ -26,27 +26,30 @@
               <a class="nav-link active" aria-current="page" [routerLink]="['/medico']">Dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/medico/consultas']">Minhas Consultas</a>
+              <a class="nav-link" [routerLink]="['./consultas']">Minhas Consultas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/medico/prontuarios']">Prontuarios</a>
+              <a class="nav-link" [routerLink]="['./prontuarios']">Prontuarios</a>
             </li>
           }
           @if (profile === 'administrador') {
             <li class="nav-item">
-              <a class="nav-link active" aria-current="page" [routerLink]="['/administrador']">Dashboard</a>
+              <a class="nav-link active" aria-current="page" [routerLink]="['./']">Dashboard</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/administrador/funcionarios']">Funcionários</a>
+              <a class="nav-link" [routerLink]="['./funcionarios']">Funcionários</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/administrador/pacientes']">Pacientes</a>
+              <a class="nav-link" [routerLink]="['./pacientes']">Pacientes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/administrador/responsaveis']">Responsaveis</a>
+              <a class="nav-link" [routerLink]="['./responsaveis']">Responsaveis</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['/administrador/consultas']">Consultas</a>
+              <a class="nav-link" [routerLink]="['./consultas']">Consultas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['./pagamentos']">Pagamentos</a>
             </li>
           }
         }

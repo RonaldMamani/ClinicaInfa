@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { Responsavel } from '../../../core/models/responsavel.model';
+import { ResponsaveiPaginateResponse, Responsavel } from '../../../core/models/responsavel.model';
 import { forkJoin } from 'rxjs';
 
 @Component({
@@ -13,25 +13,20 @@ import { forkJoin } from 'rxjs';
   styleUrl: './listar-responsaveis.component.css'
 })
 export class ListarResponsaveisComponent {
-  responsaveisAtivos: Responsavel[] = [];
-  responsaveisInativos: Responsavel[] = [];
+  // Lista unificada para a página atual
+  responsaveis: Responsavel[] = [];
+  
+  // Variáveis de paginação e filtro unificadas
+  currentPage = 1;
+  totalPages = 0;
+  totalItems = 0;
+  filtroStatus: boolean | undefined = true; // 'true' para ativos por padrão
+  
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
 
-  // Paginação para responsáveis ATIVOS
-  currentPageAtivos = 1;
-  lastPageAtivos = 1;
-  totalResponsaveisAtivos = 0;
-  pageSizeAtivos = 10; // Tamanho da página para ativos
-
-  // Paginação para responsáveis INATIVOS
-  currentPageInativos = 1;
-  lastPageInativos = 1;
-  totalResponsaveisInativos = 0;
-  pageSizeInativos = 10; // Tamanho da página para inativos
-
-  // Variáveis para o modal de confirmação
+  // Variáveis para o modal de confirmação (mantido)
   showConfirmModal = false;
   selectedResponsavel: Responsavel | null = null;
   actionType: 'desativar' | 'reativar' | null = null;
@@ -42,72 +37,62 @@ export class ListarResponsaveisComponent {
     this.carregarResponsaveis();
   }
 
+  /**
+   * Carrega a lista de responsáveis com base no filtro e na página atual.
+   */
   carregarResponsaveis(): void {
     this.isLoading = true;
     this.error = null;
-    this.successMessage = null;
+    this.responsaveis = [];
 
-    forkJoin({
-      ativos: this.responsavelService.getResponsaveisAtivosPaginados(this.currentPageAtivos, this.pageSizeAtivos),
-      inativos: this.responsavelService.getResponsaveisInativosPaginados(this.currentPageInativos, this.pageSizeInativos)
-    }).subscribe({
-      next: (results) => {
-        // Processa responsáveis ativos
-        this.responsaveisAtivos = results.ativos.responsaveis.data || [];
-        this.currentPageAtivos = results.ativos.responsaveis.current_page;
-        this.lastPageAtivos = results.ativos.responsaveis.last_page;
-        this.totalResponsaveisAtivos = results.ativos.responsaveis.total;
-
-        // Processa responsáveis inativos
-        this.responsaveisInativos = results.inativos.responsaveis.data || [];
-        this.currentPageInativos = results.inativos.responsaveis.current_page;
-        this.lastPageInativos = results.inativos.responsaveis.last_page;
-        this.totalResponsaveisInativos = results.inativos.responsaveis.total;
-
+    // Chama o serviço com o filtro de status e a página atual
+    this.responsavelService.getResponsaveisPaginados(this.currentPage, this.filtroStatus).subscribe({
+      next: (response: ResponsaveiPaginateResponse) => {
+        if (response.status && response.responsaveis) {
+          this.responsaveis = response.responsaveis.data || [];
+          this.currentPage = response.responsaveis.current_page;
+          this.totalPages = response.responsaveis.last_page;
+          this.totalItems = response.responsaveis.total;
+        } else {
+          this.responsaveis = [];
+          this.error = response.message || 'Nenhum responsável encontrado.';
+        }
         this.isLoading = false;
       },
       error: (err) => {
         this.error = err.message || 'Falha ao carregar a lista de responsáveis.';
         this.isLoading = false;
-        console.error(err);
+        console.error('Erro ao buscar responsáveis paginados:', err);
       }
     });
   }
 
-  // Métodos de paginação para responsáveis ATIVOS
-  goToNextPageAtivos(): void {
-    if (this.currentPageAtivos < this.lastPageAtivos) {
-      this.currentPageAtivos++;
-      this.carregarResponsaveis(); // Recarrega ambas as listas
+  /**
+   * Navega para uma página específica.
+   * @param newPage O número da nova página.
+   */
+  onPageChange(newPage: number): void {
+    if (newPage > 0 && newPage <= this.totalPages) {
+      this.currentPage = newPage;
+      this.carregarResponsaveis();
     }
   }
 
-  goToPreviousPageAtivos(): void {
-    if (this.currentPageAtivos > 1) {
-      this.currentPageAtivos--;
-      this.carregarResponsaveis(); // Recarrega ambas as listas
-    }
-  }
-
-  // Métodos de paginação para responsáveis INATIVOS
-  goToNextPageInativos(): void {
-    if (this.currentPageInativos < this.lastPageInativos) {
-      this.currentPageInativos++;
-      this.carregarResponsaveis(); // Recarrega ambas as listas
-    }
-  }
-
-  goToPreviousPageInativos(): void {
-    if (this.currentPageInativos > 1) {
-      this.currentPageInativos--;
-      this.carregarResponsaveis(); // Recarrega ambas as listas
-    }
+  /**
+   * Aplica um novo filtro e recarrega a lista.
+   * @param status O status a ser filtrado: true (ativos), false (inativos), undefined (todos).
+   */
+  aplicarFiltro(status: boolean | undefined): void {
+    this.filtroStatus = status;
+    this.currentPage = 1; // Reseta para a primeira página
+    this.carregarResponsaveis();
   }
 
   getNumeroPacientesAssociados(responsavel: Responsavel): number {
     return responsavel.pacientes ? responsavel.pacientes.length : 0;
   }
 
+  // Métodos do Modal (mantidos)
   openConfirmModal(responsavel: Responsavel, action: 'desativar' | 'reativar'): void {
     this.selectedResponsavel = responsavel;
     this.actionType = action;
@@ -123,17 +108,19 @@ export class ListarResponsaveisComponent {
 
   confirmAction(): void {
     if (this.selectedResponsavel && this.actionType) {
+      this.isLoading = true;
       const novoStatus = this.actionType === 'reativar';
       this.responsavelService.updateResponsavelStatus(this.selectedResponsavel.id, novoStatus).subscribe({
         next: (response) => {
           this.successMessage = response.message;
           this.closeConfirmModal();
-          this.carregarResponsaveis(); // Recarrega as listas para refletir a mudança
+          this.carregarResponsaveis(); // Recarrega a lista para refletir a mudança
           setTimeout(() => this.successMessage = null, 3000);
         },
         error: (err) => {
           this.error = err.message || `Erro ao ${this.actionType} o responsável.`;
           console.error(err);
+          this.isLoading = false;
         }
       });
     }

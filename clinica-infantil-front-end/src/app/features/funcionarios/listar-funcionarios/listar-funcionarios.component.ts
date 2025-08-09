@@ -37,8 +37,8 @@ export class ListarFuncionariosComponent {
     this.successMessage = null;
 
     forkJoin({
-      ativos: this.usuarioService.getActiveUsuarios(),
-      inativos: this.usuarioService.getInactiveUsuarios()
+      ativos: this.usuarioService.getUsuariosAtivos(),
+      inativos: this.usuarioService.getUsuariosInativos()
     }).subscribe({
       next: (results: { ativos: UsuariosListResponse, inativos: UsuariosListResponse }) => {
         this.usuariosAtivos = results.ativos.usuarios || [];

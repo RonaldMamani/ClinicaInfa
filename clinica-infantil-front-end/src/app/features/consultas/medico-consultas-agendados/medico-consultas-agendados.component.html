@@ -36,9 +36,9 @@
             </tr>
           </thead>
           <tbody>
-            @for (consulta of consultas; track consulta.id) {
+            @for (consulta of consultas; track consulta.id; let i = $index) {
               <tr>
-                <td>{{ consulta.id }}</td>
+                <td>{{ i + 1 }}</td>
                 <td>{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
                 <td>{{ consulta.paciente.cliente.nome }}</td>
                 <td>{{ consulta.hora_inicio | slice:0:5 }}</td>
@@ -81,6 +81,31 @@
           </tbody>
         </table>
       </div>
+
+      <!-- Adição da Paginação -->
+      @if (pagination && pagination.links.length > 10) {
+      <nav aria-label="Navegação da tabela de consultas agendadas" class="mt-4">
+        <ul class="pagination justify-content-center">
+          @for (link of pagination.links; track $index) {
+            <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
+              <button
+                type="button"
+                class="page-link"
+                (click)="onPageChange(link.url)"
+                [disabled]="!link.url">
+                @if (link.label === '&laquo; Previous') {
+                  <span aria-hidden="true">&laquo; Anterior</span>
+                } @else if (link.label === 'Next &raquo;') {
+                  <span aria-hidden="true">Próximo &raquo;</span>
+                } @else {
+                  {{ link.label }}
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      </nav>
+      }
     }
   </div>
 

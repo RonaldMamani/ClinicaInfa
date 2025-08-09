@@ -7,7 +7,7 @@ export interface QuantidadeTotalResponse {
 export interface QuantidadeAgendadaResponse {
   status: boolean;
   message: string;
-  quantidade_agendadas: number;
+  quantidade: number;
 }
 
 export interface PacientesContagemResponse {
@@ -17,4 +17,33 @@ export interface PacientesContagemResponse {
     ativos: number;
     inativos: number;
   };
+}
+
+export interface TodasEstatisticasResponse {
+  status: boolean;
+  message: string;
+  dados: {
+    total: number;
+    agendadas: number;
+    canceladas: number;
+    finalizadas: number;
+  };
+}
+
+export interface PacientesPorCidadeResponse {
+  status: boolean;
+  message: string;
+  dados: {
+    nome_cidade: string;
+    total_pacientes: number;
+  }[];
+}
+
+export interface ReceitaMensalResponse {
+  status: boolean;
+  message: string;
+  dados: {
+    mes: string;
+    total_receita: number;
+  }[];
 }

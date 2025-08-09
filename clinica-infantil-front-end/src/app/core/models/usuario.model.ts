@@ -47,8 +47,7 @@ export interface CreateUsuarioPayload {
   username: string;
   senha: string;
   id_perfil: number;
-  ativo?: boolean;
-
+  ativo: boolean;
   funcionario: {
     nome: string;
     cpf: string;
@@ -56,7 +55,6 @@ export interface CreateUsuarioPayload {
     email_empresarial: string;
     telefone_empresarial: string;
   };
-
   medico?: {
     CRM: string;
     especialidade: string;

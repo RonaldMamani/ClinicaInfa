@@ -23,7 +23,7 @@ class PagamentoController extends Controller
                 'consulta.medico.usuario.funcionario'
             ])
             ->orderBy('data_pagamento', 'desc')
-            ->paginate(10); // Pagina 10 resultados por página
+            ->paginate(10);
 
             return response()->json([
                 'status' => true,

@@ -44,33 +44,6 @@ class ProntuarioController extends Controller
         ]);
     }
 
-    /**
-     * Armazena um novo prontuário no banco de dados.
-     *
-     * @param ProntuarioRequest $request
-     * @return JsonResponse
-     */
-    public function store(ProntuarioRequest $request): JsonResponse
-    {
-        try {
-            $prontuario = Prontuario::create($request->validated());
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Prontuário criado com sucesso.',
-                'prontuario' => $prontuario->load(['paciente', 'medico'])
-            ], 201);
-
-        } catch (Exception $e) {
-            Log::error("Erro ao criar prontuário: " . $e->getMessage());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao criar o prontuário.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
-
     public function storeMedico(MedicoProntuarioRequest $request): JsonResponse
     {
         $usuario = Auth::user();

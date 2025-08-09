@@ -76,37 +76,4 @@ class PerfilController extends Controller
             ], 500);
         }
     }
-
-    /**
-     * Cria um novo perfil no banco de dados.
-     * A validação dos dados é realizada automaticamente pelo PerfilRequest.
-     *
-     * @param \App\Http\Requests\PerfilRequest $request A requisição validada pelo PerfilRequest.
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function store(PerfilRequest $request)
-    {
-        DB::beginTransaction(); // Inicia a transação
-        try {
-            // Cria um novo perfil com os dados validados
-            $perfil = Perfil::create($request->validated());
-            DB::commit(); // Confirma a transação
-
-            // Retorna a confirmação de criação do perfil
-            return response()->json([
-                'status' => true,
-                'message' => 'Perfil criado com sucesso!',
-                'perfil' => $perfil,
-            ], 201); // Código 201 Created
-
-        } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
-            Log::error('Erro ao criar perfil: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao criar o perfil. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
-    }
 }

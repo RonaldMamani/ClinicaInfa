@@ -27,13 +27,6 @@ export class CidadesService {
     );
   }
 
-  getCidades(): Observable<Cidade[]> {
-    return this.http.get<CidadesApiResponse>(this.apiUrl).pipe(
-      map(response => response.cidades),
-      catchError(this.handleError)
-    );
-  }
-
   private handleError(error: any) {
     console.error('Erro na API de Cidades:', error);
     let errorMessage = 'Ocorreu um erro ao carregar as cidades.';

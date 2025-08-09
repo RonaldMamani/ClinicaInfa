@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { AllUsuariosApiResponse, CreateUsuarioPayload, UpdateUsuarioPayload, UsuarioDetailsResponse, UsuariosListResponse } from '../../core/models/usuario.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Funcionario } from '../../core/models/funcionario.model';
-import { Perfil } from '../../core/models/perfil.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +15,7 @@ export class UsuariosService {
    * Obtém a lista de usuários ATIVOS, sem paginação.
    * @returns Um Observable com a resposta dos usuários ativos.
    */
-  getActiveUsuarios(): Observable<UsuariosListResponse> {
+  getUsuariosAtivos(): Observable<UsuariosListResponse> {
     return this.http.get<UsuariosListResponse>(`${this.apiUrl}/ativos`).pipe(
       catchError(this.handleError)
     );
@@ -27,7 +25,7 @@ export class UsuariosService {
    * Obtém a lista de usuários INATIVOS, sem paginação.
    * @returns Um Observable com a resposta dos usuários inativos.
    */
-  getInactiveUsuarios(): Observable<UsuariosListResponse> {
+  getUsuariosInativos(): Observable<UsuariosListResponse> {
     return this.http.get<UsuariosListResponse>(`${this.apiUrl}/inativos`).pipe(
       catchError(this.handleError)
     );

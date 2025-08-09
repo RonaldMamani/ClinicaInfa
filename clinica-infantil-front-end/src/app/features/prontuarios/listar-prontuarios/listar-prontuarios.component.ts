@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { ProntuariosService } from '../../../controllers/prontuarios/prontuarios.service';
-import { Router, RouterModule } from '@angular/router';
-import { CommonModule, TitleCasePipe } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Prontuario } from '../../../core/models/prontuarios.model';
+import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
 
 @Component({
   selector: 'app-listar-prontuarios',
@@ -11,7 +13,8 @@ import { CommonModule, TitleCasePipe } from '@angular/common';
   styleUrl: './listar-prontuarios.component.css'
 })
 export class ListarProntuariosComponent {
-  prontuarios: any[] = [];
+  prontuarios: Prontuario[] = [];
+  pagination: PaginatedApiResponse<Prontuario[]> | null = null;
   isLoading = true;
   hasError = false;
   errorMessage = '';
@@ -26,13 +29,18 @@ export class ListarProntuariosComponent {
    * Carrega a lista de todos os prontuários da API.
    * A resposta da API contém uma paginação, então acessamos o array 'data'.
    */
-  carregarProntuarios(): void {
-    this.prontuarioService.getTodosProntuarios().subscribe({
+  carregarProntuarios(pageUrl: string | null = null): void {
+    this.isLoading = true;
+    this.hasError = false;
+    this.errorMessage = '';
+
+    this.prontuarioService.getProntuarios(pageUrl).subscribe({
       next: (response) => {
         // Acessamos o array de prontuários dentro da propriedade 'data' da paginação
         this.prontuarios = response.prontuarios.data;
+        // Armazenamos o objeto de paginação completo para uso no template
+        this.pagination = response.prontuarios;
         this.isLoading = false;
-        this.hasError = false;
       },
       error: (err) => {
         console.error('Erro ao carregar prontuários:', err);
@@ -41,6 +49,16 @@ export class ListarProntuariosComponent {
         this.errorMessage = err.message || 'Falha ao carregar a lista de prontuários. Tente novamente mais tarde.';
       }
     });
+  }
+
+  /**
+   * Lida com a mudança de página da paginação.
+   * @param pageUrl URL da página para a qual navegar.
+   */
+  onPageChange(pageUrl: string | null): void {
+    if (pageUrl) {
+      this.carregarProntuarios(pageUrl);
+    }
   }
 
   /**

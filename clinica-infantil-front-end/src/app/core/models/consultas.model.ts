@@ -1,6 +1,7 @@
 import { Paciente } from './paciente.model';
 import { Medico } from './medico.model';
 import { Pagamento } from './pagamento.model';
+import { PaginatedApiResponse } from './Paginate.model';
 
 export interface Consulta {
   id: number;
@@ -14,6 +15,28 @@ export interface Consulta {
   paciente: Paciente;
   medico: Medico;
   pagamento: Pagamento;
+}
+
+export interface Pagination {
+  current_page: number;
+  data: Consulta[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  links: any[];
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
+export interface ConsultasPaginationApiResponse {
+  status: boolean;
+  message: string;
+  consultas: PaginatedApiResponse<Consulta[]>;
 }
 
 export interface ConsultasApiResponse {
