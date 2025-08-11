@@ -1,0 +1,16 @@
+<div class="card shadow-sm">
+  <div class="card-body text-center">
+    @if (!isLoading) {
+      <div style="height: 275px;">
+        <canvas #myChart></canvas>
+      </div>
+    } @else {
+      <div class="text-center p-5">
+        <div class="spinner-border text-warning" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2">Carregando dados dos médicos...</p>
+      </div>
+    }
+  </div>
+</div>

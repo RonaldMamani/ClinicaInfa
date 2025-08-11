@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
-import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
+import { Paciente } from '../../../core/models/paciente.model';
 import { CommonModule } from '@angular/common';
 import { Medico } from '../../../core/models/medico.model';
 import { forkJoin } from 'rxjs';

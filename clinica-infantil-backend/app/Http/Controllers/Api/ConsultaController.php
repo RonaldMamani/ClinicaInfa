@@ -82,7 +82,7 @@ class ConsultaController extends Controller
                 ->whereIn('status', ['agendada', 'concluida'])
                 ->orderBy('data_consulta', 'asc')
                 ->orderBy('hora_inicio', 'asc')
-                ->paginate(15);
+                ->paginate(10);
 
             return response()->json([
                 'status' => true,
@@ -113,7 +113,7 @@ class ConsultaController extends Controller
                 'message' => 'Consulta criada com sucesso.',
                 'consulta' => $consulta->load($this->relations),
             ], 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao criar consulta: ' . $e->getMessage());
             return response()->json([
                 'status' => false,

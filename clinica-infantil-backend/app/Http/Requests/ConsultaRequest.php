@@ -44,6 +44,7 @@ class ConsultaRequest extends FormRequest
             'data_consulta' => ['required', 'date'],
             // Mantemos a validação para HH:MM:SS, pois os segundos
             // serão adicionados no método prepareForValidation().
+            'status' => ['required', 'string', 'in:agendada,finalizada,cancelada'],
             'hora_inicio' => ['required', 'date_format:H:i:s'],
             'hora_fim' => ['required', 'date_format:H:i:s', 'after:hora_inicio'],
         ];

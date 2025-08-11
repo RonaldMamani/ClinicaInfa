@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicoRequest;
 use App\Models\Medico;
 use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -22,21 +23,31 @@ class MedicoController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(): JsonResponse
     {
         try {
-            // Usa with() para carregar todas as relações definidas.
-            $medicos = Medico::with($this->relations)->get();
+            $medicos = Medico::whereHas('usuario', function ($query) {
+                $query->where('ativo', true);
+            })->with($this->relations)->get();
+
+            // Verifica se a lista de médicos está vazia.
+            if ($medicos->isEmpty()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Nenhum médico ativo encontrado.',
+                    'medicos' => [],
+                ], 200);
+            }
 
             return response()->json([
                 'status' => true,
-                'message' => 'Lista de médicos obtida com sucesso.',
+                'message' => 'Lista de médicos ativos obtida com sucesso.',
                 'medicos' => $medicos,
             ], 200);
 
         } catch (\Exception $e) {
             // Se houver qualquer erro na execução, ele será capturado aqui.
-            Log::error('Erro ao listar médicos: ' . $e->getMessage());
+            Log::error('Erro ao listar médicos ativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao buscar os médicos. Verifique os logs do servidor.',

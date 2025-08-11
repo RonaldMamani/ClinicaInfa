@@ -7,7 +7,6 @@ use App\Http\Requests\LoginRequest;
 use App\Models\Usuario;
 use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 
@@ -40,7 +39,7 @@ class LoginController extends Controller
                 'message' => 'Login realizado com sucesso!',
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-                'usuario' => $usuario->load('perfil', 'funcionario'), // Opcional: retorna dados do usuário (sem a senha)
+                'usuario' => $usuario->load('perfil', 'funcionario'),
             ], 200);
 
         } catch (Exception $e) {

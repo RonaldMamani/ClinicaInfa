@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
-import { AllUsuariosApiResponse, CreateUsuarioPayload, UpdateUsuarioPayload, UsuarioDetailsResponse, UsuariosListResponse } from '../../core/models/usuario.model';
+import { AllUsuariosApiResponse, CreateUsuarioPayload, UpdateUsuarioPayload, UsuarioDetailsResponse, UsuarioResponse, UsuariosListResponse } from '../../core/models/usuario.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({
@@ -60,6 +60,27 @@ export class UsuariosService {
     return this.http.put<any>(url, payload).pipe(
       catchError(this.handleError)
     );
+  }
+
+  /**
+   * Desativa um usuário (delete lógico)
+   * Usa a rota DELETE do backend.
+   */
+  desativarUsuario(id: number): Observable<UsuarioResponse> {
+    return this.http
+      .delete<UsuarioResponse>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  /**
+   * Reativa um usuário.
+   * Usa a nova rota PUT do backend.
+   */
+  reativarUsuario(id: number): Observable<UsuarioResponse> {
+    // A nova rota que você criou no `api.php` é /usuarios/{id}/activate
+    return this.http
+      .put<UsuarioResponse>(`${this.apiUrl}/${id}/activate`, {})
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

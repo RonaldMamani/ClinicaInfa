@@ -25,3 +25,7 @@ body {
 .cardFeature{
   min-height: 183px;
 }
+
+.cardEstatistic{
+  min-height: 300px;
+}

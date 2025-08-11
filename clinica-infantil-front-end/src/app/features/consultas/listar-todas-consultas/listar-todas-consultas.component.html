@@ -59,12 +59,12 @@
                             <span class="ms-2">Finalizar</span>
                           </a>
                         } @else if (consulta.status == 'agendada') {
-                          <a class="btn btn-warning btn-sm me-2 align-items-center" [routerLink]="['/administrador/consultas', consulta.id, 'editar']" title="Editar Consulta">
+                          <a class="btn btn-warning btn-sm me-2 align-items-center" [routerLink]="['/administrador/consultas', consulta.id, 'remarcar']" title="Remarcar Consulta">
                             <i class="bi bi-pencil"></i>
-                            <span class="ms-2">Editar</span>
+                            <span class="ms-2">Remarcar</span>
                           </a>
                           <a class="btn btn-danger btn-sm" [routerLink]="[ consulta.id]" title="Cancelar Consulta">
-                            <i class="bi bi-trash"></i>
+                            <i class="bi bi-calendar-x"></i>
                             <span class="ms-2">Cancelar</span>
                           </a>
                         }
@@ -77,7 +77,7 @@
         </table>
 
         <!-- Adição da Paginação -->
-        @if (pagination && pagination.links.length > 10) {
+        @if (pagination && pagination.links.length > 0) {
           <nav aria-label="Navegação da tabela de consultas agendadas" class="mt-4">
             <ul class="pagination justify-content-center">
               @for (link of pagination.links; track $index) {
@@ -98,6 +98,7 @@
                 </li>
               }
             </ul>
+            
           </nav>
         }
       } @else if (!isLoading && !error) {
@@ -109,7 +110,7 @@
   @if (isSecretariaRoute) {
     <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria']">Voltar</a>
   } @else {
-    <a class="btn btn-secondary mt-4" [routerLink]="['/medico']">Voltar</a>
+    <a class="btn btn-secondary mt-4" [routerLink]="['../']">Voltar para Dashboard</a>
   }
 
 </div>

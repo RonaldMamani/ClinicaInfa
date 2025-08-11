@@ -15,7 +15,13 @@
               <a class="nav-link" [routerLink]="['./pacientes']">Pacientes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" [routerLink]="['.a/clientes/adicionar']">Adicionar Cliente</a>
+              <a class="nav-link" [routerLink]="['./adicionar']">Adicionar Cliente</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['./consultas']">Consultas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['./consultas/agendadas']">Consultas Agendadas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['./agendar']">Agendar Consulta</a>
@@ -29,12 +35,21 @@
               <a class="nav-link" [routerLink]="['./consultas']">Minhas Consultas</a>
             </li>
             <li class="nav-item">
+              <a class="nav-link" [routerLink]="['./agendados']">Proximas Consultas</a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" [routerLink]="['./prontuarios']">Prontuarios</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['./agendar']">Agendar Consulta</a>
             </li>
           }
           @if (profile === 'administrador') {
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" [routerLink]="['./']">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" [routerLink]="['./estatisticas']">Estatisticas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" [routerLink]="['./funcionarios']">Funcionários</a>

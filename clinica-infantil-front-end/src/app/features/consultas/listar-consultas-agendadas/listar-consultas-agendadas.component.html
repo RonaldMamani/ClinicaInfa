@@ -61,7 +61,7 @@
                   <span class="ms-2">Remarcar</span>
                 </a>
                 <button class="btn btn-danger btn-sm align-items-center" title="Cancelar" (click)="openCancelModal(consulta.id)">
-                  <i class="bi bi-trash"></i>
+                  <i class="bi bi-calendar-x"></i>
                   <span class="ms-2">Cancelar</span>
                 </button>
               }
@@ -72,7 +72,7 @@
     </table>
 
     <!-- Adição da Paginação -->
-    @if (pagination && pagination.links.length > 10) {
+    @if (pagination && pagination.links.length > 0) {
     <nav aria-label="Navegação da tabela de consultas agendadas" class="mt-4">
       <ul class="pagination justify-content-center">
         @for (link of pagination.links; track $index) {

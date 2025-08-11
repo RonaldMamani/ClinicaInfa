@@ -19,7 +19,7 @@ export class EstatisticasPacientesComponent implements OnInit {
   @ViewChild('myChart') private chartCanvas: ElementRef | undefined;
 
   constructor(
-    private consultasService: EstatisticasService) {
+    private estatisticasService: EstatisticasService) {
     Chart.register(...registerables); 
   }
 
@@ -28,7 +28,7 @@ export class EstatisticasPacientesComponent implements OnInit {
   }
 
   carregarDados(): void {
-    this.consultasService.getPacientesPorCidade().subscribe({
+    this.estatisticasService.getPacientesPorCidade().subscribe({
       next: (response) => {
         const dados = response.dados;
         
@@ -54,8 +54,8 @@ export class EstatisticasPacientesComponent implements OnInit {
         datasets: [{
           label: 'Número de Pacientes',
           data: data,
-          backgroundColor: '#3366cc',
-          borderColor: '#3366cc',
+          backgroundColor: '#198754',
+          borderColor: '#198754',
           borderWidth: 1
         }]
       };

@@ -13,6 +13,13 @@ export interface Usuario {
   medico: Medico;
 }
 
+export interface UsuarioResponse {
+  status: boolean;
+  message: string;
+  usuario?: Usuario;
+  error_details?: string;
+}
+
 // Interface para a resposta de login
 export interface LoginResponse {
   status: boolean;

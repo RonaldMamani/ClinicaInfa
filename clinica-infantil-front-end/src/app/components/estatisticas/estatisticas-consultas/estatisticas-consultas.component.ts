@@ -24,7 +24,7 @@ export class EstatisticasConsultasComponent implements OnInit {
   public chartInstance: Chart | undefined;
   @ViewChild('myChart') private chartCanvas: ElementRef | undefined;
 
-  constructor(private consultasService: ConsultasService) {
+  constructor(private estatisticasService: ConsultasService) {
     Chart.register(...registerables); 
   }
 
@@ -34,7 +34,7 @@ export class EstatisticasConsultasComponent implements OnInit {
 
   carregarDados(): void {
     // Apenas uma requisição agora
-    this.consultasService.getTodasEstatisticas().subscribe({
+    this.estatisticasService.getTodasEstatisticas().subscribe({
       next: (response) => {
         const dados = response.dados; // Acessa o objeto 'dados' da resposta
         this.quantidadeTotal = dados.total;
@@ -56,7 +56,7 @@ export class EstatisticasConsultasComponent implements OnInit {
 
   criarGrafico(): void {
     if (this.chartCanvas) {
-      const chartData: ChartData<'pie', number[], string> = {
+      const chartData: ChartData<'doughnut', number[], string> = {
         labels: ['Agendadas', 'Finalizadas', 'Canceladas'],
         datasets: [{
           data: [this.quantidadeAgendadas, this.quantidadeFinalizadas, this.quantidadeCanceladas],
@@ -64,7 +64,7 @@ export class EstatisticasConsultasComponent implements OnInit {
         }]
       };
 
-      const chartOptions: ChartOptions<'pie'> = {
+      const chartOptions: ChartOptions<'doughnut'> = {
         responsive: true,
         plugins: {
           legend: {
@@ -79,7 +79,7 @@ export class EstatisticasConsultasComponent implements OnInit {
       };
 
       this.chartInstance = new Chart(this.chartCanvas.nativeElement, {
-        type: 'pie',
+        type: 'doughnut',
         data: chartData,
         options: chartOptions,
       });

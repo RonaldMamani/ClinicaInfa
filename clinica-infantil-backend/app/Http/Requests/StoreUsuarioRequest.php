@@ -24,26 +24,19 @@ class StoreUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Regras para os campos do modelo Usuario
-            'username' => 'required|string|max:255|unique:usuarios,username',
-            'senha' => 'required|string|min:8', // Senha mínima de 8 caracteres
+            'username' => 'required|string|max:255',
+            'senha' => 'required|string|min:8',
             'id_perfil' => 'required|integer|exists:perfis,id',
-            // 'id_funcionario' não é necessário aqui, pois o funcionário será criado
-            'ativo' => 'boolean', // Pode ser opcional, default para true no controller
-
-            // Regras para os campos aninhados do modelo Funcionario (OBRIGATÓRIOS para criação)
+            'ativo' => 'boolean',
             'funcionario.nome' => 'required|string|max:255',
-            'funcionario.cpf' => 'required|string|max:14|unique:funcionarios,cpf', // CPF único para funcionário
+            'funcionario.cpf' => 'required|string|max:14',
             'funcionario.cargo' => 'required|string|max:255',
-            'funcionario.email_empresarial' => 'required|email|max:255|unique:funcionarios,email_empresarial', // Email único
-            'funcionario.telefone_empresarial' => 'required|string|max:20',
-
-            // Regras para os campos aninhados do modelo Medico (condicionais)
-            // 'required_if:id_perfil,ID_DO_PERFIL_MEDICO'
-            // Você precisará substituir ID_DO_PERFIL_MEDICO pelo ID real do perfil 'Medico' no seu banco de dados
-            // ou buscar dinamicamente. Por simplicidade, usaremos 'sometimes' e validaremos a presença no controller.
-            'medico.CRM' => 'sometimes|required|string|max:50|unique:medicos,CRM', // CRM único
-            'medico.especialidade' => 'sometimes|required|string|max:255',
+            'funcionario.email_empresarial' => 'required|email|max:255',
+            'funcionario.telefone_empresarial' => 'required|string|max:30',
+            
+            // Regras para os dados do médico - ISSO É CRUCIAL
+            'medico.CRM' => 'sometimes|required_if:id_perfil,2|string|max:255',
+            'medico.especialidade' => 'sometimes|required_if:id_perfil,2|string|max:255',
         ];
     }
 

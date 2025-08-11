@@ -79,9 +79,9 @@
         </tr>
       </thead>
       <tbody>
-        @for (responsavel of responsaveis; track responsavel.id) {
+        @for (responsavel of responsaveis; track responsavel.id; let i = $index) {
         <tr>
-          <td>{{ responsavel.id }}</td>
+          <td>{{ i + 1}}</td>
           <td>{{ responsavel.cliente.nome || 'N/A' }}</td>
           <td>{{ responsavel.grau_parentesco }}</td>
           <td>{{ responsavel.email }}</td>
@@ -115,28 +115,28 @@
     </table>
   </div>
 
-  <!-- Controles de Paginação unificados -->
-  <nav aria-label="Navegação de Página" class="mt-4">
-    <ul class="pagination justify-content-center">
-      <li class="page-item" [class.disabled]="currentPage === 1">
-        <a class="page-link" (click)="onPageChange(currentPage - 1)">Anterior</a>
-      </li>
-      @for (page of [].constructor(totalPages); track $index) {
-      <li class="page-item" [class.active]="currentPage === $index + 1">
-        <a class="page-link" (click)="onPageChange($index + 1)">{{
-          $index + 1
-          }}</a>
-      </li>
-      }
-      <li class="page-item" [class.disabled]="currentPage === totalPages">
-        <a class="page-link" (click)="onPageChange(currentPage + 1)">Próxima</a>
-      </li>
-    </ul>
-    <div class="text-center mt-2">
-      Página {{ currentPage }} de {{ totalPages }} (Total:
-      {{ totalItems }} responsáveis)
-    </div>
-  </nav>
+    <!-- Controles de Paginação unificados -->
+    <nav aria-label="Navegação de Página" class="mt-4">
+      <ul class="pagination justify-content-center">
+        <li class="page-item" [class.disabled]="currentPage === 1">
+          <a class="page-link" (click)="onPageChange(currentPage - 1)">Anterior</a>
+        </li>
+        @for (page of [].constructor(totalPages); track $index) {
+        <li class="page-item" [class.active]="currentPage === $index + 1">
+          <a class="page-link" (click)="onPageChange($index + 1)">{{
+            $index + 1
+            }}</a>
+        </li>
+        }
+        <li class="page-item" [class.disabled]="currentPage === totalPages">
+          <a class="page-link" (click)="onPageChange(currentPage + 1)">Próxima</a>
+        </li>
+      </ul>
+      <div class="text-center mt-2">
+        Página {{ currentPage }} de {{ totalPages }} (Total:
+        {{ totalItems }} responsáveis)
+      </div>
+    </nav>
   } @else if (!isLoading && !error) {
   <!-- Mensagem de lista vazia -->
   <div class="alert alert-info mt-3">

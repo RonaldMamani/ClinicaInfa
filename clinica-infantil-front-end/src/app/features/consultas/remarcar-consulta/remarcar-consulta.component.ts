@@ -84,7 +84,13 @@ export class RemarcarConsultaComponent implements OnInit {
 
       const dados = this.remarcarForm.value;
 
-      this.consultasService.remarcarConsulta(this.consultaId, dados).subscribe({
+      const dadosFormatados = {
+        ...dados,
+        hora_inicio: `${dados.hora_inicio}:00`,
+        hora_fim: `${dados.hora_fim}:00`
+      };
+
+      this.consultasService.remarcarConsulta(this.consultaId, dadosFormatados).subscribe({
         next: (response) => {
           this.isLoading = false;
           this.successMessage = response.message || 'Consulta remarcada com sucesso!';
@@ -104,8 +110,6 @@ export class RemarcarConsultaComponent implements OnInit {
       });
     }
   }
-
-  // O pipe 'date' no template ainda funciona porque CommonModule é importado
   private formatarDataParaInput(dataString: string): string {
     return dataString ? dataString.split(' ')[0] : '';
   }

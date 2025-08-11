@@ -1,17 +1,45 @@
 <div class="dashboard container py-5">
-  <h2>Estatísticas Gerais</h2>
-  
-  <div class="row">
-    <div class="col-12 row">
-        <div class="col-6">
-            <app-estatisticas-consultas></app-estatisticas-consultas>
-        </div>
-        <div class="col-6">
-            <app-estatisticas-receita></app-estatisticas-receita>
-        </div>
-        <div class="col-12">
-            <app-estatisticas-pacientes></app-estatisticas-pacientes>
-        </div>
+  <h2 class="fw-bold fs-1">Estatísticas Gerais</h2>
+
+  <div class="row gap-3">
+    <div class="col-12 row my-3">
+      <h4>Estatisticas de Consultas</h4>
+      <div class="col-6">
+        <app-estatisticas-consultas></app-estatisticas-consultas>
+      </div>
+      <div class="col-6">
+        <app-estatisticas-receita></app-estatisticas-receita>
+      </div>
+    </div>
+
+    <div class="col-12 row row-gap-3 my-3">
+      <h4>Estatisticas de Clientes</h4>
+      <div class="col-6">
+        <app-estatisticas-pacientes></app-estatisticas-pacientes>
+      </div>
+      <div class="col-6">
+        <app-estatisticas-responsaveis></app-estatisticas-responsaveis>
+      </div>
+      <div class="col-3">
+        <app-estatisticas-genero></app-estatisticas-genero>
+      </div>
+      <div class="col-3">
+        <app-estatisticas-clientes></app-estatisticas-clientes>
+      </div>
+      <div class="col-6">
+        <app-estatisticas-paciente-consultas></app-estatisticas-paciente-consultas>
+      </div>
+    </div>
+    <div class="col-12 row my-3">
+      <h4>Estatisticas de Medicos</h4>
+      <div class="col-6">
+        <app-estatisticas-especialidades></app-estatisticas-especialidades>
+      </div>
+      <div class="col-6">
+        <app-estatisticas-medicos></app-estatisticas-medicos>
+      </div>
     </div>
   </div>
+
+  <a class="btn btn-secondary mt-4" [routerLink]="['../']">Voltar para Dashboard</a>
 </div>
