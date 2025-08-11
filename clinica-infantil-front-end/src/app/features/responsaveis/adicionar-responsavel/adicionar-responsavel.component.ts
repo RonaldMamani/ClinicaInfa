@@ -116,7 +116,7 @@ export class AdicionarResponsavelComponent implements OnInit {
   }
 
   voltar(): void {
-    this.router.navigate(['/secretaria']);
+    this.router.navigate(['/secretaria/adicionar']);
   }
 
   voltarAdmin(): void {

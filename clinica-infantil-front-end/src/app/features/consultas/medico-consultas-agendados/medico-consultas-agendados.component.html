@@ -83,7 +83,7 @@
       </div>
 
       <!-- Adição da Paginação -->
-      @if (pagination && pagination.links.length > 10) {
+      @if (pagination && pagination.links.length > 0) {
       <nav aria-label="Navegação da tabela de consultas agendadas" class="mt-4">
         <ul class="pagination justify-content-center">
           @for (link of pagination.links; track $index) {

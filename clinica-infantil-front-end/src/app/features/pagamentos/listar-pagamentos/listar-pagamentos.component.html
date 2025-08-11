@@ -26,9 +26,9 @@
                 </tr>
             </thead>
             <tbody>
-                @for (pagamento of pagamentos; track pagamento.id) {
+                @for (pagamento of pagamentos; track pagamento.id; let i = $index) {
                 <tr>
-                    <td>{{ pagamento.id }}</td>
+                    <td>{{ i + 1 }}</td>
                     <td>{{ pagamento.consulta.paciente.cliente.nome }}</td>
                     <td>{{ pagamento.consulta.medico.usuario.funcionario.nome }}</td>
                     <td>R$ {{ pagamento.valor | number:'1.2-2' }}</td>
@@ -51,7 +51,7 @@
     </div>
 
     <!-- Controles de Paginação -->
-    @if (paginator && paginator.links.length > 10) {
+    @if (paginator && paginator.links.length > 0) {
       <nav aria-label="Navegação da tabela de pagamentos" class="mt-4">
         <ul class="pagination justify-content-center">
           @for (link of paginator.links; track $index) {

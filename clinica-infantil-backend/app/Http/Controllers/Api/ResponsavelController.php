@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\ResponsavelRequest;
-use App\Http\Requests\UpdateResponsavelRequest;
 use App\Models\Responsavel;
 use Exception;
 use Illuminate\Http\JsonResponse;

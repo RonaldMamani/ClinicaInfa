@@ -18,7 +18,7 @@ export class EstatisticasReceitaComponent implements OnInit {
   public chartInstance: Chart | undefined;
   @ViewChild('myChart') private chartCanvas: ElementRef | undefined;
 
-  constructor(private consultasService: EstatisticasService) {
+  constructor(private estatisticasService: EstatisticasService) {
     Chart.register(...registerables); 
   }
 
@@ -27,7 +27,7 @@ export class EstatisticasReceitaComponent implements OnInit {
   }
 
   carregarDados(): void {
-    this.consultasService.getReceitaMensal().subscribe({
+    this.estatisticasService.getReceitaMensal().subscribe({
       next: (response) => {
         const dados = response.dados;
         

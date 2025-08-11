@@ -19,7 +19,7 @@ class Medico extends Model
         'especialidade',
     ];
 
-    public $timestamps = false; // Supondo que você não tenha timestamps
+    public $timestamps = true;
 
     /**
      * Um médico pertence a um usuário.

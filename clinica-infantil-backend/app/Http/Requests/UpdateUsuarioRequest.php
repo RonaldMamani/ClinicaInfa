@@ -25,32 +25,27 @@ class UpdateUsuarioRequest extends FormRequest
     public function rules(): array
     {
         // O ID do usuário sendo atualizado é obtido da rota
-        $userId = $this->route('usuario'); 
-        
+        $userId = $this->route('id');
+
         return [
-            // Regras para os campos do modelo Usuario
-            'username' => [
-                'required',
-                'string',
-                'max:255',
-                // Garante que o username seja único, ignorando o próprio usuário que está sendo atualizado
-                Rule::unique('usuarios')->ignore($userId), 
-            ],
-            'id_perfil' => 'required|integer|exists:perfis,id',
-            'id_funcionario' => 'required|integer|exists:funcionarios,id',
-            'ativo' => 'required|boolean', // O frontend enviará true/false
-
-            // Regras para os campos aninhados do modelo Funcionario (se presentes no request)
-            'funcionario.nome' => 'sometimes|required|string|max:255',
-            'funcionario.cpf' => 'sometimes|required|string|max:14',
-            'funcionario.cargo' => 'sometimes|required|string|max:255',
-            'funcionario.email_empresarial' => 'sometimes|required|email|max:255',
-            'funcionario.telefone_empresarial' => 'sometimes|required|string|max:20',
-
-            // Regras para os campos aninhados do modelo Medico (se presentes no request)
-            // 'sometimes' significa que a regra só será aplicada se o campo estiver presente
-            'medico.CRM' => 'sometimes|required|string|max:50',
-            'medico.especialidade' => 'sometimes|required|string|max:255',
+            // A regra 'unique' agora ignora o ID do usuário atual.
+            'username' => ['required', 'string', 'max:255', Rule::unique('usuarios', 'username')->ignore($userId)],
+            
+            // ... (outras regras de validação)
+            'id_perfil' => 'required|exists:perfis,id',
+            'id_funcionario' => 'required|exists:funcionarios,id',
+            'ativo' => 'required|boolean',
+            
+            // Regras para os dados do funcionário
+            'funcionario.nome' => 'required|string|max:255',
+            'funcionario.cpf' => ['required', 'string', 'max:14', 'regex:/^\d{3}\.\d{3}\.\d{3}-\d{2}$/'],
+            'funcionario.cargo' => 'required|string|max:255',
+            'funcionario.email_empresarial' => 'required|email',
+            'funcionario.telefone_empresarial' => 'required|string|max:20',
+            
+            // Regras para os dados do médico, se existirem
+            'medico.CRM' => 'nullable|string|max:255',
+            'medico.especialidade' => 'nullable|string|max:255',
         ];
     }
 

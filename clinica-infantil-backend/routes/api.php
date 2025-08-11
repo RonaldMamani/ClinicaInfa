@@ -30,8 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/estados/{estado}', [EstadoController::class, 'show']);
     
     // Rotas para Cidades
-    Route::get('/cidades', [CidadeController::class, 'index']);
-    Route::get('/estados/{estadoId}/cidades', [CidadeController::class, 'getCidadesByEstado']);
+    Route::controller(CidadeController::class)->group(function () {
+        Route::get('/cidades', 'index');
+        Route::get('/estados/{estadoId}/cidades', 'getCidadesByEstado');
+    });
     
     // Rotas para Gêneros
     Route::get('/generos', [GeneroController::class, 'index']);
@@ -46,8 +48,10 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     // Rotas para Perfis
-    Route::get('/perfis', [PerfilController::class, 'index']);
-    Route::get('/perfis/{id}', [PerfilController::class, 'show']);
+    Route::controller(PerfilController::class)->group(function () {
+        Route::get('/perfis', 'index');
+        Route::get('/perfis/{perfil}', 'show');
+    });
     
     
     // Rotas para Funcionários
@@ -62,6 +66,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
     Route::post('/usuarios', [UsuarioController::class, 'store']);
     Route::put('/usuarios/{id}', [UsuarioController::class, 'update']);
+    Route::put('/usuarios/{id}/activate', [UsuarioController::class, 'reativarUsuario']);
+    Route::put('/usuarios/{id}/redefinir', [UsuarioController::class, 'redefinirSenha']);
     Route::patch('/usuarios/{id}', [UsuarioController::class, 'update']);
     Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']);
     
@@ -85,6 +91,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/pacientes/ativos', 'pacientesAtivos');
         Route::get('/pacientes/inativos', 'pacientesInativos');
         Route::get('/pacientes/{id}', 'show');
+        Route::post('/pacientes', 'store');
         Route::put('/pacientes/{id}', 'update');
         Route::delete('/pacientes/{id}', 'destroy');
     });
@@ -97,42 +104,66 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/medicos', [MedicoController::class, 'store']);
     
     // Rotas para Consultas
-    Route::get('/consultas/agendadas', [ConsultaController::class, 'consultasAgendadas']);//
-    Route::get('/consultas/concluidas', [ConsultaController::class, 'consultasConcluidas']);//
-    Route::get('/consultas/agendadas/{id}', [ConsultaController::class, 'showAgendada']); //
-    Route::get('/consultas/quantidades/todas', [ConsultaController::class, 'quantidadeTotal']);//
-    Route::get('/consultas/quantidades/agendadas', [ConsultaController::class, 'quantidadeAgendadas']);//
-    Route::get('/consultas/estatisticas', [ConsultaController::class, 'todasAsEstatisticas']);
-    Route::get('/consultas/medico', [ConsultaController::class, 'consultasMedico']);
-    Route::get('/consultas/medico/agendados', [ConsultaController::class, 'consultasMedicoAgendados']);
-    Route::get('/consultas/listar', [ConsultaController::class, 'consultasListar']); //
-    Route::get('/consultas/listar-agendadas', [ConsultaController::class, 'consultasAgendadasListar']); //
-    Route::get('/consultas', [ConsultaController::class, 'index']); //
-    Route::get('/consultas/{id}', [ConsultaController::class, 'show']); //
-    Route::post('/consultas/medico/agendar', [ConsultaController::class, 'storeMedico']);
-    Route::post('/consultas', [ConsultaController::class, 'store']); //
-    Route::put('/consultas/agendadas/{id}/remarcar', [ConsultaController::class, 'remarcar']); //
-    Route::put('/consultas/{id}', [ConsultaController::class, 'update']); //
-    Route::put('/consultas/{id}/concluir', [ConsultaController::class, 'concluir']);
-    Route::post('/consultas/{id}/finalizar', [ConsultaController::class, 'finalizarConsulta']); //
-    Route::patch('/consultas/{id}/status', [ConsultaController::class, 'updateStatus']);
-    Route::delete('/consultas/{id}', [ConsultaController::class, 'destroy']);
+    Route::controller(ConsultaController::class)->group(function () {
+        // Métodos GET
+        Route::get('/consultas', 'index');
+        Route::get('/consultas/listar', 'consultasListar');
+        Route::get('/consultas/agendadas', 'consultasAgendadas');
+        Route::get('/consultas/listar-agendadas', 'consultasAgendadasListar');
+        Route::get('/consultas/agendadas/{id}', 'showAgendada');
+        Route::get('/consultas/medico', 'consultasMedico');
+        Route::get('/consultas/medico/agendados', 'consultasMedicoAgendados');
+        Route::get('/consultas/quantidades/todas', 'quantidadeTotal');
+        Route::get('/consultas/quantidades/agendadas', 'quantidadeAgendadas');
+        Route::get('/consultas/estatisticas', 'todasAsEstatisticas');
+        Route::get('/consultas/medico/count/total', 'countAllConsultas');
+        Route::get('/consultas/medico/count/agendadas', 'countAgendadasConsultas');
+        Route::get('/consultas/{id}', 'show');
+
+        // Métodos POST
+        Route::post('/consultas', 'store');
+        Route::post('/consultas/medico/agendar', 'storeMedico');
+        Route::post('/consultas/{id}/finalizar', 'finalizarConsulta');
+
+        // Métodos PUT
+        Route::put('/consultas/{id}', 'update');
+        Route::put('/consultas/agendadas/{id}/remarcar', 'remarcar');
+        Route::put('/consultas/{id}/concluir', 'concluir');
+
+        // Métodos PATCH
+        Route::patch('/consultas/{id}/status', 'updateStatus');
+
+        // Métodos DELETE
+        Route::delete('/consultas/{id}', 'destroy');
+    });
     
     // Rotas para Prontuários
-    Route::get('/prontuarios', [ProntuarioController::class, 'index']); //
-    Route::get('/prontuarios/{id}', [ProntuarioController::class, 'show']); //
-    Route::get('prontuarios/paciente/{idPaciente}/check', [ProntuarioController::class, 'checkProntuario']);
-    Route::get('prontuarios/paciente/{idPaciente}', [ProntuarioController::class, 'showByPacienteId']);
-    Route::post('/prontuarios', [ProntuarioController::class, 'storeMedico']);
-    Route::put('/prontuarios/{id}', [ProntuarioController::class, 'update']); //
+    Route::controller(ProntuarioController::class)->group(function () {
+        Route::get('/prontuarios', 'index');
+        Route::get('/prontuarios/paciente/{idPaciente}/check', 'checkProntuario');
+        Route::get('/prontuarios/paciente/{idPaciente}', 'showByPacienteId');
+        Route::get('/prontuarios/{prontuario}', 'show');
+        Route::post('/prontuarios', 'store');
+        Route::put('/prontuarios/{prontuario}', 'update');
+        Route::patch('/prontuarios/{prontuario}', 'update');
+        Route::delete('/prontuarios/{prontuario}', 'destroy');
+    });
     
     // Rotas para Pagamentos
-    Route::get('/pagamentos', [PagamentoController::class, 'index']);
-    Route::get('/pagamentos/{id}', [PagamentoController::class, 'show']);
-    Route::post('/pagamentos', [PagamentoController::class, 'store']);
-    Route::put('/pagamentos/{id}', [PagamentoController::class, 'update']);
-    Route::patch('/pagamentos/{id}', [PagamentoController::class, 'update']);
+    Route::controller(PagamentoController::class)->group(function () {
+        Route::get('/pagamentos', 'index');
+        Route::get('/pagamentos/{pagamento}', 'show');
+        Route::post('/pagamentos', 'store');
+        Route::put('/pagamentos/{pagamento}', 'update');
+        Route::delete('/pagamentos/{pagamento}', 'destroy');
+    });
 
     Route::get('/estatisticas/pacientes-por-cidade', [EstatisticaController::class, 'pacientesPorCidade']);
+    Route::get('/estatisticas/responsaveis-por-cidade', [EstatisticaController::class, 'responsaveisPorCidade']);
     Route::get('/estatisticas/receita-mensal', [EstatisticaController::class, 'receitaMensal']);
+    Route::get('/estatisticas/consultas-por-especialidade', [EstatisticaController::class, 'consultasPorEspecialidade']);
+    Route::get('/estatisticas/pacientes-por-genero', [EstatisticaController::class, 'pacientesPorGenero']);
+    Route::get('/estatisticas/clientes-por-funcao', [EstatisticaController::class, 'clientesPorFuncao']);
+    Route::get('/estatisticas/consultas-por-medico-por-mes', [EstatisticaController::class, 'consultasPorMedicoPorMes']);
+    Route::get('/estatisticas/consultas-e-pacientes-mensal', [EstatisticaController::class, 'consultasEAtividadeDePacienteMensal']);
 });

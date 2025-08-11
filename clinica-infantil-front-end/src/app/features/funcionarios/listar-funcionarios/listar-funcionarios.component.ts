@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { UpdateUsuarioPayload, Usuario, UsuariosListResponse } from '../../../core/models/usuario.model';
+import { Usuario, UsuariosListResponse } from '../../../core/models/usuario.model';
 import { UsuariosService } from '../../../controllers/usuarios/usuarios.service';
-import { forkJoin } from 'rxjs';
+import { forkJoin, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-listar-funcionarios',
@@ -76,25 +76,21 @@ export class ListarFuncionariosComponent {
 
   /**
    * Confirma e executa a ação de desativar/reativar o usuário.
-   * Esta função constrói o payload com o novo status 'ativo' e o envia ao backend
-   * através do método updateUsuario do serviço.
    */
   confirmAction(): void {
     if (this.selectedUsuario && this.actionType) {
-      // Determina o novo status baseado na ação (reativar = true, desativar = false)
-      const novoStatus = this.actionType === 'reativar';
-      
-      // Constrói o payload completo para o update.
-      // É importante incluir todos os campos obrigatórios que o backend espera no PUT,
-      // mesmo que apenas o 'ativo' esteja sendo alterado, para evitar erros de validação.
-      const payload: UpdateUsuarioPayload = {
-        username: this.selectedUsuario.username,
-        id_perfil: this.selectedUsuario.id_perfil,
-        id_funcionario: this.selectedUsuario.id_funcionario,
-        ativo: novoStatus // Define o novo status ativo/inativo
-      };
+      let requestObservable: Observable<any>;
+      const usuarioId = this.selectedUsuario.id;
 
-      this.usuarioService.updateUsuario(this.selectedUsuario.id, payload).subscribe({
+      if (this.actionType === 'desativar') {
+        // Usa o método específico de desativação (DELETE)
+        requestObservable = this.usuarioService.desativarUsuario(usuarioId);
+      } else {
+        // Usa o método específico de reativação (PUT)
+        requestObservable = this.usuarioService.reativarUsuario(usuarioId);
+      }
+      
+      requestObservable.subscribe({
         next: (response) => {
           this.successMessage = response.message;
           this.closeConfirmModal();

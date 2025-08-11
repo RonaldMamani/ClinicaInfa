@@ -2,7 +2,11 @@
   <div class="d-flex justify-content-between align-items-center mb-4">
     <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
       @if (filtroAtivo === true) {
-      <h2 class="mb-0">Pacientes Ativos</h2>
+      @if (isAdministradorRoute) {
+        <h2 class="mb-0">Pacientes Ativos</h2>
+      } @else {
+        <h2 class="mb-0">Lista de Pacientes</h2>
+      }
       } @else if (filtroAtivo === false) {
       <h2 class="mb-0">Pacientes Inativos</h2>
       } @else {
@@ -50,10 +54,10 @@
       </tr>
     </thead>
     <tbody>
-      @for (paciente of pacientes; track paciente.id) {
+      @for (paciente of pacientes; track paciente.id; let i = $index) {
       <tr>
         @if (isAdministradorRoute) {
-        <td>{{ paciente.id }}</td>
+        <td>{{ i + 1 }}</td>
         }
         <td>{{ paciente.cliente.nome }}</td>
         <td>{{ paciente.cliente.cpf }}</td>
@@ -85,8 +89,6 @@
       }
     </tbody>
   </table>
-
-  @if (pacientes.length > 10) {
     <nav aria-label="Navegação de Página" class="mt-4">
       <ul class="pagination justify-content-center">
         <li class="page-item" [class.disabled]="currentPage === 1">
@@ -110,7 +112,7 @@
     </nav>
   }
   
-  } @else if (!isLoading && !error) {
+  @else if (!isLoading && !error) {
   <div class="alert alert-info mt-3">
     Nenhum paciente @if (filtroAtivo === true) { ativo } @else if (filtroAtivo
     === false) { inativo } encontrado.

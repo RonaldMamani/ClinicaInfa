@@ -83,10 +83,7 @@ export class ConsultasService {
     return this.http.put<UpdateConsultaResponse>(url, data);
   }
 
-  remarcarConsulta(
-    id: number,
-    dadosRemarcacao: { data_consulta: string; hora_inicio: string; hora_fim: string }
-  ): Observable<any> {
+  remarcarConsulta( id: number, dadosRemarcacao: { data_consulta: string; hora_inicio: string; hora_fim: string }): Observable<any> {
     return this.http.put(`${this.apiUrl}/agendadas/${id}/remarcar`, dadosRemarcacao);
   }
 

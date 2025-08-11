@@ -25,4 +25,9 @@ class Funcionario extends Model
 
     // desativamos o gerenciamento automático de timestamps do Eloquent.
     public $timestamps = false;
+
+    public function usuario()
+    {
+        return $this->hasOne(Usuario::class, 'id_funcionario');
+    }
 }

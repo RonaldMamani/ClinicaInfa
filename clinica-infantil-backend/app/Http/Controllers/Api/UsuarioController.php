@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\RedefinirSenhaRequest;
 use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
 use App\Models\Funcionario;
@@ -17,9 +18,7 @@ use Illuminate\Support\Facades\Log;
 
 class UsuarioController extends Controller
 {
-    protected $relations = [
-        'perfil', 'funcionario', 'medico'
-    ];
+    protected $relations = ['perfil', 'funcionario', 'medico'];
 
     public function index()
     {
@@ -148,7 +147,7 @@ class UsuarioController extends Controller
 
     public function store(StoreUsuarioRequest $request): JsonResponse
     {
-        DB::beginTransaction(); // Inicia uma transação de banco de dados
+        DB::beginTransaction();
         try {
             // 1. Cria o registro de Funcionário
             $funcionarioData = $request->input('funcionario');
@@ -156,34 +155,35 @@ class UsuarioController extends Controller
 
             // 2. Cria o registro de Usuário
             $usuarioData = $request->only(['username', 'id_perfil', 'ativo']);
-            $usuarioData['id_funcionario'] = $funcionario->id; // Associa ao funcionário recém-criado
-            $usuarioData['senha'] = Hash::make($request->input('senha')); // Hasheia a senha
+            $usuarioData['id_funcionario'] = $funcionario->id;
+            $usuarioData['senha'] = Hash::make($request->input('senha'));
 
             $usuario = Usuario::create($usuarioData);
 
-            // 3. Verifica se o perfil é 'Medico' e cria o registro de Medico, se aplicável
+            // 3. Verifica se o perfil é 'Medico' e cria o registro de Medico
             $perfilMedico = Perfil::where('nome_perfil', 'Medico')->first();
 
-            if ($perfilMedico && $usuario->id_perfil === $perfilMedico->id && $request->has('medico')) {
+            // Correção: usa a comparação não estrita (==) para evitar erro de tipo.
+            // O request envia 'id_perfil' como string, mas o objeto $perfilMedico->id é um inteiro.
+            if ($perfilMedico && $usuario->id_perfil == $perfilMedico->id && $request->has('medico')) {
                 $medicoData = $request->input('medico');
-                $medicoData['id_usuario'] = $usuario->id; // Associa ao usuário recém-criado
+                $medicoData['id_usuario'] = $usuario->id;
                 Medico::create($medicoData);
             }
 
-            DB::commit(); // Confirma a transação
+            DB::commit();
 
-            // Recarrega o usuário com as relações para a resposta
             $usuario->load($this->relations);
 
             return response()->json([
                 'status' => true,
                 'message' => 'Usuário criado com sucesso.',
                 'usuario' => $usuario
-            ], 201); // Status 201 para "Created"
-
+            ], 201);
         } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+            DB::rollBack();
             Log::error("Erro ao criar usuário: " . $e->getMessage());
+            
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao criar o usuário.',
@@ -195,9 +195,9 @@ class UsuarioController extends Controller
     public function update(UpdateUsuarioRequest $request, int $id): JsonResponse
     {
         try {
-            DB::beginTransaction(); // Inicia uma transação de banco de dados
+            DB::beginTransaction();
 
-            $usuario = Usuario::with(['funcionario', 'medico'])->find($id);
+            $usuario = Usuario::with($this->relations)->find($id);
 
             if (!$usuario) {
                 DB::rollBack();
@@ -210,24 +210,26 @@ class UsuarioController extends Controller
             // Atualiza os dados do modelo Usuario
             $usuario->update($request->only(['username', 'id_perfil', 'id_funcionario', 'ativo']));
 
-            // Atualiza os dados do Funcionário associado, se existirem no request e na relação
+            // Atualiza os dados do Funcionário associado, se estiverem presentes no request
             if ($request->has('funcionario') && $usuario->funcionario) {
                 $usuario->funcionario->update($request->input('funcionario'));
             }
 
             // Atualiza ou cria o registro de Médico se o perfil for de Médico
-            // e os dados de médico estiverem presentes no request.
-            // Você precisaria do ID do perfil 'Medico'. Assumindo que você pode obtê-lo.
             $perfilMedico = Perfil::where('nome_perfil', 'Medico')->first();
 
-            if ($request->has('medico') && $perfilMedico && $usuario->id_perfil === $perfilMedico->id) {
-                $medicoData = $request->input('medico');
-                // Encontra o médico existente ou cria um novo se não existir para este usuário
-                $medico = Medico::firstOrNew(['id_usuario' => $usuario->id]);
-                $medico->fill($medicoData);
-                $medico->save();
+            if ($request->has('medico')) {
+                if ($perfilMedico && $usuario->id_perfil === $perfilMedico->id) {
+                    $medicoData = $request->input('medico');
+                    $medico = Medico::firstOrNew(['id_usuario' => $usuario->id]);
+                    $medico->fill($medicoData);
+                    $medico->save();
+                } else if ($usuario->medico) {
+                    // Se o perfil mudou e não é mais Médico, deleta o registro de médico
+                    $usuario->medico->delete();
+                }
             }
-
+            
             DB::commit(); // Confirma a transação
 
             // Recarrega o usuário com as relações atualizadas para a resposta
@@ -239,12 +241,51 @@ class UsuarioController extends Controller
                 'usuario' => $usuario
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack(); // Reverte a transação em caso de erro
             Log::error("Erro ao atualizar usuário: " . $e->getMessage());
+
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao atualizar o usuário.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function redefinirSenha(RedefinirSenhaRequest $request, int $id): JsonResponse
+    {
+        DB::beginTransaction();
+        try {
+            $usuario = Usuario::find($id);
+
+            if (!$usuario) {
+                DB::rollBack();
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuário não encontrado.'
+                ], 404);
+            }
+
+            // Hashea a nova senha
+            $newPassword = Hash::make($request->input('senha'));
+
+            // Atualiza a senha no banco de dados
+            $usuario->update(['senha' => $newPassword]);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Senha redefinida com sucesso!'
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Erro ao redefinir a senha do usuário: ' . $e->getMessage());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao redefinir a senha.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
@@ -282,6 +323,42 @@ class UsuarioController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao inativar o usuário. Verifique os logs do servidor.',
+                'error_details' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function reativarUsuario($id)
+    {
+        DB::beginTransaction();
+        try {
+            // Encontra o usuário pelo ID
+            $usuario = Usuario::find($id);
+
+            // Se o usuário não for encontrado ou já estiver ativo, retorna 404
+            if (!$usuario || $usuario->ativo) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Usuário não encontrado ou já está ativo.',
+                ], 404);
+            }
+
+            // Marca o usuário como ativo
+            $usuario->update(['ativo' => true]);
+            DB::commit();
+
+            // Retorna a confirmação de que o usuário foi reativado
+            return response()->json([
+                'status' => true,
+                'message' => 'Usuário reativado com sucesso!',
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            Log::error('Erro ao reativar usuário: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
+            return response()->json([
+                'status' => false,
+                'message' => 'Ocorreu um erro ao reativar o usuário. Verifique os logs do servidor.',
                 'error_details' => $e->getMessage()
             ], 500);
         }
