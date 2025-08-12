@@ -4,13 +4,14 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common'; // Removemos a importação do DatePipe
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { Consulta, ConsultaDetailsResponse } from '../../../core/models/consultas.model';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-remarcar-consulta',
   templateUrl: './remarcar-consulta.component.html',
   styleUrls: ['./remarcar-consulta.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink]
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HttpClientModule]
 })
 export class RemarcarConsultaComponent implements OnInit {
   remarcarForm: FormGroup;

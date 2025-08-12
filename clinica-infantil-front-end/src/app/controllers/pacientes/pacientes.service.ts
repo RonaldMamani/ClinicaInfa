@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { forkJoin, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Paciente, PacienteDetailsResponse, PacientesApiResponse, PacientesPaginadosResponse, UpdatePacientePayload } from '../../core/models/paciente.model';
 import { PacientesContagemResponse } from '../../core/models/quantidades.model';
 

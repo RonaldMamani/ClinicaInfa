@@ -102,18 +102,18 @@ class MedicoController extends Controller
      */
     public function store(MedicoRequest $request)
     {
-        DB::beginTransaction(); // Inicia a transação
+        DB::beginTransaction();
         try {
             // Cria um novo médico com os dados validados
             $medico = Medico::create($request->validated());
-            DB::commit(); // Confirma a transação
+            DB::commit();
 
             // Retorna a confirmação de criação do médico
             return response()->json([
                 'status' => true,
                 'message' => 'Médico criado com sucesso!',
                 'medico' => $medico,
-            ], 201); // Código 201 Created
+            ], 201);
 
         } catch (Exception $e) {
             DB::rollBack(); // Reverte a transação em caso de erro

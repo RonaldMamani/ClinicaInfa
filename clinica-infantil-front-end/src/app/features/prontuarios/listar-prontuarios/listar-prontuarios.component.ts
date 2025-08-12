@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Prontuario } from '../../../core/models/prontuarios.model';
 import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-listar-prontuarios',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './listar-prontuarios.component.html',
   styleUrl: './listar-prontuarios.component.css'
 })

@@ -3,12 +3,12 @@ import { ResponsaveisService } from '../../../controllers/responsaveis/responsav
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResponsaveiPaginateResponse, Responsavel } from '../../../core/models/responsavel.model';
-import { forkJoin } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-listar-responsaveis',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './listar-responsaveis.component.html',
   styleUrl: './listar-responsaveis.component.css'
 })

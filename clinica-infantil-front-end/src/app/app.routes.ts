@@ -102,6 +102,7 @@ export const routes: Routes = [
     data: { expectedProfile: 'administrador' },
     children: [
       { path: '', component: DashboardAdministradorComponent },
+      { path: 'consultas/agendar', component: AdicionarConsultaComponent },
       { path: 'consultas', component: ListarTodasConsultasComponent },
       { path: 'consultas/:id', component: DetalhesConsultaComponent},
       { path: 'consultas/:id/remarcar', component: RemarcarConsultaComponent },

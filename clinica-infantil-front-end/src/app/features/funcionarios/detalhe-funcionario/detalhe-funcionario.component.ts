@@ -3,10 +3,11 @@ import { Usuario, UsuarioDetailsResponse } from '../../../core/models/usuario.mo
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsuariosService } from '../../../controllers/usuarios/usuarios.service';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-detalhe-funcionario',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './detalhe-funcionario.component.html',
   styleUrl: './detalhe-funcionario.component.css'
 })

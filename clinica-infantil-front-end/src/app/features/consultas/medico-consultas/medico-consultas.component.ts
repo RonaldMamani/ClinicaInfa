@@ -4,10 +4,11 @@ import { AuthService } from '../../../controllers/auth/auth.service';
 import { Consulta, ConsultasApiResponse, ConsultasPaginationApiResponse, Pagination } from '../../../core/models/consultas.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-medico-consultas',
-  imports: [CommonModule, RouterModule, RouterLink],
+  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule],
   templateUrl: './medico-consultas.component.html',
   styleUrl: './medico-consultas.component.css'
 })

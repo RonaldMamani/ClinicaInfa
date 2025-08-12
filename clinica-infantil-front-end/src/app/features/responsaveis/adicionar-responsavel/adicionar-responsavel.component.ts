@@ -12,12 +12,13 @@ import { GenerosService } from '../../../controllers/generos/generos.service';
 import { ClientesService } from '../../../controllers/clientes/clientes.service';
 import { Cidade } from '../../../core/models/cidades.model';
 import { Genero } from '../../../core/models/generos.model';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
   selector: 'app-adicionar-responsavel',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule],
   templateUrl: './adicionar-responsavel.component.html',
   styleUrls: ['./adicionar-responsavel.component.css']
 })

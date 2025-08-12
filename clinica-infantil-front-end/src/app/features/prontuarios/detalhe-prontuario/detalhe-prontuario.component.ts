@@ -1,12 +1,13 @@
-import { CommonModule, DatePipe, TitleCasePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProntuariosService } from '../../../controllers/prontuarios/prontuarios.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-detalhe-prontuario',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './detalhe-prontuario.component.html',
   styleUrl: './detalhe-prontuario.component.css'
 })

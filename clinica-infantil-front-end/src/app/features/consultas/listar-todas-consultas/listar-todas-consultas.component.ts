@@ -3,17 +3,18 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
 import { Consulta, Pagination } from '../../../core/models/consultas.model';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-listar-todas-consultas',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink],
+  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule],
   templateUrl: './listar-todas-consultas.component.html',
   styleUrls: ['./listar-todas-consultas.component.css']
 })
 export class ListarTodasConsultasComponent implements OnInit {
   consultas: Consulta[] = [];
-  pagination: Pagination | null = null; // Propriedade para armazenar os dados de paginação
+  pagination: Pagination | null = null;
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
@@ -104,7 +105,7 @@ export class ListarTodasConsultasComponent implements OnInit {
         next: (response) => {
           this.successMessage = response.message || 'Consulta cancelada com sucesso!';
           this.closeCancelModal();
-          this.carregarConsultas(); // Recarrega a lista após o cancelamento
+          this.carregarConsultas();
         },
         error: (err) => {
           this.error = 'Erro ao cancelar a consulta.';

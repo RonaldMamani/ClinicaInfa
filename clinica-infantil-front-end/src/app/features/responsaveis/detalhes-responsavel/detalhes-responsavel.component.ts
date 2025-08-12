@@ -3,10 +3,11 @@ import { ResponsaveisService } from '../../../controllers/responsaveis/responsav
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Responsavel } from '../../../core/models/responsavel.model';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-detalhes-responsavel',
-  imports: [CommonModule, RouterModule, DatePipe],
+  imports: [CommonModule, RouterModule, DatePipe, HttpClientModule],
   templateUrl: './detalhes-responsavel.component.html',
   styleUrl: './detalhes-responsavel.component.css'
 })

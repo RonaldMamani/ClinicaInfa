@@ -5,10 +5,11 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ConsultasService, UpdateConsultaResponse } from '../../../controllers/consultas/consultas.service';
 import { CommonModule } from '@angular/common';
 import { ProntuariosService } from '../../../controllers/prontuarios/prontuarios.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-atender-consulta',
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './atender-consulta.component.html',
   styleUrl: './atender-consulta.component.css'
 })

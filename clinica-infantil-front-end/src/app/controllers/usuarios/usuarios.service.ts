@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
-import { AllUsuariosApiResponse, CreateUsuarioPayload, UpdateUsuarioPayload, UsuarioDetailsResponse, UsuarioResponse, UsuariosListResponse } from '../../core/models/usuario.model';
+import { catchError, Observable, throwError } from 'rxjs';
+import { CreateUsuarioPayload, UpdateUsuarioPayload, UsuarioDetailsResponse, UsuarioResponse, UsuariosListResponse } from '../../core/models/usuario.model';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 @Injectable({

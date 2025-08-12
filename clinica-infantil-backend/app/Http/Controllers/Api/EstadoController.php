@@ -33,7 +33,7 @@ class EstadoController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Ocorreu um erro ao buscar os estados. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage() // Para depuração, remova em produção
+                'error_details' => $e->getMessage()
             ], 500);
         }
     }

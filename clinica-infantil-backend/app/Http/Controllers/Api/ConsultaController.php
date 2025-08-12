@@ -82,7 +82,7 @@ class ConsultaController extends Controller
                 ->whereIn('status', ['agendada', 'concluida'])
                 ->orderBy('data_consulta', 'asc')
                 ->orderBy('hora_inicio', 'asc')
-                ->paginate(10);
+                ->paginate(15);
 
             return response()->json([
                 'status' => true,
@@ -103,9 +103,14 @@ class ConsultaController extends Controller
     public function store(ConsultaRequest $request)
     {
         try {
-            // O código de validação foi movido para o ConsultaRequest.
-            // Aqui, usamos apenas os dados já validados.
-            $consulta = Consulta::create($request->validated());
+            $validatedData = $request->validated();
+            
+            // Adiciona o status padrão antes de criar o registro.
+            // Isso garante que o campo 'status' seja sempre definido.
+            $validatedData['status'] = 'agendada';
+
+            // O `Consulta::create` agora receberá o status padrão
+            $consulta = Consulta::create($validatedData);
 
             // Carrega os relacionamentos aninhados para o retorno.
             return response()->json([
@@ -140,14 +145,14 @@ class ConsultaController extends Controller
             'data_consulta' => 'required|date',
             'hora_inicio' => 'required|date_format:H:i',
             'hora_fim' => 'required|date_format:H:i|after:hora_inicio',
-            'descricao' => 'required|string|max:1000', // Campo 'descricao' é obrigatório
+            'descricao' => 'required|string|max:1000',
         ]);
         
         try {
             // Cria a nova consulta com os dados validados
             $consulta = new Consulta();
             $consulta->id_paciente = $request->input('id_paciente');
-            $consulta->id_medico = $medico->id; // Pega o ID do médico logado
+            $consulta->id_medico = $medico->id;
             $consulta->data_consulta = $request->input('data_consulta');
             $consulta->hora_inicio = $request->input('hora_inicio');
             $consulta->hora_fim = $request->input('hora_fim');
@@ -343,8 +348,6 @@ class ConsultaController extends Controller
             $dataPagamentoFormatada = null;
 
             if ($dataPagamentoRaw) {
-                // (configurado em config/app.php, idealmente 'America/Sao_Paulo')
-                // e formata para o padrão do MySQL.
                 $dataPagamentoFormatada = Carbon::parse($dataPagamentoRaw)
                                                ->setTimezone(config('app.timezone'))
                                                ->format('Y-m-d H:i:s');
@@ -445,7 +448,7 @@ class ConsultaController extends Controller
             $consultas = Consulta::with($this->relations)
                                 ->where('id_medico', $medico->id)
                                 ->orderBy('id', 'asc')
-                                ->paginate(15); // A alteração principal é aqui
+                                ->paginate(15);
 
             return response()->json([
                 'status' => true,
@@ -487,12 +490,12 @@ class ConsultaController extends Controller
                                 ->where('status', 'agendada')
                                 ->orderBy('data_consulta', 'asc')
                                 ->orderBy('hora_inicio', 'asc')
-                                ->paginate(15); // A alteração principal é aqui
+                                ->paginate(15);
 
             return response()->json([
                 'status' => true,
                 'message' => 'Consultas agendadas do médico obtidas com sucesso.',
-                'consultas' => $consultas, // O Laravel já retorna o objeto de paginação completo aqui
+                'consultas' => $consultas,
             ], 200);
 
         } catch (\Exception $e) {
@@ -578,7 +581,7 @@ class ConsultaController extends Controller
      */
     public function quantidadeAgendadas()
     {
-        $agendadas = Consulta::whereIn('status', ['agendada', 'concluidas'])->count();
+        $agendadas = Consulta::whereIn('status', ['agendada', 'concluidas' , 'Agendada'])->count();
         return response()->json([
             'status' => true,
             'message' => 'Quantidade de consultas agendadas obtida com sucesso.',

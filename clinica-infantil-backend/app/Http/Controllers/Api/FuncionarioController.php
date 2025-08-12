@@ -68,21 +68,21 @@ class FuncionarioController extends Controller
 
     public function store(FuncionarioRequest $request)
     {
-        DB::beginTransaction(); // Inicia a transação
+        DB::beginTransaction();
         try {
             // Cria um novo funcionário com os dados validados
             $funcionario = Funcionario::create($request->validated());
-            DB::commit(); // Confirma a transação
+            DB::commit();
 
             // Retorna a confirmação de criação do funcionário
             return response()->json([
                 'status' => true,
                 'message' => 'Funcionário criado com sucesso!',
                 'funcionario' => $funcionario,
-            ], 201); // Código 201 Created
+            ], 201);
 
         } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+            DB::rollBack();
             Log::error('Erro ao criar funcionário: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -94,7 +94,7 @@ class FuncionarioController extends Controller
 
     public function update(FuncionarioRequest $request, $id)
     {
-        DB::beginTransaction(); // Inicia a transação
+        DB::beginTransaction();
         try {
             // Encontra o funcionário pelo ID
             $funcionario = Funcionario::find($id);
@@ -116,10 +116,10 @@ class FuncionarioController extends Controller
                 'status' => true,
                 'message' => 'Funcionário atualizado com sucesso!',
                 'funcionario' => $funcionario,
-            ], 200); // Código 200 OK
+            ], 200);
 
         } catch (Exception $e) {
-            DB::rollBack(); // Reverte a transação em caso de erro
+            DB::rollBack();
             Log::error('Erro ao atualizar funcionário: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,

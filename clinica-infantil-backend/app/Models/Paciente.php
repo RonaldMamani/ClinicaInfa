@@ -64,9 +64,4 @@ class Paciente extends Model
         return $this->hasMany(Prontuario::class, 'id_paciente');
     }
 
-    public static function countPatients()
-    {
-        return self::count();
-    }
-
 }

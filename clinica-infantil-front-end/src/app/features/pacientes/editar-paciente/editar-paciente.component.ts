@@ -20,11 +20,12 @@ import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { ResponsaveisService } from '../../../controllers/responsaveis/responsaveis.service';
 import { Cidade } from '../../../core/models/cidades.model';
 import { Responsavel } from '../../../core/models/responsavel.model';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-editar-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective],
+  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule],
   templateUrl: './editar-paciente.component.html',
   styleUrls: ['./editar-paciente.component.css']
 })

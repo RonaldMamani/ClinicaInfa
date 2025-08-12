@@ -3,12 +3,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Consulta } from '../../../core/models/consultas.model';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
-
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-detalhes-consulta',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './detalhes-consulta.component.html',
   styleUrls: ['./detalhes-consulta.component.css']
 })

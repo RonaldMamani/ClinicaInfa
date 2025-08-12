@@ -1,13 +1,14 @@
 import { Component } from '@angular/core';
 import { PagamentosService } from '../../../controllers/pagamentos/pagamentos.service';
-import { Pagamento, PagamentosPaginateApiResponse } from '../../../core/models/pagamento.model';
+import { Pagamento } from '../../../core/models/pagamento.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-listar-pagamentos',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HttpClientModule],
   templateUrl: './listar-pagamentos.component.html',
   styleUrl: './listar-pagamentos.component.css'
 })

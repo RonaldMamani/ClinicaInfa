@@ -51,7 +51,12 @@
                     Cancelar
                 </button>
                 <button type="submit" class="btn btn-success" [disabled]="agendarForm.invalid">
-                    Agendar
+                    @if (isLoading) {
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Salvando...
+                    } @else {
+                        Agendar
+                    }
                 </button>
             </div>
         </form>

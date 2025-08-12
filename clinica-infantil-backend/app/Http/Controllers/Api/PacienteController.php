@@ -183,13 +183,8 @@ class PacienteController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // 1. Tenta encontrar o paciente pelo ID fornecido na URL.
-        // O método find() retorna null se o paciente não for encontrado.
         $paciente = Paciente::find($id);
 
-        // 2. VERIFICAÇÃO CRUCIAL:
-        // Verifica se a variável $paciente não é nula.
-        // Se for null, significa que o ID não existe no banco.
         if (is_null($paciente)) {
             // Retorna uma resposta de erro com o status 404 (Not Found).
             return response()->json([
@@ -198,8 +193,6 @@ class PacienteController extends Controller
             ], 404);
         }
 
-        // 3. Validação dos dados do request.
-        // Adapte as regras de validação conforme a sua necessidade.
         $request->validate([
             'nome' => 'required|string|max:255',
             'cpf' => 'required|string|max:14',
@@ -212,12 +205,8 @@ class PacienteController extends Controller
             'id_responsavel' => 'required|integer|exists:responsaveis,id',
         ]);
         
-        // 4. Atualiza os dados do cliente (relacionamento).
-        // Acessa a relação 'cliente' do paciente.
-        // A verificação de 'is_null($paciente)' acima garante que $paciente->cliente não será chamado em um objeto nulo.
         $cliente = $paciente->cliente;
 
-        // VERIFICAÇÃO ADICIONAL: Se, por algum motivo, a relação com o cliente não existir.
         if (is_null($cliente)) {
              return response()->json([
                 'status' => false,
@@ -234,17 +223,14 @@ class PacienteController extends Controller
             'id_genero' => $request->id_genero,
         ]);
 
-        // 5. Atualiza os dados do próprio paciente.
         $paciente->update([
             'historico_medico' => $request->historico_medico,
             'data_nascimento' => $request->data_nascimento,
             'id_responsavel' => $request->id_responsavel,
         ]);
 
-        // 6. Recarrega o paciente com os dados atualizados e suas relações.
         $paciente->refresh()->load(['cliente.cidade', 'cliente.genero', 'responsavel']);
 
-        // 7. Retorna uma resposta de sucesso com o paciente atualizado.
         return response()->json([
             'status' => true,
             'message' => 'Paciente atualizado com sucesso.',
@@ -304,12 +290,10 @@ class PacienteController extends Controller
     public function contarPacientes()
     {
         try {
-            // Conta os pacientes cujo cliente relacionado tem 'ativo' = true
             $ativos = Paciente::whereHas('cliente', function ($query) {
                 $query->where('ativo', true);
             })->count();
             
-            // Conta os pacientes cujo cliente relacionado tem 'ativo' = false
             $inativos = Paciente::whereHas('cliente', function ($query) {
                 $query->where('ativo', false);
             })->count();

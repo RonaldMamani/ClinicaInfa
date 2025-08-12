@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { EditarConsultaComponent } from './editar-consulta.component';
+import { RouterTestingModule } from '@angular/router/testing'; // Importe o RouterTestingModule
 
 describe('EditarConsultaComponent', () => {
   let component: EditarConsultaComponent;
@@ -8,9 +8,8 @@ describe('EditarConsultaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditarConsultaComponent]
-    })
-    .compileComponents();
+      imports: [EditarConsultaComponent, RouterTestingModule], // Adicione RouterTestingModule aqui
+    }).compileComponents();
 
     fixture = TestBed.createComponent(EditarConsultaComponent);
     component = fixture.componentInstance;

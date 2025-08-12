@@ -9,7 +9,6 @@ use App\Http\Requests\PagamentoUpdateRequest;
 use App\Models\Pagamento;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -97,7 +96,7 @@ class PagamentoController extends Controller
                 'status' => true,
                 'message' => 'Pagamento criado com sucesso!',
                 'pagamento' => $pagamento->load($this->relations),
-            ], 201); // Código 201 Created
+            ], 201); 
 
         } catch (Exception $e) {
             DB::rollBack();

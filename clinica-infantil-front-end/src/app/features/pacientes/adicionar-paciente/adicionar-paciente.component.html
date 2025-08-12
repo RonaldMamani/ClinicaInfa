@@ -37,6 +37,37 @@
     </div>
 
     <div class="mb-3">
+      <label for="data_nascimento" class="form-label">Data de Nascimento</label>
+      <input type="date" id="data_nascimento" class="form-control" formControlName="data_nascimento" />
+      @if (pacienteForm.get('data_nascimento')?.invalid && pacienteForm.get('data_nascimento')?.touched) {
+        <div class="text-danger mt-1">A data de nascimento é obrigatória.</div>
+      }
+    </div>
+
+    <div class="mb-3">
+      <label for="id_genero" class="form-label">Gênero</label>
+      <select id="id_genero" class="form-select" formControlName="id_genero">
+        <option value="" disabled>Selecione um gênero</option>
+        @for (genero of generos; track genero.id) {
+          <option [value]="genero.id">{{ genero.genero }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="id_responsavel" class="form-label">Responsável</label>
+      <select id="id_responsavel" class="form-select" formControlName="id_responsavel" (change)="onResponsavelSelecionado(pacienteForm.get('id_responsavel')?.value)">
+        <option value="" disabled>Selecione um responsável</option>
+        @for (responsavel of responsaveis; track responsavel.id) {
+          <option [value]="responsavel.id">{{ responsavel.cliente.nome }}</option>
+        }
+      </select>
+      @if (pacienteForm.get('id_responsavel')?.invalid && pacienteForm.get('id_responsavel')?.touched) {
+        <div class="text-danger mt-1">O responsável é obrigatório.</div>
+      }
+    </div>
+
+    <div class="mb-3">
       <label for="endereco" class="form-label">Endereço</label>
       <input type="text" id="endereco" class="form-control" formControlName="endereco" placeholder="Ex: Rua das Flores, 123" />
       @if (pacienteForm.get('endereco')?.invalid && pacienteForm.get('endereco')?.touched) {
@@ -65,35 +96,6 @@
     </div>
     
     <div class="mb-3">
-      <label for="id_genero" class="form-label">Gênero</label>
-      <select id="id_genero" class="form-select" formControlName="id_genero">
-        <option value="" disabled>Selecione um gênero</option>
-        @for (genero of generos; track genero.id) {
-          <option [value]="genero.id">{{ genero.genero }}</option>
-        }
-      </select>
-    </div>
-
-    <div class="mb-3">
-      <label for="id_responsavel" class="form-label">Responsável</label>
-      <select id="id_responsavel" class="form-select" formControlName="id_responsavel">
-        <option value="" disabled>Selecione um responsável</option>
-        @for (responsavel of responsaveis; track responsavel.id) {
-          <option [value]="responsavel.id">{{ responsavel.cliente.nome }}</option>
-        }
-      </select>
-      @if (pacienteForm.get('id_responsavel')?.invalid && pacienteForm.get('id_responsavel')?.touched) {
-        <div class="text-danger mt-1">O responsável é obrigatório.</div>
-      }
-    </div>
-    <div class="mb-3">
-      <label for="data_nascimento" class="form-label">Data de Nascimento</label>
-      <input type="date" id="data_nascimento" class="form-control" formControlName="data_nascimento" />
-      @if (pacienteForm.get('data_nascimento')?.invalid && pacienteForm.get('data_nascimento')?.touched) {
-        <div class="text-danger mt-1">A data de nascimento é obrigatória.</div>
-      }
-    </div>
-    <div class="mb-3">
       <label for="historico_medico" class="form-label">Histórico Médico</label>
       <textarea id="historico_medico" class="form-control" formControlName="historico_medico" placeholder="Descreva o histórico médico do paciente"></textarea>
       @if (pacienteForm.get('historico_medico')?.invalid && pacienteForm.get('historico_medico')?.touched) {
@@ -112,7 +114,7 @@
     @if (isAdministradorRoute) {
       <button type="button" class="btn btn-secondary" routerLink="/administrador/pacientes" >Voltar</button>
     } @else {
-      <button type="button" class="btn btn-secondary" (click)="voltar()">Voltar</button>
+      <button type="button" class="btn btn-secondary" routerLink="../">Voltar</button>
     }
   </form>
 </div>

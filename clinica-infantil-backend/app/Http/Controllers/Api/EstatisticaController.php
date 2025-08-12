@@ -146,7 +146,7 @@ class EstatisticaController extends Controller
     {
         $dadosMensais = Consulta::join('pacientes', 'consultas.id_paciente', '=', 'pacientes.id')
             ->join('clientes', 'pacientes.id_cliente', '=', 'clientes.id')
-            ->where('clientes.ativo', true) // Filtra apenas clientes ativos
+            ->where('clientes.ativo', true)
             ->select(
                 DB::raw('DATE_FORMAT(consultas.data_consulta, "%Y-%m") as mes'),
                 DB::raw('COUNT(consultas.id) as total_consultas'),

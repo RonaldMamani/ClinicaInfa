@@ -18,11 +18,12 @@ import { GenerosService } from '../../../controllers/generos/generos.service';
 import { EstadosService } from '../../../controllers/estados/estados.service';
 
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-editar-responsavel',
   standalone: true,
-  imports: [ CommonModule, RouterModule, ReactiveFormsModule, InputMaskDirective ],
+  imports: [ CommonModule, RouterModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule ],
   templateUrl: './editar-responsavel.component.html',
   styleUrls: ['./editar-responsavel.component.css']
 })

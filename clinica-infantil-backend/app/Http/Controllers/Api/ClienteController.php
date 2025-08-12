@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\Cliente;
 use App\Models\Responsavel;
 use App\Models\Paciente;
@@ -80,7 +79,7 @@ class ClienteController extends Controller
      * Cria um novo cliente, e opcionalmente um paciente e/ou responsável,
      * em uma única transação de banco de dados.
      *
-     * @param \App\Http\Requests\ClienteRequest $request A requisição validada.
+     * @param \App\Http\Requests\ClienteRequest
      * @return \Illuminate\Http\JsonResponse
      */
     public function store(ClienteRequest $request)
@@ -95,7 +94,7 @@ class ClienteController extends Controller
                 'rg',
                 'nome',
                 'endereco',
-                'ativo' // Adicionado 'ativo' para ser criado com o cliente
+                'ativo'
             ]));
 
             $responsavelId = null;

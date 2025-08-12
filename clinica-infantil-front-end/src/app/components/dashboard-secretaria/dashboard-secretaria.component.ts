@@ -4,10 +4,11 @@ import { RouterLink } from '@angular/router';
 import { ConsultasService } from '../../controllers/consultas/consultas.service';
 import { catchError, forkJoin, of } from 'rxjs';
 import { PacientesService } from '../../controllers/pacientes/pacientes.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard-secretaria',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HttpClientModule],
   templateUrl: './dashboard-secretaria.component.html',
   styleUrl: './dashboard-secretaria.component.css'
 })
