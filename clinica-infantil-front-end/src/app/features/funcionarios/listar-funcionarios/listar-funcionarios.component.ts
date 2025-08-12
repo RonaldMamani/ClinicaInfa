@@ -4,10 +4,11 @@ import { RouterModule } from '@angular/router';
 import { Usuario, UsuariosListResponse } from '../../../core/models/usuario.model';
 import { UsuariosService } from '../../../controllers/usuarios/usuarios.service';
 import { forkJoin, Observable } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-listar-funcionarios',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './listar-funcionarios.component.html',
   styleUrl: './listar-funcionarios.component.css'
 })

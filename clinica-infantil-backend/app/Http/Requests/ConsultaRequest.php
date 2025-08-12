@@ -38,15 +38,14 @@ class ConsultaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_paciente' => 'required|exists:pacientes,id',
-            'id_medico' => 'required|exists:medicos,id',
+            // Agora todas as regras de validação estão presentes
+            'id_paciente' => 'required|integer|exists:pacientes,id',
+            'id_medico' => 'required|integer|exists:medicos,id',
+            'data_consulta' => 'required|date',
+            'hora_inicio' => 'required|date_format:H:i:s',
+            'hora_fim' => 'required|date_format:H:i:s|after:hora_inicio',
             'descricao' => 'nullable|string',
-            'data_consulta' => ['required', 'date'],
-            // Mantemos a validação para HH:MM:SS, pois os segundos
-            // serão adicionados no método prepareForValidation().
-            'status' => ['required', 'string', 'in:agendada,finalizada,cancelada'],
-            'hora_inicio' => ['required', 'date_format:H:i:s'],
-            'hora_fim' => ['required', 'date_format:H:i:s', 'after:hora_inicio'],
+            'status' => ['nullable', 'string', 'in:agendada,finalizada,cancelada'],
         ];
     }
 

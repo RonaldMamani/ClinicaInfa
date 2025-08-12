@@ -5,11 +5,12 @@ import { Router, RouterModule } from '@angular/router';
 import { Paciente, PacientesApiResponse } from '../../../core/models/paciente.model';
 import { CommonModule } from '@angular/common';
 import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-agendar-consulta',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './agendar-consulta.component.html',
   styleUrl: './agendar-consulta.component.css'
 })

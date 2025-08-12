@@ -25,7 +25,7 @@ class LoginController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Credenciais inválidas ou usuário inativo.',
-                ], 401); // Código 401 Unauthorized
+                ], 401);
             }
             
             // 3. Revoga todos os tokens existentes para este usuário para maior segurança

@@ -19,12 +19,13 @@ import { Responsavel } from '../../../core/models/responsavel.model';
 // Diretivas
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { Cidade } from '../../../core/models/cidades.model';
+import { HttpClientModule } from '@angular/common/http';
 
 
 @Component({
   selector: 'app-adicionar-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, RouterLink, HttpClientModule],
   templateUrl: './adicionar-paciente.component.html',
   styleUrls: ['./adicionar-paciente.component.css']
 })
@@ -91,10 +92,44 @@ export class AdicionarPacienteComponent implements OnInit {
 
   onEstadoSelecionado(idEstado: number): void {
     this.cidades = [];
+    // Limpa a cidade se o estado for alterado
+    this.pacienteForm.get('id_cidade')?.setValue('');
     if (idEstado) {
       this.cidadesService.getCidadesPorEstado(idEstado).subscribe({
         next: (cidades) => this.cidades = cidades,
         error: (err) => this.error = 'Não foi possível carregar as cidades.'
+      });
+    }
+  }
+
+  /**
+   * Preenche os campos de endereço, estado e cidade do paciente
+   * com base no responsável selecionado.
+   * @param idResponsavel O ID do responsável selecionado.
+   */
+  onResponsavelSelecionado(idResponsavel: string): void {
+    // Busca o objeto de responsável completo
+    const responsavel = this.responsaveis.find(r => r.id === Number(idResponsavel));
+    
+    if (responsavel && responsavel.cliente) {
+      const clienteDoResponsavel = responsavel.cliente;
+
+      // Preenche o endereço e o estado no formulário
+      this.pacienteForm.patchValue({
+        endereco: clienteDoResponsavel.endereco,
+        id_estado: responsavel.cliente.cidade.id_estado
+      });
+
+      // Carrega as cidades do estado do responsável
+      this.cidadesService.getCidadesPorEstado(responsavel.cliente.cidade.id_estado).subscribe({
+        next: (cidades) => {
+          this.cidades = cidades;
+          // Preenche a cidade após a lista de cidades ser carregada
+          this.pacienteForm.patchValue({
+            id_cidade: clienteDoResponsavel.id_cidade
+          });
+        },
+        error: (err) => this.error = 'Não foi possível carregar as cidades do responsável.'
       });
     }
   }
@@ -133,9 +168,5 @@ export class AdicionarPacienteComponent implements OnInit {
     } else {
       this.error = 'Por favor, preencha todos os campos corretamente.';
     }
-  }
-
-  voltar(): void {
-    this.router.navigate(['/secretaria/clientes/adicionar']);
   }
 }

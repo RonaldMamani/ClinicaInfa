@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { EstatisticasService } from '../../../controllers/estatisticas/estatisticas.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-estatisticas-pacientes',
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
   providers: [EstatisticasService],
   standalone: true,
   templateUrl: './estatisticas-pacientes.component.html',

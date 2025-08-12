@@ -10,10 +10,11 @@ import { CommonModule } from '@angular/common';
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { PerfisService } from '../../../controllers/perfis/perfis.service';
 import { FuncionariosService } from '../../../controllers/funcionarios/funcionarios.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-editar-funcionario',
-  imports: [CommonModule ,RouterModule, ReactiveFormsModule, InputMaskDirective ],
+  imports: [CommonModule ,RouterModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule ],
   templateUrl: './editar-funcionario.component.html',
   styleUrl: './editar-funcionario.component.css'
 })

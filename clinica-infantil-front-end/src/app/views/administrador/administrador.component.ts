@@ -3,11 +3,12 @@ import { NavbarComponent } from "../../components/navbar/navbar.component";
 import { FooterComponent } from "../../components/footer/footer.component";
 import { RouterOutlet } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-administrador',
   standalone: true,
-  imports: [CommonModule, NavbarComponent, FooterComponent, RouterOutlet],
+  imports: [CommonModule, NavbarComponent, FooterComponent, RouterOutlet, HttpClientModule],
   templateUrl: './administrador.component.html',
   styleUrl: './administrador.component.css'
 })

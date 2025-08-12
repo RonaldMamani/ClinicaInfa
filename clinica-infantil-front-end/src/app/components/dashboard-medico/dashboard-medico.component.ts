@@ -1,14 +1,14 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { ConsultasService } from '../../controllers/consultas/consultas.service';
 import { ProntuariosService } from '../../controllers/prontuarios/prontuarios.service';
 import { forkJoin } from 'rxjs';
 import { MedicosService } from '../../controllers/medicos/medicos.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard-medico',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HttpClientModule],
   templateUrl: './dashboard-medico.component.html',
   styleUrl: './dashboard-medico.component.css'
 })

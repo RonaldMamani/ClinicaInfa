@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../../controllers/auth/auth.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
 })
@@ -24,13 +25,13 @@ export class DashboardComponent implements OnInit {
         if (profile) {
           switch (profile) {
             case 'administrador':
-              this.router.navigate(['/administrador']); // Redireciona para sua rota de administrador
+              this.router.navigate(['/administrador']);
               break;
             case 'medico':
-              this.router.navigate(['/medico']); // Redireciona para sua rota de médico
+              this.router.navigate(['/medico']);
               break;
             case 'secretaria':
-              this.router.navigate(['/secretaria']); // Redireciona para sua rota de secretária
+              this.router.navigate(['/secretaria']);
               break;
             default:
               // Perfil desconhecido ou não esperado, redireciona para login e desloga
@@ -46,7 +47,7 @@ export class DashboardComponent implements OnInit {
       error: (err) => {
         console.error('Erro ao obter perfil do usuário:', err);
         this.isLoading = false;
-        this.authService.logout(); // Em caso de erro, desloga e redireciona para login
+        this.authService.logout();
       }
     });
   }

@@ -3,9 +3,9 @@
     <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
       @if (filtroAtivo === true) {
       @if (isAdministradorRoute) {
-        <h2 class="mb-0">Pacientes Ativos</h2>
+      <h2 class="mb-0">Pacientes Ativos</h2>
       } @else {
-        <h2 class="mb-0">Lista de Pacientes</h2>
+      <h2 class="mb-0">Lista de Pacientes</h2>
       }
       } @else if (filtroAtivo === false) {
       <h2 class="mb-0">Pacientes Inativos</h2>
@@ -80,8 +80,8 @@
             <i class="bi bi-pencil"></i>
           </a>
           }
-          <button class="btn btn-danger btn-sm" (click)="excluirPaciente(paciente.id)"
-            [disabled]="!paciente.cliente.ativo" title="Desativar paciente">
+          <!-- Alterado o click para abrir o modal -->
+          <button class="btn btn-danger btn-sm" (click)="abrirModalExclusao(paciente.id)" [disabled]="!paciente.cliente.ativo" title="Desativar paciente">
             <i class="bi bi-trash"></i>
           </button>
         </td>
@@ -97,8 +97,8 @@
         @for (page of [].constructor(totalPages); track $index) {
         <li class="page-item" [class.active]="currentPage === $index + 1">
           <a class="page-link" (click)="onPageChange($index + 1)">{{
-            $index + 1
-            }}</a>
+              $index + 1
+              }}</a>
         </li>
         }
         <li class="page-item" [class.disabled]="currentPage === totalPages">
@@ -111,7 +111,7 @@
       </div>
     </nav>
   }
-  
+
   @else if (!isLoading && !error) {
   <div class="alert alert-info mt-3">
     Nenhum paciente @if (filtroAtivo === true) { ativo } @else if (filtroAtivo
@@ -123,3 +123,24 @@
 
   <a class="btn btn-secondary mt-4" [routerLink]="isAdministradorRoute ? ['/administrador'] : ['/secretaria']">Voltar</a>
 </div>
+
+@if(showModal) {
+  <div class="modal d-block" tabindex="-1" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar Desativação</h5>
+          <button type="button" class="btn-close" aria-label="Close" (click)="fecharModal()"></button>
+        </div>
+        <div class="modal-body">
+          <p>Tem certeza que deseja desativar este paciente?</p>
+          <p class="text-danger">Esta ação não pode ser desfeita.</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="fecharModal()">Cancelar</button>
+          <button type="button" class="btn btn-danger" (click)="confirmarExclusao()">Desativar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

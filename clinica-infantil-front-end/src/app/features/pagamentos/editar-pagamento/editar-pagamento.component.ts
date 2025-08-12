@@ -4,10 +4,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PagamentosService } from '../../../controllers/pagamentos/pagamentos.service';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-editar-pagamento',
-  imports: [CommonModule, ReactiveFormsModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HttpClientModule],
   templateUrl: './editar-pagamento.component.html',
   styleUrl: './editar-pagamento.component.css'
 })

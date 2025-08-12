@@ -1,28 +1,32 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
-import { forkJoin } from 'rxjs';
 
 import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
 import { Paciente, PacientesPaginadosResponse } from '../../../core/models/paciente.model';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-listar-pacientes',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, HttpClientModule],
   templateUrl: './listar-pacientes.component.html',
   styleUrls: ['./listar-pacientes.component.css']
 })
 export class ListarPacientesComponent implements OnInit {
-  pacientes: Paciente[] = []; // Lista para a página atual
+  pacientes: Paciente[] = [];
   currentPage: number = 1;
   totalPages: number = 0;
   totalItems: number = 0;
-  filtroAtivo: boolean | undefined = true; // Carrega pacientes ativos por padrão
+  filtroAtivo: boolean | undefined = true;
 
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
+
+  // Variáveis para o modal de exclusão
+  showModal = false;
+  pacienteParaExcluirId: number | null = null;
 
   constructor(
     private pacientesService: PacientesService,
@@ -64,23 +68,35 @@ export class ListarPacientesComponent implements OnInit {
     });
   }
 
-  excluirPaciente(id: number): void {
+  abrirModalExclusao(id: number): void {
+    this.pacienteParaExcluirId = id;
+    this.showModal = true;
+  }
+
+  fecharModal(): void {
+    this.showModal = false;
+    this.pacienteParaExcluirId = null;
+  }
+
+  confirmarExclusao(): void {
     this.error = null;
     this.successMessage = null;
 
-    if (confirm('Tem certeza que deseja desativar este paciente?')) {
-      this.pacientesService.deletePaciente(id).subscribe({
+    if (this.pacienteParaExcluirId !== null) {
+      this.pacientesService.deletePaciente(this.pacienteParaExcluirId).subscribe({
         next: (response) => {
           if (response.status) {
             this.successMessage = response.message;
-            this.carregarPacientes(); // Recarrega a lista para atualizar a visualização
+            this.carregarPacientes();
           } else {
             this.error = response.message;
           }
+          this.fecharModal();
         },
         error: (err) => {
           this.error = 'Erro ao tentar desativar o paciente.';
           console.error(err);
+          this.fecharModal();
         }
       });
     }
@@ -100,7 +116,7 @@ export class ListarPacientesComponent implements OnInit {
 
   aplicarFiltro(status: boolean | undefined): void {
     this.filtroAtivo = status;
-    this.currentPage = 1; // Reseta para a primeira página
+    this.currentPage = 1;
     this.carregarPacientes();
   }
 }

@@ -6,11 +6,12 @@ import { ClientesService } from '../../../controllers/clientes/clientes.service'
 import { EstadosService } from '../../../controllers/estados/estados.service';
 import { Paciente } from '../../../core/models/paciente.model';
 import { forkJoin } from 'rxjs';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-detalhe-paciente',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
   templateUrl: './detalhe-paciente.component.html',
   styleUrls: ['./detalhe-paciente.component.css']
 })

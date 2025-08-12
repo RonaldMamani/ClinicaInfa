@@ -5,10 +5,11 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-finalizar-consulta',
-  imports: [CommonModule, RouterModule, RouterLink, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, RouterLink, ReactiveFormsModule, HttpClientModule],
   templateUrl: './finalizar-consulta.component.html',
   styleUrl: './finalizar-consulta.component.css'
 })

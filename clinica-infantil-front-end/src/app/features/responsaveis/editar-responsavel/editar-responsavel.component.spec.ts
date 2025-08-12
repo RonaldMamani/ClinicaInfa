@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { EditarResponsavelComponent } from './editar-responsavel.component';
+import { RouterTestingModule } from '@angular/router/testing'; // Importe o RouterTestingModule
 
 describe('EditarResponsavelComponent', () => {
   let component: EditarResponsavelComponent;
@@ -8,9 +8,8 @@ describe('EditarResponsavelComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EditarResponsavelComponent]
-    })
-    .compileComponents();
+      imports: [EditarResponsavelComponent, RouterTestingModule], // Adicione RouterTestingModule aqui
+    }).compileComponents();
 
     fixture = TestBed.createComponent(EditarResponsavelComponent);
     component = fixture.componentInstance;

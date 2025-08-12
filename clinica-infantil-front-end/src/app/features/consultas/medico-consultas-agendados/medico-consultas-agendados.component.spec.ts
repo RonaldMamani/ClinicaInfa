@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { MedicoConsultasAgendadosComponent } from './medico-consultas-agendados.component';
+import { RouterTestingModule } from '@angular/router/testing'; // Importe o RouterTestingModule
 
 describe('MedicoConsultasAgendadosComponent', () => {
   let component: MedicoConsultasAgendadosComponent;
@@ -8,9 +8,8 @@ describe('MedicoConsultasAgendadosComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [MedicoConsultasAgendadosComponent]
-    })
-    .compileComponents();
+      imports: [MedicoConsultasAgendadosComponent, RouterTestingModule], // Adicione RouterTestingModule aqui
+    }).compileComponents();
 
     fixture = TestBed.createComponent(MedicoConsultasAgendadosComponent);
     component = fixture.componentInstance;

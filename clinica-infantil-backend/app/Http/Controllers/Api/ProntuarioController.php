@@ -142,7 +142,7 @@ class ProntuarioController extends Controller
                 return response()->json([
                     'status' => false,
                     'message' => 'Um prontuário para este paciente já existe.'
-                ], 409); // Código de status 409 Conflict
+                ], 409);
             }
 
             // O seu método original combinava os dados com o ID do médico logado.
@@ -163,7 +163,7 @@ class ProntuarioController extends Controller
                 'status' => true,
                 'message' => 'Prontuário criado com sucesso.',
                 'prontuario' => $prontuario->load($this->relations),
-            ], 201); // 201 Created
+            ], 201);
 
         } catch (Exception $e) {
             DB::rollBack();

@@ -8,6 +8,7 @@ import { Medico } from '../../../core/models/medico.model';
 import { forkJoin } from 'rxjs';
 import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
 import { MedicosService } from '../../../controllers/medicos/medicos.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-adicionar-consulta',
@@ -17,11 +18,11 @@ import { MedicosService } from '../../../controllers/medicos/medicos.service';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterLink
+    RouterLink, HttpClientModule
   ]
 })
 export class AdicionarConsultaComponent implements OnInit {
-  criarForm: FormGroup;
+  criarForm!: FormGroup;
   pacientes: Paciente[] = [];
   medicos: Medico[] = [];
   isLoading = true;
@@ -36,6 +37,7 @@ export class AdicionarConsultaComponent implements OnInit {
     private pacientesService: PacientesService,
     private medicosService: MedicosService
   ) {
+    // CORRIGIDO: Removido o campo 'status' do formulário, pois ele não é enviado para a API
     this.criarForm = this.fb.group({
       id_paciente: ['', Validators.required],
       id_medico: ['', Validators.required],
@@ -43,7 +45,6 @@ export class AdicionarConsultaComponent implements OnInit {
       hora_inicio: ['', Validators.required],
       hora_fim: ['', Validators.required],
       descricao: [''],
-      status: ['agendada'],
     });
   }
 
@@ -72,12 +73,10 @@ export class AdicionarConsultaComponent implements OnInit {
     });
   }
 
-  // Novo método para formatar a hora para HH:MM:SS
   private formatTime(timeString: string): string {
     if (!timeString) {
       return '';
     }
-    // Adiciona ':00' se a string não contiver segundos
     if (timeString.split(':').length === 2) {
       return `${timeString}:00`;
     }
@@ -90,17 +89,22 @@ export class AdicionarConsultaComponent implements OnInit {
       this.successMessage = null;
       this.errorMessage = null;
 
-      const dados = { ...this.criarForm.value };
+      // Cria um novo objeto com os dados válidos do formulário.
+      // O 'status' não está mais no formulário, então não precisamos removê-lo.
+      const dadosParaEnvio = {
+        id_paciente: this.criarForm.value.id_paciente,
+        id_medico: this.criarForm.value.id_medico,
+        data_consulta: this.criarForm.value.data_consulta,
+        hora_inicio: this.formatTime(this.criarForm.value.hora_inicio),
+        hora_fim: this.formatTime(this.criarForm.value.hora_fim),
+        descricao: this.criarForm.value.descricao,
+      };
 
-      // CORRIGIDO: Usa o método auxiliar para garantir o formato correto
-      dados.hora_inicio = this.formatTime(dados.hora_inicio);
-      dados.hora_fim = this.formatTime(dados.hora_fim);
-
-      this.consultasService.criarConsulta(dados).subscribe({
+      this.consultasService.criarConsulta(dadosParaEnvio).subscribe({
         next: (response) => {
           this.isSubmitting = false;
           this.successMessage = response.message || 'Consulta criada com sucesso!';
-          this.criarForm.reset({ status: 'agendada' });
+          this.criarForm.reset();
           setTimeout(() => {
             this.router.navigate(['/secretaria']);
           }, 3000);

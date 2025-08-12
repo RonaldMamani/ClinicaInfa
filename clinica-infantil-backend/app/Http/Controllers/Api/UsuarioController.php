@@ -30,7 +30,6 @@ class UsuarioController extends Controller
                                 ->orderBy('id', 'ASC')
                                 ->get();
 
-            // Retorna a lista de usuários em formato JSON
             return response()->json([
                 'status' => true,
                 'message' => 'Lista de usuários ativos obtida com sucesso.',

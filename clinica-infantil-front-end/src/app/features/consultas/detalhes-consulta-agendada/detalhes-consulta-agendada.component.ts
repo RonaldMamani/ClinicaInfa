@@ -3,10 +3,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { Consulta, ConsultaDetailsResponse } from '../../../core/models/consultas.model';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-detalhes-consulta-agendada',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, HttpClientModule],
   templateUrl: './detalhes-consulta-agendada.component.html',
   styleUrl: './detalhes-consulta-agendada.component.css'
 })

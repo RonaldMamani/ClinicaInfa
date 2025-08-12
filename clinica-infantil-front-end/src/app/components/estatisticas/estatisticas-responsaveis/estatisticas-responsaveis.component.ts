@@ -3,10 +3,11 @@ import { CommonModule } from '@angular/common';
 
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { EstatisticasService } from '../../../controllers/estatisticas/estatisticas.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-estatisticas-responsaveis',
-  imports: [CommonModule],
+  imports: [CommonModule, HttpClientModule],
   providers: [EstatisticasService],
   standalone: true,
   templateUrl: './estatisticas-responsaveis.component.html',

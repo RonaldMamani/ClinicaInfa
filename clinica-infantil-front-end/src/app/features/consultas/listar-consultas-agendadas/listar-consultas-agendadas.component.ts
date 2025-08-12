@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { Consulta, ConsultasPaginationApiResponse, Pagination } from '../../../core/models/consultas.model';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-listar-consultas-agendadas',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink],
+  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule],
   templateUrl: './listar-consultas-agendadas.component.html',
   styleUrls: ['./listar-consultas-agendadas.component.css']
 })

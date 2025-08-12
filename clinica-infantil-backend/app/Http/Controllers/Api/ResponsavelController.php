@@ -88,7 +88,7 @@ class ResponsavelController extends Controller
     public function responsaveisAtivos(Request $request): JsonResponse
     {
         try {
-            $perPage = $request->query('per_page', 10); // Padrão de 10 itens por página
+            $perPage = $request->query('per_page', 10);
             $page = $request->query('page', 1);
 
             $responsaveis = Responsavel::whereHas('cliente', function ($query) {
@@ -113,7 +113,7 @@ class ResponsavelController extends Controller
     public function responsaveisInativos(Request $request): JsonResponse
     {
         try {
-            $perPage = $request->query('per_page', 10); // Padrão de 10 itens por página
+            $perPage = $request->query('per_page', 10);
             $page = $request->query('page', 1);
 
             $responsaveis = Responsavel::whereHas('cliente', function ($query) {
@@ -140,7 +140,7 @@ class ResponsavelController extends Controller
         try {
             $perPage = $request->query('per_page', 10);
             $page = $request->query('page', 1);
-            $status = $request->query('status'); // Pega o parâmetro 'status' da requisição
+            $status = $request->query('status');
 
             // Inicia a query com as relações necessárias
             $query = Responsavel::with($this->relations);
@@ -192,8 +192,8 @@ class ResponsavelController extends Controller
     {
         try {
             $responsavel = Responsavel::with([
-                'cliente.cidade.estado', // Carrega cliente, cidade e estado do responsável
-                'pacientes.cliente'      // Carrega pacientes associados e o cliente de cada paciente
+                'cliente.cidade.estado',
+                'pacientes.cliente'
             ])->find($id);
 
             if (!$responsavel) {
@@ -236,7 +236,7 @@ class ResponsavelController extends Controller
 
             // 2. VERIFICAÇÃO CRUCIAL: Verifica se o responsável foi encontrado
             if (!$responsavel) {
-                DB::rollBack(); // Reverte a transação em caso de erro
+                DB::rollBack();
                 return response()->json([
                     'status' => false,
                     'message' => 'Responsável não encontrado.'
@@ -312,7 +312,7 @@ class ResponsavelController extends Controller
             return response()->json([
                 'status' => true,
                 'message' => "Responsável {$statusMessage} com sucesso.",
-                'responsavel' => $responsavel->load($this->relations) // Recarrega com as relações
+                'responsavel' => $responsavel->load($this->relations)
             ], 200);
 
         } catch (\Exception $e) {

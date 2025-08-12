@@ -1,6 +1,7 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { ListarPagamentosComponent } from './listar-pagamentos.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
 describe('ListarPagamentosComponent', () => {
   let component: ListarPagamentosComponent;
@@ -8,9 +9,12 @@ describe('ListarPagamentosComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListarPagamentosComponent]
-    })
-    .compileComponents();
+      imports: [
+        ListarPagamentosComponent,
+        RouterTestingModule, // Adicionado para fornecer os serviços de roteamento
+        HttpClientTestingModule // Adicionado para mockar as chamadas HTTP
+      ]
+    }).compileComponents();
 
     fixture = TestBed.createComponent(ListarPagamentosComponent);
     component = fixture.componentInstance;

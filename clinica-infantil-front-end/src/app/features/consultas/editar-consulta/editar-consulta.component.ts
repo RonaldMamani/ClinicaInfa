@@ -4,11 +4,12 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Consulta } from '../../../core/models/consultas.model';
 import { ConsultasService, UpdateConsultaResponse } from '../../../controllers/consultas/consultas.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-editar-consulta',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
   templateUrl: './editar-consulta.component.html',
   styleUrls: ['./editar-consulta.component.css']
 })

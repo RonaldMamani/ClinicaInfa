@@ -1,6 +1,6 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { DetalhesConsultaComponent } from './detalhes-consulta.component';
+import { RouterTestingModule } from '@angular/router/testing'; // Importe o RouterTestingModule
 
 describe('DetalhesConsultaComponent', () => {
   let component: DetalhesConsultaComponent;
@@ -8,9 +8,8 @@ describe('DetalhesConsultaComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DetalhesConsultaComponent]
-    })
-    .compileComponents();
+      imports: [DetalhesConsultaComponent, RouterTestingModule], // Adicione RouterTestingModule aqui
+    }).compileComponents();
 
     fixture = TestBed.createComponent(DetalhesConsultaComponent);
     component = fixture.componentInstance;

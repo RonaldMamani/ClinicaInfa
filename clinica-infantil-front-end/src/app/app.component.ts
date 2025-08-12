@@ -8,7 +8,7 @@ import { filter } from 'rxjs/operators';
   standalone: true,
   imports: [
     CommonModule,
-    RouterOutlet,
+    RouterOutlet
 ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
