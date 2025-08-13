@@ -1,6 +1,5 @@
 import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { forkJoin } from 'rxjs';
 
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';

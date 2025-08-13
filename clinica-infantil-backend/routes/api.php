@@ -15,7 +15,6 @@ use App\Http\Controllers\Api\PerfilController;
 use App\Http\Controllers\Api\ProntuarioController;
 use App\Http\Controllers\Api\ResponsavelController;
 use App\Http\Controllers\Api\UsuarioController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 // Rotas de Autenticação (não precisam de middleware de autenticação para login)
@@ -158,16 +157,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/pagamentos/{pagamento}', 'destroy');
     });
 
+    Route::get('/estatisticas/pacientes-por-cidade', [EstatisticaController::class, 'pacientesPorCidade']);
+    Route::get('/estatisticas/responsaveis-por-cidade', [EstatisticaController::class, 'responsaveisPorCidade']);
+    Route::get('/estatisticas/receita-mensal', [EstatisticaController::class, 'receitaMensal']);
+    Route::get('/estatisticas/consultas-por-especialidade', [EstatisticaController::class, 'consultasPorEspecialidade']);
+    Route::get('/estatisticas/pacientes-por-genero', [EstatisticaController::class, 'pacientesPorGenero']);
+    Route::get('/estatisticas/clientes-por-funcao', [EstatisticaController::class, 'clientesPorFuncao']);
+    Route::get('/estatisticas/consultas-por-medico-por-mes', [EstatisticaController::class, 'consultasPorMedicoPorMes']);
+    Route::get('/estatisticas/consultas-e-pacientes-mensal', [EstatisticaController::class, 'consultasEAtividadeDePacienteMensal']);
 });
-Route::controller(ConsultaController::class)->group(function () {
-    Route::get('/consultas/estatisticas', 'todasAsEstatisticas');
-});
-
-Route::get('/estatisticas/pacientes-por-cidade', [EstatisticaController::class, 'pacientesPorCidade']);
-Route::get('/estatisticas/responsaveis-por-cidade', [EstatisticaController::class, 'responsaveisPorCidade']);
-Route::get('/estatisticas/receita-mensal', [EstatisticaController::class, 'receitaMensal']);
-Route::get('/estatisticas/consultas-por-especialidade', [EstatisticaController::class, 'consultasPorEspecialidade']);
-Route::get('/estatisticas/pacientes-por-genero', [EstatisticaController::class, 'pacientesPorGenero']);
-Route::get('/estatisticas/clientes-por-funcao', [EstatisticaController::class, 'clientesPorFuncao']);
-Route::get('/estatisticas/consultas-por-medico-por-mes', [EstatisticaController::class, 'consultasPorMedicoPorMes']);
-Route::get('/estatisticas/consultas-e-pacientes-mensal', [EstatisticaController::class, 'consultasEAtividadeDePacienteMensal']);

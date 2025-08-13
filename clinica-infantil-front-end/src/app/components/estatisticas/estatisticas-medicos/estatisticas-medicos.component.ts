@@ -7,7 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-estatisticas-medicos',
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   providers: [EstatisticasService],
   standalone: true,
   templateUrl: './estatisticas-medicos.component.html',
