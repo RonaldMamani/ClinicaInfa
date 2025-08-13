@@ -107,21 +107,6 @@ export class ConsultasService {
     return this.http.post(`${this.apiUrl}`, dados);
   }
 
-  getQuantidadeTodasConsultas(): Observable<QuantidadeTotalResponse> {
-    const url = `${this.apiUrl}/quantidades/todas`;
-    return this.http.get<QuantidadeTotalResponse>(url);
-  }
-
-  getQuantidadeAgendadas(): Observable<QuantidadeAgendadaResponse> {
-    const url = `${this.apiUrl}/quantidades/agendadas`;
-    return this.http.get<QuantidadeAgendadaResponse>(url);
-  }
-
-  getTodasEstatisticas(): Observable<TodasEstatisticasResponse> {
-    const url = `${this.apiUrl}/estatisticas`;
-    return this.http.get<TodasEstatisticasResponse>(url);
-  }
-
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Ocorreu um erro desconhecido!';
     if (error.error instanceof ErrorEvent) {

@@ -94,16 +94,6 @@ Abaixo estão listados os endpoints da API, agrupados por funcionalidade. Todas 
 
 * GET /api/consultas/medico/agendados - Lista consultas agendadas do médico autenticado.
 
-* GET /api/consultas/quantidades/todas - Retorna a quantidade total de consultas.
-
-* GET /api/consultas/quantidades/agendadas - Retorna a quantidade de consultas agendadas.
-
-* GET /api/consultas/estatisticas - Retorna todas as estatísticas relacionadas a consultas.
-
-* GET /api/consultas/medico/count/total - Retorna a contagem total de consultas de um médico.
-
-* GET /api/consultas/medico/count/agendadas - Retorna a contagem de consultas agendadas de um médico.
-
 * GET /api/consultas/{id} - Exibe uma consulta específica.
 
 * POST /api/consultas - Cria uma nova consulta.
@@ -137,8 +127,6 @@ Abaixo estão listados os endpoints da API, agrupados por funcionalidade. Todas 
 ### Pacientes
 
 * GET /api/pacientes - Lista todos os pacientes.
-
-* GET /api/pacientes/contagem - Conta o número total de pacientes.
 
 * GET /api/pacientes/paginacao - Lista pacientes com paginação.
 
@@ -256,7 +244,21 @@ Abaixo estão listados os endpoints da API, agrupados por funcionalidade. Todas 
 
 * GET /api/generos/{genero} - Exibe um gênero específico.
 
+### Quantidades
+
+* GET /api/quantidades/consultas/todas - Retorna a quantidade total de consultas.
+
+* GET /api/quantidades/consultas/agendadas - Retorna a quantidade de consultas agendadas.
+
+* GET /api/quantidades/medico/consultas - Retorna a contagem total de consultas de um médico.
+
+* GET /api/quantidades/medico/agendadas - Retorna a contagem de consultas agendadas de um médico.
+
+* GET /api/quantidades/pacientes - Conta o número total de pacientes.
+
 ### Estatísticas
+
+* GET /api/estatisticas/todas-consultas - Retorna todas as estatísticas relacionadas a consultas.
 
 * GET /api/estatisticas/pacientes-por-cidade - Retorna a contagem de pacientes por cidade.
 

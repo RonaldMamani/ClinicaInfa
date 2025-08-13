@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
-import { Consulta, ConsultasPaginationApiResponse, Pagination } from '../../../core/models/consultas.model';
+import { Consulta, ConsultasPaginationApiResponse } from '../../../core/models/consultas.model';
 import { HttpClientModule } from '@angular/common/http';
+import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
 
 @Component({
   selector: 'app-listar-consultas-agendadas',
@@ -14,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class ListarConsultasAgendadasComponent implements OnInit {
   consultas: Consulta[] = [];
-  pagination: Pagination | null = null;
+  pagination: PaginatedApiResponse<Consulta[]> | null = null;
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;

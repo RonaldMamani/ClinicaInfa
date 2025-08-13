@@ -132,7 +132,7 @@ export class AdicionarFuncionarioComponent {
     ativo: formValue.ativo,
     funcionario: {
      nome: formValue.funcionario.nome,
-    cpf: formValue.funcionario.cpf,
+     cpf: formValue.funcionario.cpf,
      cargo: formValue.funcionario.cargo,
      email_empresarial: formValue.funcionario.email_empresarial,
      telefone_empresarial: formValue.funcionario.telefone_empresarial

@@ -45,7 +45,7 @@ class MedicoController extends Controller
                 'medicos' => $medicos,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Se houver qualquer erro na execução, ele será capturado aqui.
             Log::error('Erro ao listar médicos ativos: ' . $e->getMessage());
             return response()->json([
@@ -83,7 +83,7 @@ class MedicoController extends Controller
                 'medico' => $medico,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao buscar médico por ID: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,

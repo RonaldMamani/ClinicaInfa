@@ -17,22 +17,4 @@ export class MedicosService {
       );
   }
 
-  getTotalConsultasCount(): Observable<number> {
-      return this.http.get<any>(`${this.apiUrl}/consultas/count/total`).pipe(
-        map(response => response.total_consultas),
-        catchError(error => {
-          return throwError(() => new Error(error.error?.message || 'Erro ao obter a contagem total de consultas.'));
-        })
-      );
-    }
-  
-    getProximasConsultasCount(): Observable<number> {
-      return this.http.get<any>(`${this.apiUrl}/consultas/count/agendadas`).pipe(
-        map(response => response.consultas_agendadas),
-        catchError(error => {
-          return throwError(() => new Error(error.error?.message || 'Erro ao obter a contagem de consultas agendadas.'));
-        })
-      );
-    }
-
 }

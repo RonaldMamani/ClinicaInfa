@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ConsultasService } from '../../controllers/consultas/consultas.service';
 import { catchError, forkJoin, of } from 'rxjs';
 import { PacientesService } from '../../controllers/pacientes/pacientes.service';
 import { HttpClientModule } from '@angular/common/http';
+import { QuantidadesService } from '../../controllers/quantidades/quantidades.service';
 
 @Component({
   selector: 'app-dashboard-secretaria',
@@ -26,7 +26,7 @@ export class DashboardSecretariaComponent implements OnInit {
   pacientesInativos: number | null = null;
 
   constructor(
-    private consultasService: ConsultasService,
+    private quantidadesService: QuantidadesService,
     private pacientesService: PacientesService
   ) {}
 
@@ -39,7 +39,7 @@ export class DashboardSecretariaComponent implements OnInit {
     this.error = null;
 
     // Requisição para buscar a quantidade total de consultas
-    const todasConsultas$ = this.consultasService.getQuantidadeTodasConsultas().pipe(
+    const todasConsultas$ = this.quantidadesService.getQuantidadeTodasConsultas().pipe(
       catchError(err => {
         console.error('Erro ao buscar quantidade total de consultas:', err);
         return of(null);
@@ -47,7 +47,7 @@ export class DashboardSecretariaComponent implements OnInit {
     );
 
     // Requisição para buscar a quantidade de consultas agendadas
-    const agendadas$ = this.consultasService.getQuantidadeAgendadas().pipe(
+    const agendadas$ = this.quantidadesService.getQuantidadeAgendadas().pipe(
       catchError(err => {
         console.error('Erro ao buscar quantidade de consultas agendadas:', err);
         return of(null);
@@ -55,7 +55,7 @@ export class DashboardSecretariaComponent implements OnInit {
     );
     
     // Nova chamada de API para contagem de pacientes
-    const pacientes$ = this.pacientesService.getContagemPacientes().pipe(
+    const pacientes$ = this.quantidadesService.getQuantidadePacientes().pipe(
         catchError(err => {
             console.error('Erro ao buscar contagem de pacientes:', err);
             return of(null);

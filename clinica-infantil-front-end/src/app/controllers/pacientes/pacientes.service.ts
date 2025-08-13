@@ -53,10 +53,4 @@ export class PacientesService {
   getPacientesInativos(): Observable<PacientesApiResponse> {
     return this.http.get<PacientesApiResponse>(`${this.apiBaseUrl}/inativos`);
   }
-
-  getContagemPacientes(): Observable<PacientesContagemResponse> {
-    const url = `${this.apiBaseUrl}/contagem`;
-    return this.http.get<PacientesContagemResponse>(url);
-  }
-
 }

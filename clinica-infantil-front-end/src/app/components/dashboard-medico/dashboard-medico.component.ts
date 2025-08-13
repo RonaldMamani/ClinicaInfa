@@ -5,6 +5,7 @@ import { ProntuariosService } from '../../controllers/prontuarios/prontuarios.se
 import { forkJoin } from 'rxjs';
 import { MedicosService } from '../../controllers/medicos/medicos.service';
 import { HttpClientModule } from '@angular/common/http';
+import { QuantidadesService } from '../../controllers/quantidades/quantidades.service';
 
 @Component({
   selector: 'app-dashboard-medico',
@@ -20,8 +21,7 @@ export class DashboardMedicoComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private medicosService: MedicosService,
-    private prontuarioService: ProntuariosService
+    private quantidadesService: QuantidadesService,
   ) { }
 
   ngOnInit(): void {
@@ -33,8 +33,8 @@ export class DashboardMedicoComponent implements OnInit {
     this.error = null;
 
     forkJoin({
-      total: this.medicosService.getTotalConsultasCount(),
-      agendadas: this.medicosService.getProximasConsultasCount()
+      total: this.quantidadesService.getProximasConsultasMedico(),
+      agendadas: this.quantidadesService.getTotalConsultasMedico()
     }).subscribe({
       next: (results) => {
         this.totalConsultas = results.total;

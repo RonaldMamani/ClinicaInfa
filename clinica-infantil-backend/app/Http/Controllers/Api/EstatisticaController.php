@@ -13,6 +13,25 @@ use Illuminate\Support\Facades\DB;
 
 class EstatisticaController extends Controller
 {
+    public function todasConsultas()
+    {
+        $total = Consulta::count();
+        $agendadas = Consulta::where('status', 'agendada')->count();
+        $canceladas = Consulta::where('status', 'cancelada')->count();
+        $finalizadas = Consulta::whereIn('status', ['finalizada', 'concluida'])->count();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Todas as estatísticas de consultas obtidas com sucesso.',
+            'dados' => [
+                'total' => $total,
+                'agendadas' => $agendadas,
+                'canceladas' => $canceladas,
+                'finalizadas' => $finalizadas
+            ]
+        ], 200);
+    }
+
     public function pacientesPorCidade()
     {
         // Junta as tabelas de Paciente, Cliente e Cidade para contar os pacientes por cidade

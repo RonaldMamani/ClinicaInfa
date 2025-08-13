@@ -31,7 +31,7 @@ class ResponsavelController extends Controller
                 'responsaveis_ativos' => $responsaveisAtivos,
                 'responsaveis_inativos' => $responsaveisInativos,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar todos os responsáveis (index): ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -53,7 +53,7 @@ class ResponsavelController extends Controller
                 'message' => 'Responsáveis ativos listados com sucesso.',
                 'responsaveis' => $responsaveis,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar responsáveis ativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -75,7 +75,7 @@ class ResponsavelController extends Controller
                 'message' => 'Responsáveis inativos listados com sucesso.',
                 'responsaveis' => $responsaveis,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar responsáveis inativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -100,7 +100,7 @@ class ResponsavelController extends Controller
                 'message' => 'Responsáveis ativos listados com sucesso.',
                 'responsaveis' => $responsaveis,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar responsáveis ativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -125,7 +125,7 @@ class ResponsavelController extends Controller
                 'message' => 'Responsáveis inativos listados com sucesso.',
                 'responsaveis' => $responsaveis,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar responsáveis inativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -172,7 +172,7 @@ class ResponsavelController extends Controller
                 'responsaveis' => $responsaveis,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar responsáveis: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -208,7 +208,7 @@ class ResponsavelController extends Controller
                 'message' => 'Detalhes do responsável carregados com sucesso.',
                 'responsavel' => $responsavel,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao exibir responsável: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -275,7 +275,7 @@ class ResponsavelController extends Controller
                 'responsavel' => $responsavel
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Em caso de qualquer erro, reverte a transação
             DB::rollBack();
             Log::error("Erro ao atualizar responsável: " . $e->getMessage());
@@ -315,7 +315,7 @@ class ResponsavelController extends Controller
                 'responsavel' => $responsavel->load($this->relations)
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error("Erro ao atualizar status do responsável: " . $e->getMessage());
             return response()->json([
                 'status' => false,
