@@ -7,8 +7,6 @@ use App\Http\Requests\PerfilRequest;
 use App\Models\Perfil;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class PerfilController extends Controller

@@ -42,7 +42,6 @@ import { FinalizarConsultaComponent } from './features/consultas/finalizar-consu
 import { ListarPagamentosComponent } from './features/pagamentos/listar-pagamentos/listar-pagamentos.component';
 import { EditarPagamentoComponent } from './features/pagamentos/editar-pagamento/editar-pagamento.component';
 import { EstatisticasComponent } from './features/estatisticas/estatisticas.component';
-import { EstatisticasConsultasComponent } from './components/estatisticas/estatisticas-consultas/estatisticas-consultas.component';
 
 export const routes: Routes = [
   { path: 'login', component: LoginComponent },
