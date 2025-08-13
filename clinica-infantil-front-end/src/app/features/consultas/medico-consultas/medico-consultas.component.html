@@ -25,21 +25,23 @@
             <tr>
               <th>ID</th>
               <th>Data</th>
+              <th>Paciente</th>
+              <th>Idade</th>
               <th>Hora Início</th>
               <th>Hora Fim</th>
-              <th>Paciente</th>
               <th>Status</th>
               <th>Ações</th>
             </tr>
           </thead>
           <tbody>
-            @for (consulta of consultas; track consulta.id) {
+            @for (consulta of consultas; track consulta.id; let i = $index) {
               <tr>
-                <td>{{ consulta.id }}</td>
+                <td>{{ i + 1 }}</td>
                 <td>{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
+                <td>{{ consulta.paciente.cliente.nome }}</td>
+                <td>{{ calcularIdade(consulta.paciente.data_nascimento) }} Anos</td>
                 <td>{{ consulta.hora_inicio | slice:0:5 }}</td>
                 <td>{{ consulta.hora_fim | slice:0:5 }}</td>
-                <td>{{ consulta.paciente.cliente.nome }}</td>
                 <td>
                     <span class="badge rounded-pill text-uppercase p-2" [ngClass]="{
                     'bg-warning text-dark': consulta.status === 'agendada',

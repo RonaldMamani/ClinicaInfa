@@ -1,15 +1,12 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { ProntuariosService } from '../../controllers/prontuarios/prontuarios.service';
 import { forkJoin } from 'rxjs';
-import { MedicosService } from '../../controllers/medicos/medicos.service';
-import { HttpClientModule } from '@angular/common/http';
 import { QuantidadesService } from '../../controllers/quantidades/quantidades.service';
 
 @Component({
   selector: 'app-dashboard-medico',
-  imports: [CommonModule, RouterLink, HttpClientModule],
+  imports: [CommonModule, RouterLink,],
   templateUrl: './dashboard-medico.component.html',
   styleUrl: './dashboard-medico.component.css'
 })
@@ -33,8 +30,8 @@ export class DashboardMedicoComponent implements OnInit {
     this.error = null;
 
     forkJoin({
-      total: this.quantidadesService.getProximasConsultasMedico(),
-      agendadas: this.quantidadesService.getTotalConsultasMedico()
+      total: this.quantidadesService.getTotalConsultasMedico(),
+      agendadas: this.quantidadesService.getProximasConsultasMedico()
     }).subscribe({
       next: (results) => {
         this.totalConsultas = results.total;

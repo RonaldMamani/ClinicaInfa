@@ -26,8 +26,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [LoginController::class, 'logout']);
 
     // Rotas para Estados
-    Route::get('/estados', [EstadoController::class, 'index']);
-    Route::get('/estados/{estado}', [EstadoController::class, 'show']);
+    Route::controller(EstadoController::class)->group(function () {
+        Route::get('/estados', 'index');
+        Route::get('/estados/{estado}', 'show');
+    });
     
     // Rotas para Cidades
     Route::controller(CidadeController::class)->group(function () {
@@ -36,9 +38,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     // Rotas para Gêneros
-    Route::get('/generos', [GeneroController::class, 'index']);
-    Route::get('generos/get', [GeneroController::class, 'getGenero']);
-    Route::get('/generos/{genero}', [GeneroController::class, 'show']);
+    Route::controller(GeneroController::class)->group(function () {
+        Route::get('/generos', 'index');
+        Route::get('generos/get', 'getGenero');
+        Route::get('/generos/{genero}', 'show');
+    });
     
     // Rotas para Clientes
     Route::controller(ClienteController::class)->group(function () {
@@ -54,33 +58,39 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     // Rotas para Funcionários
-    Route::get('/funcionarios', [FuncionarioController::class, 'index']);
-    Route::get('/funcionarios/{id}', [FuncionarioController::class, 'show']);
+    Route::controller(FuncionarioController::class)->group(function () {
+        Route::get('/funcionarios', 'index');
+        Route::get('/funcionarios/{id}', 'show');
+    });
     
     // Rotas para Usuários
-    Route::get('/usuarios', [UsuarioController::class, 'index']);
-    Route::get('usuarios/todos', [UsuarioController::class, 'getTodosUsuarios']);
-    Route::get('usuarios/ativos', [UsuarioController::class, 'getUsuariosAtivos']);
-    Route::get('usuarios/inativos', [UsuarioController::class, 'getUsuariosInativos']);
-    Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
-    Route::post('/usuarios', [UsuarioController::class, 'store']);
-    Route::put('/usuarios/{id}', [UsuarioController::class, 'update']);
-    Route::put('/usuarios/{id}/activate', [UsuarioController::class, 'reativarUsuario']);
-    Route::put('/usuarios/{id}/redefinir', [UsuarioController::class, 'redefinirSenha']);
-    Route::patch('/usuarios/{id}', [UsuarioController::class, 'update']);
-    Route::delete('/usuarios/{id}', [UsuarioController::class, 'destroy']);
+    Route::controller(UsuarioController::class)->group(function () {
+        Route::get('/usuarios', 'index');
+        Route::get('usuarios/todos', 'getTodosUsuarios');
+        Route::get('usuarios/ativos', 'getUsuariosAtivos');
+        Route::get('usuarios/inativos', 'getUsuariosInativos');
+        Route::get('/usuarios/{id}', 'show');
+        Route::post('/usuarios', 'store');
+        Route::put('/usuarios/{id}', 'update');
+        Route::put('/usuarios/{id}/activate', 'reativarUsuario');
+        Route::put('/usuarios/{id}/redefinir', 'redefinirSenha');
+        Route::patch('/usuarios/{id}', 'update');
+        Route::delete('/usuarios/{id}', 'destroy');
+    });
     
     // Rotas para Responsáveis
-    Route::get('/responsaveis', [ResponsavelController::class, 'index']);
-    Route::get('responsaveis/listar', [ResponsavelController::class, 'responsaveisListar']);
-    Route::get('responsaveis/ativos', [ResponsavelController::class, 'getActiveResponsaveis']);
-    Route::get('responsaveis/inativos', [ResponsavelController::class, 'getInactiveResponsaveis']);
-    Route::get('/responsaveis/page-ativos', [ResponsavelController::class, 'responsaveisAtivos']);
-    Route::get('/responsaveis/page-inativos', [ResponsavelController::class, 'responsaveisInativos']);
-    Route::get('/responsaveis/{id}', [ResponsavelController::class, 'show']);
-    Route::put('responsaveis/{id}/status', [ResponsavelController::class, 'updateStatus']);
-    Route::put('/responsaveis/{id}', [ResponsavelController::class, 'update']);
-    Route::patch('/responsaveis/{id}', [ResponsavelController::class, 'update']);
+    Route::controller(ResponsavelController::class)->group(function () {
+        Route::get('/responsaveis', 'index');
+        Route::get('responsaveis/listar', 'responsaveisListar');
+        Route::get('responsaveis/ativos', 'getActiveResponsaveis');
+        Route::get('responsaveis/inativos', 'getInactiveResponsaveis');
+        Route::get('/responsaveis/page-ativos', 'responsaveisAtivos');
+        Route::get('/responsaveis/page-inativos', 'responsaveisInativos');
+        Route::get('/responsaveis/{id}', 'show');
+        Route::put('responsaveis/{id}/status', 'updateStatus');
+        Route::put('/responsaveis/{id}', 'update');
+        Route::patch('/responsaveis/{id}', 'update');
+    });
 
     // Rotas para Pacientes
     Route::controller(PacienteController::class)->group(function () {
@@ -96,9 +106,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     // Rotas para Médicos
-    Route::get('/medicos', [MedicoController::class, 'index']);
-    Route::get('/medicos/{id}', [MedicoController::class, 'show']);
-    Route::post('/medicos', [MedicoController::class, 'store']);
+    Route::controller(MedicoController::class)->group(function () {
+        Route::get('/medicos', 'index');
+        Route::get('/medicos/{id}', 'show');
+        Route::post('/medicos', 'store');
+    });
     
     // Rotas para Consultas
     Route::controller(ConsultaController::class)->group(function () {
@@ -147,16 +159,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/pagamentos/{pagamento}', 'destroy');
     });
 
-    Route::get('/estatisticas/todas-consultas', [EstatisticaController::class, 'todasConsultas']);
-    Route::get('/estatisticas/pacientes-por-cidade', [EstatisticaController::class, 'pacientesPorCidade']);
-    Route::get('/estatisticas/responsaveis-por-cidade', [EstatisticaController::class, 'responsaveisPorCidade']);
-    Route::get('/estatisticas/receita-mensal', [EstatisticaController::class, 'receitaMensal']);
-    Route::get('/estatisticas/consultas-por-especialidade', [EstatisticaController::class, 'consultasPorEspecialidade']);
-    Route::get('/estatisticas/pacientes-por-genero', [EstatisticaController::class, 'pacientesPorGenero']);
-    Route::get('/estatisticas/clientes-por-funcao', [EstatisticaController::class, 'clientesPorFuncao']);
-    Route::get('/estatisticas/consultas-por-medico-por-mes', [EstatisticaController::class, 'consultasPorMedicoPorMes']);
-    Route::get('/estatisticas/consultas-e-pacientes-mensal', [EstatisticaController::class, 'consultasEAtividadeDePacienteMensal']);
+    // Rotas de Estatisticas
+    Route::controller(EstatisticaController::class)->group(function () {
+        Route::get('/estatisticas/todas-consultas', 'todasConsultas');
+        Route::get('/estatisticas/pacientes-por-cidade', 'pacientesPorCidade');
+        Route::get('/estatisticas/responsaveis-por-cidade', 'responsaveisPorCidade');
+        Route::get('/estatisticas/receita-mensal', 'receitaMensal');
+        Route::get('/estatisticas/consultas-por-especialidade', 'consultasPorEspecialidade');
+        Route::get('/estatisticas/pacientes-por-genero', 'pacientesPorGenero');
+        Route::get('/estatisticas/clientes-por-funcao', 'clientesPorFuncao');
+        Route::get('/estatisticas/consultas-por-medico-por-mes', 'consultasPorMedicoPorMes');
+        Route::get('/estatisticas/consultas-e-pacientes-mensal', 'consultasEAtividadeDePacienteMensal');
+    });
 
+    //Rotas de Quantidades e Contagem
     Route::controller(QuantidadeController::class)->group(function () {
         Route::get('/quantidades/consultas/todas', 'quantidadeTodasConsultas');
         Route::get('/quantidades/consultas/agendadas', 'quantidadeConsultasAgendadas');

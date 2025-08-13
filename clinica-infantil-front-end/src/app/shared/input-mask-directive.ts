@@ -11,7 +11,7 @@ export class InputMaskDirective {
 
   @HostListener('input', ['$event']) onInput(event: InputEvent): void {
     const input = this.el.nativeElement as HTMLInputElement;
-    const value = input.value.replace(/\D/g, ''); // Remove todos os caracteres não numéricos
+    const value = input.value.replace(/\D/g, '');
     let maskedValue = '';
     let maskIndex = 0;
     let valueIndex = 0;
