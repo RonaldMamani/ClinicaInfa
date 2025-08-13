@@ -17,7 +17,5 @@ export class MedicoComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    // Lógica de inicialização do componente de dashboard da secretária.
-    // Você pode, por exemplo, carregar dados de resumo ou estatísticas aqui.
   }
 }
