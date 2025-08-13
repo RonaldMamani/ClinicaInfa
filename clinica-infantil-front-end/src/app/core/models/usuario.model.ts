@@ -1,5 +1,5 @@
-import { Funcionario } from "./funcionario.model";
-import { Medico } from "./medico.model";
+import { Funcionario, FuncionarioSimples } from "./funcionario.model";
+import { Medico, MedicoSimples } from "./medico.model";
 import { Perfil } from "./perfil.model";
 
 export interface Usuario {
@@ -55,17 +55,8 @@ export interface CreateUsuarioPayload {
   senha: string;
   id_perfil: number;
   ativo: boolean;
-  funcionario: {
-    nome: string;
-    cpf: string;
-    cargo: string;
-    email_empresarial: string;
-    telefone_empresarial: string;
-  };
-  medico?: {
-    CRM: string;
-    especialidade: string;
-  };
+  funcionario: FuncionarioSimples;
+  medico?: MedicoSimples;
 }
 
 export interface UpdateUsuarioPayload {
@@ -73,15 +64,6 @@ export interface UpdateUsuarioPayload {
   id_perfil: number;
   id_funcionario: number;
   ativo: boolean;
-  funcionario?: {
-    nome: string;
-    cpf: string;
-    cargo: string;
-    email_empresarial: string;
-    telefone_empresarial: string;
-  };
-  medico?: {
-    CRM: string;
-    especialidade: string;
-  };
+  funcionario?: FuncionarioSimples;
+  medico?: MedicoSimples;
 }

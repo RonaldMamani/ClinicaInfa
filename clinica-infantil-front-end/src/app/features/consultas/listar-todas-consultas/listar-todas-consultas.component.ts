@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
-import { Consulta, Pagination } from '../../../core/models/consultas.model';
+import { Consulta } from '../../../core/models/consultas.model';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { HttpClientModule } from '@angular/common/http';
+import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
 
 @Component({
   selector: 'app-listar-todas-consultas',
@@ -14,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class ListarTodasConsultasComponent implements OnInit {
   consultas: Consulta[] = [];
-  pagination: Pagination | null = null;
+  pagination: PaginatedApiResponse<Consulta[]> | null = null;
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;

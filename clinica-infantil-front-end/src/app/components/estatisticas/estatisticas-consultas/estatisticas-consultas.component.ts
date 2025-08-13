@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
+import { EstatisticasService } from '../../../controllers/estatisticas/estatisticas.service';
 
 @Component({
   selector: 'app-estatisticas-consultas',
@@ -23,7 +24,7 @@ export class EstatisticasConsultasComponent implements OnInit {
   public chartInstance: Chart | undefined;
   @ViewChild('myChart') private chartCanvas: ElementRef | undefined;
 
-  constructor(private estatisticasService: ConsultasService) {
+  constructor(private estatisticasService: EstatisticasService) {
     Chart.register(...registerables); 
   }
 
@@ -33,7 +34,7 @@ export class EstatisticasConsultasComponent implements OnInit {
 
   carregarDados(): void {
     // Apenas uma requisição agora
-    this.estatisticasService.getTodasEstatisticas().subscribe({
+    this.estatisticasService.getTodasConsultasEstatisticas().subscribe({
       next: (response) => {
         const dados = response.dados; // Acessa o objeto 'dados' da resposta
         this.quantidadeTotal = dados.total;

@@ -36,7 +36,7 @@ class UsuarioController extends Controller
                 'usuarios' => $usuarios,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar usuários: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -63,7 +63,7 @@ class UsuarioController extends Controller
                 'usuarios_ativos' => $usuariosAtivos,
                 'usuarios_inativos' => $usuariosInativos,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar todos os usuários (index): ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -85,7 +85,7 @@ class UsuarioController extends Controller
                 'message' => 'Usuários ativos listados com sucesso.',
                 'usuarios' => $usuarios,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar usuários ativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -107,7 +107,7 @@ class UsuarioController extends Controller
                 'message' => 'Usuários inativos listados com sucesso.',
                 'usuarios' => $usuarios,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar usuários inativos: ' . $e->getMessage());
             return response()->json([
                 'status' => false,
@@ -134,7 +134,7 @@ class UsuarioController extends Controller
                 'message' => 'Detalhes do usuário carregados com sucesso.',
                 'usuario' => $usuario,
             ], 200);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao exibir usuário: ' . $e->getMessage());
             return response()->json([
                 'status' => false,

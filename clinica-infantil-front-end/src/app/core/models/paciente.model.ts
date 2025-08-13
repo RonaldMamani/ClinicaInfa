@@ -1,5 +1,6 @@
 import { Cliente } from './cliente.model';
 import { Consulta } from './consultas.model';
+import { PaginatedApiResponse } from './Paginate.model';
 import { Prontuario } from './prontuarios.model';
 import { Responsavel } from './responsavel.model';
 
@@ -30,21 +31,7 @@ export interface PacienteDetailsResponse {
 export interface PacientesPaginadosResponse {
   status: boolean;
   message: string;
-  pacientes: {
-    current_page: number;
-    data: Paciente[];
-    first_page_url: string;
-    from: number;
-    last_page: number;
-    last_page_url: string;
-    links: { url: string | null; label: string; active: boolean }[];
-    next_page_url: string | null;
-    path: string;
-    per_page: number;
-    prev_page_url: string | null;
-    to: number;
-    total: number;
-  };
+  pacientes: PaginatedApiResponse<Paciente[]>
 }
 
 export interface UpdatePacientePayload {

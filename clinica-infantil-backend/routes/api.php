@@ -13,6 +13,7 @@ use App\Http\Controllers\Api\PacienteController;
 use App\Http\Controllers\Api\PagamentoController;
 use App\Http\Controllers\Api\PerfilController;
 use App\Http\Controllers\Api\ProntuarioController;
+use App\Http\Controllers\Api\QuantidadeController;
 use App\Http\Controllers\Api\ResponsavelController;
 use App\Http\Controllers\Api\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -51,7 +52,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/perfis', 'index');
         Route::get('/perfis/{perfil}', 'show');
     });
-    
     
     // Rotas para Funcionários
     Route::get('/funcionarios', [FuncionarioController::class, 'index']);
@@ -96,8 +96,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     
     // Rotas para Médicos
-    Route::get('medicos/consultas/count/total', [ConsultaController::class, 'countAllConsultas']);
-    Route::get('medicos/consultas/count/agendadas', [ConsultaController::class, 'countAgendadasConsultas']);
     Route::get('/medicos', [MedicoController::class, 'index']);
     Route::get('/medicos/{id}', [MedicoController::class, 'show']);
     Route::post('/medicos', [MedicoController::class, 'store']);
@@ -112,11 +110,6 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/consultas/agendadas/{id}', 'showAgendada');
         Route::get('/consultas/medico', 'consultasMedico');
         Route::get('/consultas/medico/agendados', 'consultasMedicoAgendados');
-        Route::get('/consultas/quantidades/todas', 'quantidadeTotal');
-        Route::get('/consultas/quantidades/agendadas', 'quantidadeAgendadas');
-        Route::get('/consultas/estatisticas', 'todasAsEstatisticas');
-        Route::get('/consultas/medico/count/total', 'countAllConsultas');
-        Route::get('/consultas/medico/count/agendadas', 'countAgendadasConsultas');
         Route::get('/consultas/{id}', 'show');
 
         // Métodos POST
@@ -154,6 +147,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/pagamentos/{pagamento}', 'destroy');
     });
 
+    Route::get('/estatisticas/todas-consultas', [EstatisticaController::class, 'todasConsultas']);
     Route::get('/estatisticas/pacientes-por-cidade', [EstatisticaController::class, 'pacientesPorCidade']);
     Route::get('/estatisticas/responsaveis-por-cidade', [EstatisticaController::class, 'responsaveisPorCidade']);
     Route::get('/estatisticas/receita-mensal', [EstatisticaController::class, 'receitaMensal']);
@@ -162,4 +156,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/estatisticas/clientes-por-funcao', [EstatisticaController::class, 'clientesPorFuncao']);
     Route::get('/estatisticas/consultas-por-medico-por-mes', [EstatisticaController::class, 'consultasPorMedicoPorMes']);
     Route::get('/estatisticas/consultas-e-pacientes-mensal', [EstatisticaController::class, 'consultasEAtividadeDePacienteMensal']);
+
+    Route::controller(QuantidadeController::class)->group(function () {
+        Route::get('/quantidades/consultas/todas', 'quantidadeTodasConsultas');
+        Route::get('/quantidades/consultas/agendadas', 'quantidadeConsultasAgendadas');
+        Route::get('/quantidades/medico/consultas', 'quantidadeConsultasDoMedico');
+        Route::get('/quantidades/medico/agendadas', 'quantidadeConsultasDoMedicoAgendada');
+        Route::get('/quantidades/pacientes', 'quantidadePacientes');
+    });
 });

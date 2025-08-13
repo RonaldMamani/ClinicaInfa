@@ -1,5 +1,6 @@
 import { Cliente } from "./cliente.model";
 import { Paciente } from "./paciente.model";
+import { PaginatedApiResponse } from "./Paginate.model";
 
 export interface Responsavel {
   id: number;
@@ -29,36 +30,8 @@ export interface UpdateResponsavelPayload {
   telefone: string;
 }
 
-// Interfaces de paginação (se usadas em outros lugares, mantidas aqui para referência)
-export interface PaginatedData<T> {
-  current_page: number;
-  data: T[];
-  last_page: number;
-  total: number;
-  first_page_url: string;
-  from: number;
-  last_page_url: string;
-  links: Array<{
-    url: string | null;
-    label: string;
-    active: boolean;
-  }>;
-  next_page_url: string | null;
-  path: string;
-  per_page: number;
-  prev_page_url: string | null;
-  to: number;
-}
-
 export interface ResponsaveiPaginateResponse {
   status: boolean;
   message: string;
-  responsaveis: PaginatedData<Responsavel>;
-}
-
-export interface FullResponsaveisApiResponse {
-  status: boolean;
-  message: string;
-  responsaveis_ativos: PaginatedData<Responsavel>;
-  responsaveis_inativos: PaginatedData<Responsavel>;
+  responsaveis: PaginatedApiResponse<Responsavel[]>;
 }

@@ -1,20 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../controllers/auth/auth.service'; // Ajuste o caminho
+import { AuthService } from '../../controllers/auth/auth.service';
 import { Observable } from 'rxjs';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, RouterLink, HttpClientModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css']
 })
 export class NavbarComponent implements OnInit {
   userProfile$!: Observable<string | null>;
-  userName$!: Observable<string | null>; // NOVO: Observable para o nome do usuário
+  userName$!: Observable<string | null>; 
 
   constructor(private authService: AuthService, private router: Router) { }
 

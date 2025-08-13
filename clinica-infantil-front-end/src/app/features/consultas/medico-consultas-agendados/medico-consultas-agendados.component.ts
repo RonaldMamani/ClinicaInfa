@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { AuthService } from '../../../controllers/auth/auth.service';
-import { Consulta, ConsultasPaginationApiResponse, Pagination } from '../../../core/models/consultas.model';
+import { Consulta, ConsultasPaginationApiResponse } from '../../../core/models/consultas.model';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
+import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
 
 @Component({
   selector: 'app-medico-consultas-agendados',
@@ -14,7 +15,7 @@ import { HttpClientModule } from '@angular/common/http';
 })
 export class MedicoConsultasAgendadosComponent {
   consultas: Consulta[] = [];
-  pagination: Pagination | null = null;
+  pagination: PaginatedApiResponse<Consulta[]> | null = null;
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;

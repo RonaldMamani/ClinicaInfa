@@ -33,7 +33,7 @@ class PacienteController extends Controller
                 'pacientes' => $pacientes,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar pacientes: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -61,7 +61,7 @@ class PacienteController extends Controller
                 'pacientes' => $pacientes,
             ], 200);
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Erro ao listar pacientes ativos: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
             return response()->json([
                 'status' => false,
@@ -280,40 +280,5 @@ class PacienteController extends Controller
             'status' => true,
             'message' => 'Paciente desativado com sucesso.'
         ]);
-    }
-
-    /**
-     * Retorna a quantidade total de pacientes.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function contarPacientes()
-    {
-        try {
-            $ativos = Paciente::whereHas('cliente', function ($query) {
-                $query->where('ativo', true);
-            })->count();
-            
-            $inativos = Paciente::whereHas('cliente', function ($query) {
-                $query->where('ativo', false);
-            })->count();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Contagem de pacientes ativos e inativos realizada com sucesso.',
-                'dados' => [
-                    'ativos' => $ativos,
-                    'inativos' => $inativos
-                ]
-            ], 200);
-
-        } catch (Exception $e) {
-            Log::error('Erro ao contar pacientes: ' . $e->getMessage() . ' - ' . $e->getFile() . ' na linha ' . $e->getLine());
-            return response()->json([
-                'status' => false,
-                'message' => 'Ocorreu um erro ao contar os pacientes. Verifique os logs do servidor.',
-                'error_details' => $e->getMessage()
-            ], 500);
-        }
     }
 }

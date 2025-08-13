@@ -11,6 +11,11 @@ export interface Medico {
   consultas: Consulta[]
 }
 
+export interface MedicoSimples {
+  CRM: string;
+  especialidade: string;
+}
+
 export interface MedicosApiResponse {
   status: boolean;
   message: string;

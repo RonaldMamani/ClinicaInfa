@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { ClientesPorFuncaoResponse, ConsultasPacienteMensalResponse, ConsultasPorEspecialidadeResponse, ConsultasPorMedicoMesResponse, PacientesPorCidadeResponse, PacientesPorGeneroResponse, ReceitaMensalResponse, ResponsaveisPorCidadeResponse } from '../../core/models/quantidades.model';
+import { ClientesPorFuncaoResponse, ConsultasPacienteMensalResponse, ConsultasPorEspecialidadeResponse, ConsultasPorMedicoMesResponse, PacientesPorCidadeResponse, PacientesPorGeneroResponse, ReceitaMensalResponse, ResponsaveisPorCidadeResponse, TodasEstatisticasResponse } from '../../core/models/quantidades.model';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -11,6 +11,11 @@ export class EstatisticasService {
   private apiUrl = 'http://localhost:8000/api/estatisticas';
 
   constructor(private http: HttpClient) {}
+
+  getTodasConsultasEstatisticas(): Observable<TodasEstatisticasResponse> {
+    const url = `${this.apiUrl}/todas-consultas`;
+    return this.http.get<TodasEstatisticasResponse>(url);
+  }
 
   getPacientesPorCidade(): Observable<PacientesPorCidadeResponse> {
     const url = `${this.apiUrl}/pacientes-por-cidade`;
