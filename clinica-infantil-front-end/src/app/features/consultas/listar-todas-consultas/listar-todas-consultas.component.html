@@ -38,9 +38,9 @@
             </tr>
           </thead>
           <tbody>
-            @for (consulta of consultas; track consulta.id) {
+            @for (consulta of consultas; track consulta.id; let i = $index) {
               <tr class="">
-                <td>{{ consulta.id }}</td>
+                <td>{{ i + 1 }}</td>
                 <td>{{ consulta.paciente.cliente.nome }}</td>
                 <td>{{ consulta.medico.usuario.funcionario.nome }}</td>
                 <td>{{ consulta.medico.especialidade }}</td>

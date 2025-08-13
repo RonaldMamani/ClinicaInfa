@@ -58,6 +58,17 @@ export class MedicoConsultasComponent {
     });
   }
 
+  calcularIdade(dataNascimento: string): number {
+    const hoje = new Date();
+    const dataNasc = new Date(dataNascimento);
+    let idade = hoje.getFullYear() - dataNasc.getFullYear();
+    const mes = hoje.getMonth() - dataNasc.getMonth();
+    if (mes < 0 || (mes === 0 && hoje.getDate() < dataNasc.getDate())) {
+      idade--;
+    }
+    return idade;
+  };
+
   onPageChange(pageUrl: string | null): void {
     if (pageUrl) {
       this.carregarConsultasDoMedico(pageUrl);

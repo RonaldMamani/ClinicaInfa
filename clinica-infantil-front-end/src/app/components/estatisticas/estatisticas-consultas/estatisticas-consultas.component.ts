@@ -4,11 +4,12 @@ import { CommonModule } from '@angular/common';
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { EstatisticasService } from '../../../controllers/estatisticas/estatisticas.service';
+import { QuantidadesService } from '../../../controllers/quantidades/quantidades.service';
 
 @Component({
   selector: 'app-estatisticas-consultas',
   imports: [CommonModule],
-  providers: [ConsultasService],
+  providers: [QuantidadesService],
   standalone: true,
   templateUrl: './estatisticas-consultas.component.html',
   styleUrl: './estatisticas-consultas.component.css'
