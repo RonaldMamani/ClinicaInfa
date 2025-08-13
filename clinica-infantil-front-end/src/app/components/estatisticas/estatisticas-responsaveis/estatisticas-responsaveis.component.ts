@@ -1,13 +1,12 @@
-import { Component, ElementRef, ViewChild, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { Chart, ChartData, ChartOptions, registerables } from 'chart.js';
 import { EstatisticasService } from '../../../controllers/estatisticas/estatisticas.service';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-estatisticas-responsaveis',
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule],
   providers: [EstatisticasService],
   standalone: true,
   templateUrl: './estatisticas-responsaveis.component.html',
