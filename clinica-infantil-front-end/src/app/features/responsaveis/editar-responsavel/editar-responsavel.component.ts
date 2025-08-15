@@ -19,11 +19,12 @@ import { EstadosService } from '../../../controllers/estados/estados.service';
 
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-editar-responsavel',
   standalone: true,
-  imports: [ CommonModule, RouterModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule ],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './editar-responsavel.component.html',
   styleUrls: ['./editar-responsavel.component.css']
 })
@@ -59,7 +60,7 @@ export class EditarResponsavelComponent implements OnInit {
         id: [null],
         nome: ['', Validators.required],
         cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
-        rg: [''],
+        rg: ['', Validators.pattern(/^\d{2}\.\d{3}\.\d{3}-\d{1}$/)],
         endereco: ['', Validators.required],
         id_estado: ['', Validators.required],
         id_cidade: ['', Validators.required],
@@ -205,9 +206,5 @@ export class EditarResponsavelComponent implements OnInit {
       this.responsavelForm.markAllAsTouched();
       this.error = 'Por favor, preencha todos os campos obrigatórios corretamente.';
     }
-  }
-
-  voltarAdmin(): void {
-    this.router.navigate(['/administrador/responsaveis']);
   }
 }

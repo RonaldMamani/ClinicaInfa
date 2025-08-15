@@ -5,18 +5,23 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-listar-pagamentos',
-  imports: [CommonModule, RouterLink, HttpClientModule],
+  imports: [CommonModule, RouterLink, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './listar-pagamentos.component.html',
   styleUrl: './listar-pagamentos.component.css'
 })
 export class ListarPagamentosComponent {
   pagamentos: Pagamento[] = [];
   paginator: PaginatedApiResponse<Pagamento[]> | null = null;
+  
   isLoading = true;
   errorMessage: string | null = null;
+  
+  currentPage: number = 1;
+  pageSize: number = 15;
 
   constructor(private pagamentoService: PagamentosService) { }
 
@@ -35,6 +40,13 @@ export class ListarPagamentosComponent {
       next: (response) => {
         this.pagamentos = response.pagamentos.data;
         this.paginator = response.pagamentos;
+
+        // Atualiza as propriedades com os dados da API
+        if (this.paginator) {
+          this.currentPage = this.paginator.current_page;
+          this.pageSize = this.paginator.per_page;
+        }
+
         this.isLoading = false;
       },
       error: (err) => {

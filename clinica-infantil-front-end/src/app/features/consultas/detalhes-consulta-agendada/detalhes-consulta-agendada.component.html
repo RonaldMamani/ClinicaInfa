@@ -1,4 +1,4 @@
-<div class="container my-5">
+<div class="dashboard container my-5">
   <h2>Detalhes da Consulta Agendada</h2>
 
   @if (isLoading) {
@@ -54,7 +54,7 @@
               <span class="ms-2">{{ consulta.paciente.cliente.rg }}</span> 
               <br>
               <span><strong>Endereço:</strong></span>
-              <span class="ms-2">{{ consulta.paciente.cliente.endereco }}</span>
+              <span class="ms-2">{{ consulta.paciente.cliente.endereco }} - {{ consulta.paciente.cliente.cidade.estado.sigla }}</span>
               <br>
               <span><strong>Data de Nascimento:</strong></span>
               <span class="ms-2">{{ consulta.paciente.data_nascimento | date:'dd/MM/yyyy' }}</span>
@@ -80,6 +80,9 @@
                 <br>
                 <span><strong>Email:</strong></span>
                 <span class="ms-2">{{ consulta.paciente.responsavel.email }}</span>
+                <br>
+                <span><strong>Endereço:</strong></span>
+                <span class="ms-2">{{ consulta.paciente.responsavel.cliente.endereco }} - {{ consulta.paciente.responsavel.cliente.cidade.estado.sigla }}</span>
                 <br>
                 <span><strong>Telefone:</strong></span>
                 <span class="ms-2">{{ consulta.paciente.responsavel.telefone }}</span>
@@ -117,7 +120,9 @@
       </div>
     </div>
 
-    <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria/consultas/agendadas']">Voltar para a Lista</a>
+    <div class="mt-4">
+      <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
+    </div>
   }
 
 </div>

@@ -136,6 +136,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Métodos PATCH
         Route::patch('/consultas/{id}/status', 'updateStatus');
+
+        Route::delete('/consultas/{id}', 'destroy');
     });
     
     // Rotas para Prontuários

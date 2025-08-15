@@ -1,9 +1,7 @@
 <div class="dashboard container my-5">
   <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Detalhes do Usuário</h2>
-    <a class="btn btn-secondary" [routerLink]="['/administrador/funcionarios']">
-      Voltar para a Lista
-    </a>
+    <app-botao-voltar texto="Voltar para Lista" routerLink="../"></app-botao-voltar>
   </div>
 
   @if (isLoading) {

@@ -4,10 +4,11 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UsuariosService } from '../../../controllers/usuarios/usuarios.service';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-detalhe-funcionario',
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './detalhe-funcionario.component.html',
   styleUrl: './detalhe-funcionario.component.css'
 })

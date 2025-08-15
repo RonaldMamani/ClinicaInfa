@@ -5,11 +5,12 @@ import { Consulta } from '../../../core/models/consultas.model';
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { HttpClientModule } from '@angular/common/http';
 import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-listar-todas-consultas',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule],
+  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './listar-todas-consultas.component.html',
   styleUrls: ['./listar-todas-consultas.component.css']
 })
@@ -19,6 +20,11 @@ export class ListarTodasConsultasComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
+
+  // Variáveis para paginação e contagem
+  currentPage: number = 1;
+  pageSize: number = 15;
+  totalItems: number = 0;
 
   showCancelModal = false;
   consultaToCancelId: number | null = null;
@@ -53,6 +59,14 @@ export class ListarTodasConsultasComponent implements OnInit {
         // Armazena a lista de consultas e o objeto de paginação
         this.consultas = response.consultas.data || [];
         this.pagination = response.consultas;
+        
+        // Atualiza as variáveis de paginação com os dados da API
+        if (this.pagination) {
+          this.currentPage = this.pagination.current_page;
+          this.pageSize = this.pagination.per_page;
+          this.totalItems = this.pagination.total;
+        }
+
         this.isLoading = false;
       },
       error: (err) => {
@@ -106,7 +120,8 @@ export class ListarTodasConsultasComponent implements OnInit {
         next: (response) => {
           this.successMessage = response.message || 'Consulta cancelada com sucesso!';
           this.closeCancelModal();
-          this.carregarConsultas();
+          this.carregarConsultas(this.currentPage); // Recarrega a página atual para manter a posição
+          setTimeout(() => this.successMessage = null, 3000);
         },
         error: (err) => {
           this.error = 'Erro ao cancelar a consulta.';

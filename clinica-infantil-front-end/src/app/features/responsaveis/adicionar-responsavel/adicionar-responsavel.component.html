@@ -27,13 +27,24 @@
       <label for="cpf" class="form-label">CPF</label>
       <input type="text" id="cpf" class="form-control" formControlName="cpf" [appInputMask]="'000.000.000-00'" placeholder="000.000.000-00" />
       @if (responsavelForm.get('cpf')?.invalid && responsavelForm.get('cpf')?.touched) {
-        <div class="text-danger mt-1">CPF inválido ou obrigatório.</div>
+        <div class="text-danger mt-1">
+          @if (responsavelForm.get('cpf')?.errors?.['required']) {
+            <span>O CPF é obrigatório.</span>
+          } @else if (responsavelForm.get('cpf')?.errors?.['pattern']) {
+            <span>O CPF é inválido. Utilize o formato 000.000.000-00.</span>
+          }
+        </div>
       }
     </div>
 
     <div class="mb-3">
       <label for="rg" class="form-label">RG (Opcional)</label>
-      <input type="text" id="rg" class="form-control" formControlName="rg" placeholder="Ex: 12.345.678-9" />
+      <input type="text" id="rg" class="form-control" formControlName="rg" [appInputMask]="'00.000.000-0'" placeholder="Ex: 12.345.678-9" />
+      @if (responsavelForm.get('rg')?.invalid && responsavelForm.get('rg')?.touched) {
+        <div class="text-danger mt-1">
+          <span>O RG é inválido. Utilize o formato 00.000.000-0.</span>
+        </div>
+      }
     </div>
 
     <div class="mb-3">
@@ -92,7 +103,13 @@
       <label for="telefone" class="form-label">Telefone Responsável</label>
       <input type="text" id="telefone" class="form-control" formControlName="telefone" [appInputMask]="'(00) 00000-0000'" placeholder="(11) 98765-4321" />
       @if (responsavelForm.get('telefone')?.invalid && responsavelForm.get('telefone')?.touched) {
-        <div class="text-danger mt-1">Telefone inválido ou obrigatório.</div>
+        <div class="text-danger mt-1">
+          @if (responsavelForm.get('telefone')?.errors?.['required']) {
+            <span>O telefone é obrigatório.</span>
+          } @else if (responsavelForm.get('telefone')?.errors?.['pattern']) {
+            <span>O telefone é inválido. Utilize o formato (00) 00000-0000.</span>
+          }
+        </div>
       }
     </div>
 
@@ -105,9 +122,9 @@
       }
     </button>
     @if (isAdministradorRoute) {
-      <button type="button" class="btn btn-secondary" (click)="voltarAdmin()">Voltar</button>
+      <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
     } @else {
-      <button type="button" class="btn btn-secondary" (click)="voltar()">Voltar</button>
+      <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
     }
   </form>
 </div>

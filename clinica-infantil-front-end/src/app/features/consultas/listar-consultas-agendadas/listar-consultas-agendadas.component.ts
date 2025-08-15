@@ -5,11 +5,12 @@ import { ConsultasService } from '../../../controllers/consultas/consultas.servi
 import { Consulta, ConsultasPaginationApiResponse } from '../../../core/models/consultas.model';
 import { HttpClientModule } from '@angular/common/http';
 import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-listar-consultas-agendadas',
   standalone: true,
-  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule],
+  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './listar-consultas-agendadas.component.html',
   styleUrls: ['./listar-consultas-agendadas.component.css']
 })
@@ -19,6 +20,9 @@ export class ListarConsultasAgendadasComponent implements OnInit {
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
+
+  // Variáveis para paginação e contagem
+  currentPage: number = 1;
 
   showCancelModal = false;
   consultaToCancelId: number | null = null;
@@ -35,9 +39,13 @@ export class ListarConsultasAgendadasComponent implements OnInit {
 
     this.consultasService.getConsultasAgendadasListar(page).subscribe({
       next: (response: ConsultasPaginationApiResponse) => {
-        // Acessa o array de consultas dentro do objeto de paginação
         this.consultas = response.consultas.data || [];
         this.pagination = response.consultas;
+
+        if (this.pagination) {
+          this.currentPage = this.pagination.current_page;
+        }
+
         this.isLoading = false;
       },
       error: (err) => {
@@ -81,7 +89,8 @@ export class ListarConsultasAgendadasComponent implements OnInit {
         next: (response) => {
           this.successMessage = response.message || 'Consulta cancelada com sucesso!';
           this.closeCancelModal();
-          this.carregarConsultasAgendadas(); // Recarrega a lista
+          this.carregarConsultasAgendadas(this.currentPage);
+          setTimeout(() => this.successMessage = null, 3000);
         },
         error: (err) => {
           this.error = 'Erro ao cancelar a consulta.';

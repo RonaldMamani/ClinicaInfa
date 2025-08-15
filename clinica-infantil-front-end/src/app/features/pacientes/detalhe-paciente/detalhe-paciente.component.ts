@@ -7,11 +7,12 @@ import { EstadosService } from '../../../controllers/estados/estados.service';
 import { Paciente } from '../../../core/models/paciente.model';
 import { forkJoin } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-detalhe-paciente',
   standalone: true,
-  imports: [CommonModule, HttpClientModule],
+  imports: [CommonModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './detalhe-paciente.component.html',
   styleUrls: ['./detalhe-paciente.component.css']
 })

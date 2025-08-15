@@ -1,21 +1,28 @@
 <div class="dashboard container my-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2 class="fw-bold">Adicionar Novo Usuário</h2>
-    <a class="btn btn-secondary" [routerLink]="['/administrador/funcionarios']">Voltar para a Lista</a>
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-2">
+    <h2 class="fw-bold fs-2 mb-0">Adicionar Novo Funcionário</h2>
+    <div>
+      <app-botao-voltar texto="Voltar" routerLink="../"></app-botao-voltar>
+    </div>
   </div>
 
   @if (isLoading) {
-    <div class="alert alert-info">Carregando dados iniciais...</div>
+    <div class="alert alert-info text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-2">Carregando dados iniciais...</p>
+    </div>
   }
 
   @if (successMessage) {
-    <div class="alert alert-success mt-3">
+    <div class="alert alert-success mt-3 text-center">
       {{ successMessage }}
     </div>
   }
 
   @if (error) {
-    <div class="alert alert-danger mt-3">
+    <div class="alert alert-danger mt-3 text-center">
       {{ error }}
     </div>
   }
@@ -25,11 +32,11 @@
       <!-- Dados do Usuário -->
       <div class="card mb-4 shadow-sm">
         <div class="card-header fw-bold fs-3">
-          Dados do Usuário
+          Dados de Acesso
         </div>
         <div class="card-body">
-          <div class="row">
-            <div class="col-md-6 mb-3">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
               <label for="username" class="form-label">Username <span class="text-danger">*</span></label>
               <input type="text" id="username" formControlName="username" class="form-control"
                 [ngClass]="{'is-invalid': usuarioForm.get('username')?.invalid && usuarioForm.get('username')?.touched}">
@@ -37,7 +44,7 @@
                 <div class="invalid-feedback">Username é obrigatório.</div>
               }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6">
               <label for="senha" class="form-label">Senha <span class="text-danger">*</span></label>
               <input type="password" id="senha" formControlName="senha" class="form-control"
                 [ngClass]="{'is-invalid': usuarioForm.get('senha')?.invalid && usuarioForm.get('senha')?.touched}">
@@ -45,7 +52,7 @@
                 <div class="invalid-feedback">A senha é obrigatória e deve ter no mínimo 8 caracteres.</div>
               }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6">
               <label for="id_perfil" class="form-label">Perfil <span class="text-danger">*</span></label>
               <select id="id_perfil" formControlName="id_perfil" class="form-select"
                 [ngClass]="{'is-invalid': usuarioForm.get('id_perfil')?.invalid && usuarioForm.get('id_perfil')?.touched}">
@@ -58,12 +65,11 @@
                 <div class="invalid-feedback">Perfil é obrigatório.</div>
               }
             </div>
-            <div class="col-md-6 mb-3">
-              <label for="ativo" class="form-label">Status</label>
-              <div class="form-check form-switch">
+            <div class="col-12 col-md-6 d-flex align-items-center">
+              <div class="form-check form-switch mt-auto">
                 <input class="form-check-input" type="checkbox" id="ativo" formControlName="ativo">
                 <label class="form-check-label" for="ativo">
-                  {{ usuarioForm.get('ativo')?.value ? 'Ativo' : 'Inativo' }}
+                  Status: {{ usuarioForm.get('ativo')?.value ? 'Ativo' : 'Inativo' }}
                 </label>
               </div>
             </div>
@@ -77,8 +83,8 @@
           Dados do Funcionário
         </div>
         <div class="card-body">
-          <div class="row">
-            <div class="col-md-6 mb-3">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
               <label for="nomeFuncionario" class="form-label">Nome do Funcionário <span class="text-danger">*</span></label>
               <input type="text" id="nomeFuncionario" formControlName="nome" class="form-control"
                 [ngClass]="{'is-invalid': usuarioForm.get('funcionario.nome')?.invalid && usuarioForm.get('funcionario.nome')?.touched}">
@@ -86,7 +92,7 @@
                 <div class="invalid-feedback">Nome do Funcionário é obrigatório.</div>
               }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6">
               <label for="cpfFuncionario" class="form-label">CPF <span class="text-danger">*</span></label>
               <input type="text" id="cpfFuncionario" formControlName="cpf" class="form-control" [appInputMask]="'000.000.000-00'"
                 [ngClass]="{'is-invalid': usuarioForm.get('funcionario.cpf')?.invalid && usuarioForm.get('funcionario.cpf')?.touched}">
@@ -94,7 +100,7 @@
                 <div class="invalid-feedback">CPF inválido ou obrigatório.</div>
               }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6">
               <label for="cargoFuncionario" class="form-label">Cargo <span class="text-danger">*</span></label>
               <input type="text" id="cargoFuncionario" formControlName="cargo" class="form-control"
                 [ngClass]="{'is-invalid': usuarioForm.get('funcionario.cargo')?.invalid && usuarioForm.get('funcionario.cargo')?.touched}">
@@ -102,7 +108,7 @@
                 <div class="invalid-feedback">Cargo é obrigatório.</div>
               }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6">
               <label for="emailEmpresarial" class="form-label">Email Empresarial <span class="text-danger">*</span></label>
               <input type="email" id="emailEmpresarial" formControlName="email_empresarial" class="form-control"
                 [ngClass]="{'is-invalid': usuarioForm.get('funcionario.email_empresarial')?.invalid && usuarioForm.get('funcionario.email_empresarial')?.touched}">
@@ -110,7 +116,7 @@
                 <div class="invalid-feedback">Email Empresarial inválido ou obrigatório.</div>
               }
             </div>
-            <div class="col-md-6 mb-3">
+            <div class="col-12 col-md-6">
               <label for="telefoneEmpresarial" class="form-label">Telefone Empresarial <span class="text-danger">*</span></label>
               <input type="text" id="telefoneEmpresarial" formControlName="telefone_empresarial" class="form-control" [appInputMask]="'(00) 00000-0000'"
                 [ngClass]="{'is-invalid': usuarioForm.get('funcionario.telefone_empresarial')?.invalid && usuarioForm.get('funcionario.telefone_empresarial')?.touched}">
@@ -129,8 +135,8 @@
             Dados do Médico
           </div>
           <div class="card-body">
-            <div class="row">
-              <div class="col-md-6 mb-3">
+            <div class="row g-3">
+              <div class="col-12 col-md-6">
                 <label for="crmMedico" class="form-label">CRM <span class="text-danger">*</span></label>
                 <input type="text" id="crmMedico" formControlName="CRM" class="form-control"
                   [ngClass]="{'is-invalid': usuarioForm.get('medico.CRM')?.invalid && usuarioForm.get('medico.CRM')?.touched}">
@@ -138,7 +144,7 @@
                   <div class="invalid-feedback">CRM é obrigatório para perfil Médico.</div>
                 }
               </div>
-              <div class="col-md-6 mb-3">
+              <div class="col-12 col-md-6">
                 <label for="especialidadeMedico" class="form-label">Especialidade <span class="text-danger">*</span></label>
                 <input type="text" id="especialidadeMedico" formControlName="especialidade" class="form-control"
                   [ngClass]="{'is-invalid': usuarioForm.get('medico.especialidade')?.invalid && usuarioForm.get('medico.especialidade')?.touched}">
@@ -151,8 +157,9 @@
         </div>
       }
 
-      <div class="d-flex justify-content-end gap-2 mt-4">
-        <button type="submit" class="btn btn-success" [disabled]="usuarioForm.invalid || isSaving">
+      <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+        <a class="btn btn-outline-secondary order-2 order-sm-1" [routerLink]="['/administrador/funcionarios']">Cancelar</a>
+        <button type="submit" class="btn btn-success order-1 order-sm-2" [disabled]="usuarioForm.invalid || isSaving">
           @if (isSaving) {
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
             Salvando...
@@ -160,7 +167,6 @@
             Adicionar Usuário
           }
         </button>
-        <a class="btn btn-outline-secondary" [routerLink]="['/administrador/funcionarios']">Cancelar</a>
       </div>
     </form>
   }

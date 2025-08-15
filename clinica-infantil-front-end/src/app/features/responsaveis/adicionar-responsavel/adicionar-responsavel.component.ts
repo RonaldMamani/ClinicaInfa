@@ -13,12 +13,13 @@ import { ClientesService } from '../../../controllers/clientes/clientes.service'
 import { Cidade } from '../../../core/models/cidades.model';
 import { Genero } from '../../../core/models/generos.model';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 
 @Component({
   selector: 'app-adicionar-responsavel',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './adicionar-responsavel.component.html',
   styleUrls: ['./adicionar-responsavel.component.css']
 })
@@ -49,14 +50,14 @@ export class AdicionarResponsavelComponent implements OnInit {
     this.responsavelForm = this.fb.group({
       nome: ['', Validators.required],
       cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
-      rg: [''],
+      rg: ['', Validators.pattern(/^\d{2}\.\d{3}\.\d{3}-\d{1}$/)],
       endereco: ['', Validators.required],
       id_estado: ['', Validators.required],
       id_cidade: ['', Validators.required],
       id_genero: ['', Validators.required],
       grau_parentesco: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      telefone: ['', Validators.required],
+      telefone: ['', Validators.pattern(/^\(\d{2}\) \d{5}-\d{4}$/)],
     });
 
     this.estadosService.getEstados().subscribe({

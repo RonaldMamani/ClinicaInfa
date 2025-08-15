@@ -1,59 +1,60 @@
 <div class="dashboard container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Lista de Pagamentos</h2>
-    </div>
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <h2>Lista de Pagamentos</h2>
+  </div>
 
-    @if (isLoading) {
+  @if (isLoading) {
     <div class="alert alert-info mt-3">Carregando pagamentos...</div>
-    }
-    @if (errorMessage) {
+  } @if (errorMessage) {
     <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
-    }
-    @if (!isLoading && !errorMessage && pagamentos.length === 0) {
+  } @if (!isLoading && !errorMessage && pagamentos.length === 0) {
     <div class="alert alert-warning mt-3">Nenhum pagamento encontrado.</div>
-    } @else if (!isLoading && !errorMessage && pagamentos.length > 0) {
+  } @else if (!isLoading && !errorMessage && pagamentos.length > 0) {
     <div class="table-responsive">
-        <table class="table table-hover table-striped">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID Pagamento</th>
-                    <th>Paciente</th>
-                    <th>Médico</th>
-                    <th>Valor</th>
-                    <th>Data</th>
-                    <th>Forma de Pagamento</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                @for (pagamento of pagamentos; track pagamento.id; let i = $index) {
-                <tr>
-                    <td>{{ i + 1 }}</td>
-                    <td>{{ pagamento.consulta.paciente.cliente.nome }}</td>
-                    <td>{{ pagamento.consulta.medico.usuario.funcionario.nome }}</td>
-                    <td>R$ {{ pagamento.valor | number:'1.2-2' }}</td>
-                    <td>{{ pagamento.data_pagamento | date:'dd/MM/yyyy' }}</td>
-                    <td>{{ pagamento.metodo_pagamento }}</td>
-                    <td>
-                        <a class="btn btn-info me-2 btn-sm" [routerLink]="[pagamento.consulta.id]" title="Ver Detalhes">
-                            <i class="bi bi-info-circle"></i>
-                            <span class="ms-2">Detalhes</span>
-                        </a>
-                        <a class="btn btn-warning me-2 btn-sm" [routerLink]="[pagamento.id, 'editar']" title="Ver Detalhes">
-                            <i class="bi bi-pencil"></i>
-                            <span class="ms-2">Editar</span>
-                        </a>
-                    </td>
-                </tr>
-                }
-            </tbody>
-        </table>
+      <table class="table table-hover table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th>ID Pagamento</th>
+            <th>Paciente</th>
+            <th>Médico</th>
+            <th>Valor</th>
+            <th>Data</th>
+            <th>Forma de Pagamento</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (pagamento of pagamentos; track pagamento.id; let i = $index) {
+            <tr>
+              <!-- Cálculo do ID Sequencial -->
+              <td>{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+              <td>{{ pagamento.consulta.paciente.cliente.nome }}</td>
+              <td>{{ pagamento.consulta.medico.usuario.funcionario.nome }}</td>
+              <td>{{ pagamento.valor | currency:'BRL':'symbol':'1.2-2' }}</td>
+              <td>{{ pagamento.data_pagamento | date:'dd/MM/yyyy' }}</td>
+              <td>{{ pagamento.metodo_pagamento }}</td>
+              <td>
+                <div class="d-flex flex-column flex-lg-row gap-2">
+                  <a class="btn btn-info btn-sm" [routerLink]="[pagamento.consulta.id]" title="Ver Detalhes">
+                    <i class="bi bi-info-circle"></i>
+                    <span class="ms-2 d-inline d-lg-none">Detalhes</span>
+                  </a>
+                  <a class="btn btn-warning btn-sm" [routerLink]="[pagamento.id, 'editar']" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                    <span class="ms-2 d-inline d-lg-none">Editar</span>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
 
     <!-- Controles de Paginação -->
     @if (paginator && paginator.links.length > 0) {
-      <nav aria-label="Navegação da tabela de pagamentos" class="mt-4">
-        <ul class="pagination justify-content-center">
+      <nav aria-label="Navegação da tabela de pagamentos" class="my-4">
+        <ul class="pagination justify-content-center flex-wrap">
           @for (link of paginator.links; track $index) {
             <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
               <button
@@ -72,9 +73,12 @@
             </li>
           }
         </ul>
+        <!-- Contagem de Paginação -->
+        <div class="text-center mt-2">
+          Página {{ paginator.current_page }} de {{ paginator.last_page }} (Total: {{ paginator.total }} pagamentos)
+        </div>
       </nav>
     }
-    }
-
-    <a class="btn btn-secondary mt-4" [routerLink]="['/administrador']">Voltar para o Dashboard</a>
+  }
+  <app-botao-voltar texto="Voltar para o Dashboard" routerLink="../"></app-botao-voltar>
 </div>

@@ -1,15 +1,27 @@
 <div class="dashboard container my-5">
-  <h2>Detalhes do Paciente</h2>
+  <!-- Cabeçalho com alinhamento responsivo para o título e o botão de voltar -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Detalhes do Paciente</h2>
+    <!-- Botão de voltar para telas maiores -->
+    <div class="d-none d-md-block">
+      @if (isAdministradorRoute) {
+        <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
+      } @else {
+        <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
+      }
+    </div>
+  </div>
 
   @if (isLoading) {
-    <div class="alert alert-info">Carregando detalhes do paciente...</div>
+    <div class="alert alert-info" role="alert">Carregando detalhes do paciente...</div>
   }
 
   @if (error) {
-    <div class="alert alert-danger">{{ error }}</div>
+    <div class="alert alert-danger" role="alert">{{ error }}</div>
   }
 
   @if (paciente) {
+    <!-- Card com dados do paciente, usando a grade do Bootstrap para responsividade -->
     <div class="card mt-3">
       <div class="card-header bg-primary text-white">
         Dados do Paciente
@@ -17,14 +29,16 @@
       <div class="card-body">
         <h5 class="card-title">{{ paciente.cliente.nome }}</h5>
         <div class="row">
-          <div class="col-md-6">
+          <!-- Coluna esquerda, ocupando 6/12 em telas médias e 12/12 em telas pequenas -->
+          <div class="col-12 col-md-6">
             <p><strong>CPF:</strong> {{ paciente.cliente.cpf }}</p>
             <p><strong>RG:</strong> {{ paciente.cliente.rg || 'Não informado' }}</p>
             <p><strong>Data de Nascimento:</strong> {{ paciente.data_nascimento | date:'dd/MM/yyyy' }}</p>
             <p><strong>Idade:</strong> {{ idade || 'Calculando...' }} anos</p>
             <p><strong>Gênero:</strong> {{ paciente.cliente.genero.genero }}</p>
           </div>
-          <div class="col-md-6">
+          <!-- Coluna direita -->
+          <div class="col-12 col-md-6">
             <p><strong>Endereço:</strong> {{ paciente.cliente.endereco }}</p>
             <p><strong>Cidade/Estado:</strong> {{ paciente.cliente.cidade.nome_cidade }} / {{ estadoSigla }}</p>
             <p><strong>Histórico Médico:</strong> {{ paciente.historico_medico }}</p>
@@ -33,17 +47,20 @@
       </div>
     </div>
 
+    <!-- Card com dados do responsável -->
     <div class="card mt-4">
       <div class="card-header bg-secondary text-white">
         Dados do Responsável
       </div>
       <div class="card-body">
         <div class="row">
-          <div class="col-md-6">
+          <!-- Coluna esquerda -->
+          <div class="col-12 col-md-6">
             <p><strong>Nome:</strong> {{ nomeResponsavel }}</p>
             <p><strong>Grau de Parentesco:</strong> {{ paciente.responsavel.grau_parentesco }}</p>
           </div>
-          <div class="col-md-6">
+          <!-- Coluna direita -->
+          <div class="col-12 col-md-6">
             <p><strong>Email:</strong> {{ paciente.responsavel.email }}</p>
             <p><strong>Telefone:</strong> {{ paciente.responsavel.telefone }}</p>
           </div>
@@ -51,10 +68,13 @@
       </div>
     </div>
 
-    @if (isAdministradorRoute) {
-      <button class="btn btn-secondary mt-4" (click)="voltarAdmin()">Voltar</button>
-    } @else {
-      <button class="btn btn-secondary mt-4" (click)="voltarSecretaria()">Voltar</button>
-    }
+    <!-- Botão de voltar visível apenas em telas pequenas -->
+    <div class="d-md-none mt-4">
+      @if (isAdministradorRoute) {
+        <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
+      } @else {
+        <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
+      }
+    </div>
   }
 </div>

@@ -4,10 +4,11 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule, DatePipe } from '@angular/common';
 import { Responsavel } from '../../../core/models/responsavel.model';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-detalhes-responsavel',
-  imports: [CommonModule, RouterModule, DatePipe, HttpClientModule],
+  imports: [CommonModule, RouterModule, DatePipe, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './detalhes-responsavel.component.html',
   styleUrl: './detalhes-responsavel.component.css'
 })

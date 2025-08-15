@@ -1,176 +1,159 @@
 <div class="dashboard container my-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
-      <!-- Título dinâmico -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
+    <div class="d-flex flex-column flex-md-row align-items-md-center gap-3 mb-3 mb-md-0">
       @if (filtroStatus === true) {
-      <h2 class="mb-0">Responsáveis Ativos</h2>
+        <h2 class="mb-0">Responsáveis Ativos</h2>
       } @else if (filtroStatus === false) {
-      <h2 class="mb-0">Responsáveis Inativos</h2>
+        <h2 class="mb-0">Responsáveis Inativos</h2>
       } @else {
-      <h2 class="mb-0">Todos os Responsáveis</h2>
+        <h2 class="mb-0">Todos os Responsáveis</h2>
       }
     </div>
-    <div class="d-flex gap-3">
-      <!-- Botões de filtro -->
-        <div class="btn-group" role="group" aria-label="Filtros de Responsáveis">
-          <button
-            type="button"
-            class="btn"
-            [ngClass]="{
-              'btn-dark': filtroStatus === true,
-              'btn-outline-dark': filtroStatus !== true
-            }"
-            (click)="aplicarFiltro(true)">
-            Ativos
-          </button>
-          <button
-            type="button"
-            class="btn"
-            [ngClass]="{
-              'btn-dark': filtroStatus === false,
-              'btn-outline-dark': filtroStatus !== false
-            }"
-            (click)="aplicarFiltro(false)">
-            Inativos
-          </button>
-          <button
-            type="button"
-            class="btn"
-            [ngClass]="{
-              'btn-dark': filtroStatus === undefined,
-              'btn-outline-dark': filtroStatus !== undefined
-            }"
-            (click)="aplicarFiltro(undefined)">
-            Todos
-          </button>
-        </div>
-        <!-- Botão de adicionar responsável -->
-        <a [routerLink]="['/administrador/responsaveis/adicionar']" class="btn btn-outline-dark fw-bold d-flex align-items-center">
-          <i class="bi bi-person-fill-add me-2"></i>
-          Adicionar Responsável
-        </a>
+    <div class="d-flex flex-wrap gap-3">
+      <div class="btn-group" role="group" aria-label="Filtros de Responsáveis">
+        <button
+          type="button"
+          class="btn"
+          [ngClass]="{ 'btn-dark': filtroStatus === true, 'btn-outline-dark': filtroStatus !== true }"
+          (click)="aplicarFiltro(true)">
+          Ativos
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [ngClass]="{ 'btn-dark': filtroStatus === false, 'btn-outline-dark': filtroStatus !== false }"
+          (click)="aplicarFiltro(false)">
+          Inativos
+        </button>
+        <button
+          type="button"
+          class="btn"
+          [ngClass]="{ 'btn-dark': filtroStatus === undefined, 'btn-outline-dark': filtroStatus !== undefined }"
+          (click)="aplicarFiltro(undefined)">
+          Todos
+        </button>
+      </div>
+      <a [routerLink]="['/administrador/responsaveis/adicionar']" class="btn btn-outline-dark fw-bold d-flex align-items-center">
+        <i class="bi bi-person-fill-add me-2"></i>
+        Adicionar Responsável
+      </a>
     </div>
   </div>
 
-  <!-- Mensagens de status -->
   @if (isLoading) {
-  <div class="alert alert-info">Carregando responsáveis...</div>
+    <div class="alert alert-info">Carregando responsáveis...</div>
   } @if (error) {
-  <div class="alert alert-danger">{{ error }}</div>
+    <div class="alert alert-danger">{{ error }}</div>
   } @if (successMessage) {
-  <div class="alert alert-success">{{ successMessage }}</div>
+    <div class="alert alert-success">{{ successMessage }}</div>
   }
 
-  <!-- Tabela de responsáveis (unificada) -->
   @if (!isLoading && !error && responsaveis.length > 0) {
-  <div class="table-responsive">
-    <table class="table table-hover table-striped">
-      <thead class="table-dark">
-        <tr>
-          <th>ID</th>
-          <th>Nome</th>
-          <th>Parentesco</th>
-          <th>Email</th>
-          <th>Telefone</th>
-          <th>Pacientes Associados</th>
-          <th>Cidade</th>
-          <th>Estado</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (responsavel of responsaveis; track responsavel.id; let i = $index) {
-        <tr>
-          <td>{{ i + 1}}</td>
-          <td>{{ responsavel.cliente.nome || 'N/A' }}</td>
-          <td>{{ responsavel.grau_parentesco }}</td>
-          <td>{{ responsavel.email }}</td>
-          <td>{{ responsavel.telefone }}</td>
-          <td class="text-center">{{ responsavel.pacientes.length || 0 }}</td>
-          <td>{{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}</td>
-          <td>{{ responsavel.cliente.cidade.estado.sigla }}</td>
-          <td>
-            <div class="d-flex flex-column flex-md-row gap-2">
-              <a [routerLink]="['/administrador/responsaveis', responsavel.id]" class="btn btn-sm btn-info">
-                <i class="bi bi-info-circle"></i>
-              </a>
-              <a [routerLink]="['/administrador/responsaveis', responsavel.id, 'editar']" class="btn btn-sm btn-warning">
-                <i class="bi bi-pencil"></i>
-              </a>
-              <!-- Botão de desativar/reativar -->
-              @if (responsavel.cliente.ativo === 1) {
-              <button class="btn btn-sm btn-danger" (click)="openConfirmModal(responsavel, 'desativar')">
-                <i class="bi bi-trash"></i>
-              </button>
-              } @else {
-              <button class="btn btn-sm btn-success" (click)="openConfirmModal(responsavel, 'reativar')">
-                <i class="bi bi-person-fill-up"></i>
-              </button>
-              }
-            </div>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
+    <div class="table-responsive">
+      <table class="table table-hover table-striped">
+        <thead class="table-dark">
+          <tr>
+            <th class="d-none d-lg-table-cell">ID</th>
+            <th>Nome</th>
+            <th class="d-none d-lg-table-cell">Parentesco</th>
+            <th class="d-none d-lg-table-cell">Email</th>
+            <th class="d-none d-lg-table-cell">Telefone</th>
+            <th class="d-none d-lg-table-cell text-center">Pacientes Associados</th>
+            <th class="d-none d-md-table-cell">Cidade</th>
+            <th class="d-none d-md-table-cell">Estado</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (responsavel of responsaveis; track responsavel.id; let i = $index) {
+            <tr>
+              <td class="d-none d-lg-table-cell">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+              <td>{{ responsavel.cliente.nome || 'N/A' }}</td>
+              <td class="d-none d-lg-table-cell">{{ responsavel.grau_parentesco }}</td>
+              <td class="d-none d-lg-table-cell">{{ responsavel.email }}</td>
+              <td class="d-none d-lg-table-cell">{{ responsavel.telefone }}</td>
+              <td class="d-none d-lg-table-cell text-center">{{ responsavel.pacientes.length || 0 }}</td>
+              <td class="d-none d-md-table-cell">{{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}</td>
+              <td class="d-none d-md-table-cell">{{ responsavel.cliente.cidade.estado.sigla || 'N/A' }}</td>
+              <td>
+                <div class="d-flex flex-wrap gap-2">
+                  <a [routerLink]="['/administrador/responsaveis', responsavel.id]" class="btn btn-sm btn-info" title="Ver Detalhes">
+                    <i class="bi bi-info-circle"></i>
+                  </a>
+                  <a [routerLink]="['/administrador/responsaveis', responsavel.id, 'editar']" class="btn btn-sm btn-warning" title="Editar">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                  @if (responsavel.cliente.ativo === 1) {
+                    <button class="btn btn-sm btn-danger" (click)="openConfirmModal(responsavel, 'desativar')" title="Desativar">
+                      <i class="bi bi-trash"></i>
+                    </button>
+                  } @else {
+                    <button class="btn btn-sm btn-success" (click)="openConfirmModal(responsavel, 'reativar')" title="Reativar">
+                      <i class="bi bi-person-fill-up"></i>
+                    </button>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
-    <!-- Controles de Paginação unificados -->
+    <!-- Controles de Paginação -->
     <nav aria-label="Navegação de Página" class="mt-4">
-      <ul class="pagination justify-content-center">
+      <ul class="pagination justify-content-center flex-wrap">
         <li class="page-item" [class.disabled]="currentPage === 1">
           <a class="page-link" (click)="onPageChange(currentPage - 1)">Anterior</a>
         </li>
         @for (page of [].constructor(totalPages); track $index) {
-        <li class="page-item" [class.active]="currentPage === $index + 1">
-          <a class="page-link" (click)="onPageChange($index + 1)">{{
-            $index + 1
-            }}</a>
-        </li>
+          <li class="page-item" [class.active]="currentPage === $index + 1">
+            <a class="page-link" (click)="onPageChange($index + 1)">{{ $index + 1 }}</a>
+          </li>
         }
         <li class="page-item" [class.disabled]="currentPage === totalPages">
           <a class="page-link" (click)="onPageChange(currentPage + 1)">Próxima</a>
         </li>
       </ul>
       <div class="text-center mt-2">
-        Página {{ currentPage }} de {{ totalPages }} (Total:
-        {{ totalItems }} responsáveis)
+        Página {{ currentPage }} de {{ totalPages }} (Total: {{ totalItems }} responsáveis)
       </div>
     </nav>
   } @else if (!isLoading && !error) {
-  <!-- Mensagem de lista vazia -->
-  <div class="alert alert-info mt-3">
-    Nenhum responsável @if (filtroStatus === true) { ativo } @else if (filtroStatus === false) { inativo } encontrado.
-  </div>
+    <!-- Mensagem de lista vazia -->
+    <div class="alert alert-info mt-3 text-center">
+      Nenhum responsável @if (filtroStatus === true) { ativo } @else if (filtroStatus === false) { inativo } encontrado.
+    </div>
   }
 
   <hr />
 
   <!-- Modal de Confirmação (mantido) -->
   @if (showConfirmModal) {
-  <div class="modal d-block" tabindex="-1" role="dialog" style="background-color: rgba(0,0,0,0.5);">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-        <div class="modal-header bg-{{ actionType === 'desativar' ? 'danger' : 'success' }} text-white">
-          <h5 class="modal-title">Confirmar {{ actionType === 'desativar' ? 'Desativação' : 'Reativação' }}</h5>
-          <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeConfirmModal()"></button>
-        </div>
-        <div class="modal-body">
-          <p>Você tem certeza que deseja {{ actionType }} o responsável <strong>{{ selectedResponsavel?.cliente?.nome }}</strong>?</p>
-          @if (error) {
-          <div class="alert alert-danger mt-3">{{ error }}</div>
-          }
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" (click)="closeConfirmModal()">Cancelar</button>
-          <button type="button" class="btn btn-{{ actionType === 'desativar' ? 'danger' : 'success' }}" (click)="confirmAction()">
-            {{ actionType === 'desativar' ? 'Desativar' : 'Reativar' }}
-          </button>
+    <div class="modal d-block" tabindex="-1" role="dialog" style="background-color: rgba(0,0,0,0.5);">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header bg-{{ actionType === 'desativar' ? 'danger' : 'success' }} text-white">
+            <h5 class="modal-title">Confirmar {{ actionType === 'desativar' ? 'Desativação' : 'Reativação' }}</h5>
+            <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeConfirmModal()"></button>
+          </div>
+          <div class="modal-body">
+            <p>Você tem certeza que deseja {{ actionType }} o responsável <strong>{{ selectedResponsavel?.cliente?.nome }}</strong>?</p>
+            @if (error) {
+              <div class="alert alert-danger mt-3">{{ error }}</div>
+            }
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="closeConfirmModal()">Cancelar</button>
+            <button type="button" class="btn btn-{{ actionType === 'desativar' ? 'danger' : 'success' }}" (click)="confirmAction()">
+              {{ actionType === 'desativar' ? 'Desativar' : 'Reativar' }}
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
   }
-
-  <a class="btn btn-secondary mt-4" [routerLink]="['/administrador']">Voltar para o Dashboard</a>
+  <div class="mt-4">
+    <app-botao-voltar texto="Voltar para o Dashboard" routerLink="../"></app-botao-voltar>
+  </div>
 </div>

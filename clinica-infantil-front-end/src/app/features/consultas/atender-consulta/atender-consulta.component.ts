@@ -6,10 +6,11 @@ import { ConsultasService, UpdateConsultaResponse } from '../../../controllers/c
 import { CommonModule } from '@angular/common';
 import { ProntuariosService } from '../../../controllers/prontuarios/prontuarios.service';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-atender-consulta',
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './atender-consulta.component.html',
   styleUrl: './atender-consulta.component.css'
 })
