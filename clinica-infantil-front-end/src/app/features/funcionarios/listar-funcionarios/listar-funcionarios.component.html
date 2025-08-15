@@ -1,122 +1,121 @@
 <div class="dashboard container my-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Lista de Funcionarios</h2>
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <h2>Lista de Funcionários</h2>
     <a class="btn btn-info text-dark fw-bold" [routerLink]="['/administrador/funcionarios/adicionar']">
-        <i class="bi bi-person-plus-fill me-1"></i>
-        Adicionar Funcionario
+      <i class="bi bi-person-plus-fill me-1"></i>
+      Adicionar Funcionário
     </a>
   </div>
 
   @if (isLoading) {
-    <div class="alert alert-info mt-3">Carregando Funcionarios...</div>
-  }
-
-  @if (error) {
-    <div class="alert alert-danger mt-3">{{ error }}</div>
-  }
-
-  @if (successMessage) {
-    <div class="alert alert-success mt-3">{{ successMessage }}</div>
-  }
-
-  <!-- Seção de Usuários Ativos -->
-  @if (!isLoading && usuariosAtivos.length === 0) {
-    <div class="alert alert-warning mt-3">Nenhum usuário ativo encontrado.</div>
-  } @else if (!isLoading && usuariosAtivos.length > 0) {
-    <h3 class="mt-5 mb-3">Funcionarios Ativos</h3>
-    <div class="table-responsive">
-      <table class="table table-hover table-striped">
-        <thead class="table-dark">
-          <tr class="">
-            <th>ID</th>
-            <th>Nome do Funcionário</th>
-            <th>Cargo</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (usuario of usuariosAtivos; track usuario.id; let i = $index) {
-            <tr>
-              <td>{{ i + 1 }}</td>
-              <td>{{ usuario.funcionario.nome || 'N/A' }}</td>
-              <td>{{ usuario.funcionario.cargo }}</td>
-              <td>{{ usuario.funcionario.email_empresarial || 'N/A' }}</td>
-              <td>{{ usuario.funcionario.telefone_empresarial || 'N/A' }}</td>
-              <td>
-                <div class="d-flex flex-column flex-md-row gap-2">
-                  <a [routerLink]="['/administrador/funcionarios', usuario.id]" class="btn btn-sm btn-info">
-                        <i class="bi bi-info-circle"></i> 
-                        Detalhes
-                    </a>
-                    <a [routerLink]="['/administrador/funcionarios', usuario.id, 'editar']" class="btn btn-sm btn-warning">
-                         <i class="bi bi-pencil"></i> 
-                        Editar
-                    </a>
-                  @if (usuario.ativo === 1) {
-                    <button class="btn btn-sm btn-danger" (click)="openConfirmModal(usuario, 'desativar')">
-                        <i class="bi bi-person-dash-fill"></i>
-                        Desativar
-                    </button>
-                  }
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
+    <div class="alert alert-info text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-2">Carregando Funcionários...</p>
     </div>
-  }
-
-  <!-- Seção de Usuários Inativos -->
-  @if (!isLoading && usuariosInativos.length === 0) {
-    <div class="alert alert-info mt-3">Nenhum usuário inativo encontrado.</div>
-  } @else if (!isLoading && usuariosInativos.length > 0) {
-    <h3 class="mt-5 mb-3">Funcionarios Inativos</h3>
-    <div class="table-responsive">
-      <table class="table table-hover table-striped">
-        <thead class="table-dark">
-          <tr>
-            <th>ID</th>
-            <th>Nome do Funcionário</th>
-            <th>Cargo</th>
-            <th>Email</th>
-            <th>Telefone</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (usuario of usuariosInativos; track usuario.id; let i = $index) {
+  } @else if (error) {
+    <div class="alert alert-danger mt-3 text-center">{{ error }}</div>
+  } @else {
+    <!-- Seção de Usuários Ativos -->
+    @if (usuariosAtivos.length > 0) {
+      <h3 class="mt-5 mb-3">Funcionários Ativos</h3>
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead class="table-dark">
             <tr>
-              <td>{{ i + 1 }}</td>
-              <td>{{ usuario.funcionario.nome || 'N/A' }}</td>
-              <td>{{ usuario.funcionario.cargo }}</td>
-              <td>{{ usuario.funcionario.email_empresarial || 'N/A' }}</td>
-              <td>{{ usuario.funcionario.telefone_empresarial || 'N/A' }}</td>
-              <td>
-                <div class="d-flex flex-column flex-md-row gap-2">
-                    <a [routerLink]="['/administrador/funcionarios', usuario.id]" class="btn btn-sm btn-info">
-                        <i class="bi bi-info-circle"></i> 
-                        Detalhes
+              <th class="d-none d-lg-table-cell">ID</th>
+              <th>Nome do Funcionário</th>
+              <th class="d-none d-md-table-cell">Cargo</th>
+              <th class="d-none d-sm-table-cell">Email</th>
+              <th class="d-none d-md-table-cell">Telefone</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (usuario of usuariosAtivos; track usuario.id; let i = $index) {
+              <tr>
+                <td class="d-none d-lg-table-cell">{{ i + 1 }}</td>
+                <td>{{ usuario.funcionario.nome || 'N/A' }}</td>
+                <td class="d-none d-md-table-cell">{{ usuario.funcionario.cargo }}</td>
+                <td class="d-none d-sm-table-cell">{{ usuario.funcionario.email_empresarial || 'N/A' }}</td>
+                <td class="d-none d-md-table-cell">{{ usuario.funcionario.telefone_empresarial || 'N/A' }}</td>
+                <td>
+                  <div class="d-flex flex-wrap flex-sm-nowrap gap-1">
+                    <a [routerLink]="['/administrador/funcionarios', usuario.id]" class="btn btn-sm btn-info" title="Detalhes">
+                      <i class="bi bi-info-circle"></i>
+                      <span class="d-inline d-md-none">Detalhes</span>
                     </a>
-                    <a [routerLink]="['/administrador/funcionarios', usuario.id, 'editar']" class="btn btn-sm btn-warning">
-                        <i class="bi bi-pencil"></i> 
-                        Editar
+                    <a [routerLink]="['/administrador/funcionarios', usuario.id, 'editar']" class="btn btn-sm btn-warning" title="Editar">
+                      <i class="bi bi-pencil"></i>
+                      <span class="d-inline d-md-none">Editar</span>
+                    </a>
+                    @if (usuario.ativo === 1) {
+                      <button class="btn btn-sm btn-danger" (click)="openConfirmModal(usuario, 'desativar')" title="Desativar">
+                        <i class="bi bi-person-dash-fill"></i>
+                        <span class="d-inline d-md-none">Desativar</span>
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="alert alert-warning mt-3 text-center">Nenhum funcionário ativo encontrado.</div>
+    }
+
+    <!-- Seção de Usuários Inativos -->
+    @if (usuariosInativos.length > 0) {
+      <h3 class="mt-5 mb-3">Funcionários Inativos</h3>
+      <div class="table-responsive">
+        <table class="table table-hover table-striped">
+          <thead class="table-dark">
+            <tr>
+              <th class="d-none d-lg-table-cell">ID</th>
+              <th>Nome do Funcionário</th>
+              <th class="d-none d-md-table-cell">Cargo</th>
+              <th class="d-none d-sm-table-cell">Email</th>
+              <th class="d-none d-md-table-cell">Telefone</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (usuario of usuariosInativos; track usuario.id; let i = $index) {
+              <tr>
+                <td class="d-none d-lg-table-cell">{{ i + 1 }}</td>
+                <td>{{ usuario.funcionario.nome || 'N/A' }}</td>
+                <td class="d-none d-md-table-cell">{{ usuario.funcionario.cargo }}</td>
+                <td class="d-none d-sm-table-cell">{{ usuario.funcionario.email_empresarial || 'N/A' }}</td>
+                <td class="d-none d-md-table-cell">{{ usuario.funcionario.telefone_empresarial || 'N/A' }}</td>
+                <td>
+                  <div class="d-flex flex-wrap flex-sm-nowrap gap-1">
+                    <a [routerLink]="['/administrador/funcionarios', usuario.id]" class="btn btn-sm btn-info" title="Detalhes">
+                      <i class="bi bi-info-circle"></i>
+                      <span class="d-inline d-md-none">Detalhes</span>
+                    </a>
+                    <a [routerLink]="['/administrador/funcionarios', usuario.id, 'editar']" class="btn btn-sm btn-warning" title="Editar">
+                      <i class="bi bi-pencil"></i>
+                      <span class="d-inline d-md-none">Editar</span>
                     </a>
                     @if (usuario.ativo === 0) {
-                        <button class="btn btn-sm btn-success" (click)="openConfirmModal(usuario, 'reativar')">
-                            <i class="bi bi-person-check-fill"></i>
-                            Reativar
-                        </button>
+                      <button class="btn btn-sm btn-success" (click)="openConfirmModal(usuario, 'reativar')" title="Reativar">
+                        <i class="bi bi-person-check-fill"></i>
+                        <span class="d-inline d-md-none">Reativar</span>
+                      </button>
                     }
-                </div>
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+                  </div>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    } @else {
+      <div class="alert alert-info mt-3 text-center">Nenhum funcionário inativo encontrado.</div>
+    }
   }
 
   <!-- Modal de Confirmação -->
@@ -129,7 +128,7 @@
             <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeConfirmModal()"></button>
           </div>
           <div class="modal-body">
-            <p>Você tem certeza que deseja {{ actionType }} o usuário <strong>{{ selectedUsuario?.username }}</strong>?</p>
+            <p>Você tem certeza que deseja {{ actionType === 'desativar' ? 'desativar' : 'reativar' }} o usuário <strong>{{ selectedUsuario?.funcionario?.nome }}</strong>?</p>
             @if (error) {
               <div class="alert alert-danger mt-3">{{ error }}</div>
             }
@@ -144,7 +143,6 @@
       </div>
     </div>
   }
-    <a class="btn btn-secondary" [routerLink]="['/administrador/dashboard']">
-        Voltar para o Dashboard
-    </a>
+  <hr class="my-4"/>
+  <app-botao-voltar texto="Voltar para o Dashboard" routerLink="../"></app-botao-voltar>
 </div>

@@ -10,7 +10,7 @@
   @if (!isLoading && prontuario) {
     <div class="d-flex justify-content-between align-items-center mb-4">
       <h2>Detalhes do Prontuário de {{ prontuario.paciente?.cliente?.nome }}</h2>
-      <a class="btn btn-secondary" [routerLink]="['/medico/prontuarios']">Voltar para a Lista</a>
+      <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
     </div>
 
     <!-- Informações do Paciente -->

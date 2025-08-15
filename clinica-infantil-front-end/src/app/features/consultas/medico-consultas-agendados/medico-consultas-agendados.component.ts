@@ -6,10 +6,11 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-medico-consultas-agendados',
-  imports: [CommonModule, RouterLink, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterLink, RouterModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './medico-consultas-agendados.component.html',
   styleUrl: './medico-consultas-agendados.component.css'
 })
@@ -39,15 +40,11 @@ export class MedicoConsultasAgendadosComponent {
     
     this.consultasService.getConsultasDoMedicoAgendadas(pageUrl).subscribe({
       next: (response: ConsultasPaginationApiResponse) => {
-        // Acessamos os dados da consulta de dentro do objeto de paginação
         this.consultas = response.consultas.data || [];
-        // Armazenamos o objeto de paginação completo para uso no template
         this.pagination = response.consultas;
         this.isLoading = false;
         
-        // --- ADIÇÃO PARA DEBUG ---
         console.log('Objeto de paginação recebido:', this.pagination);
-        // ------------------------
       },
       error: (err) => {
         this.error = 'Falha ao carregar as consultas do médico.';

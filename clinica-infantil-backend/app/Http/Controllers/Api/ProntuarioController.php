@@ -19,6 +19,7 @@ class ProntuarioController extends Controller
      */
     protected $relations = [
         'paciente.cliente',
+        'paciente.cliente.genero',
         'medico',
         'paciente.consultas' => ['medico.usuario.funcionario'],
     ];

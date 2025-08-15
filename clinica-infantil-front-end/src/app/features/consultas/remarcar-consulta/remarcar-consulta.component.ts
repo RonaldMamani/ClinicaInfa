@@ -5,13 +5,14 @@ import { CommonModule } from '@angular/common'; // Removemos a importação do D
 import { ConsultasService } from '../../../controllers/consultas/consultas.service';
 import { Consulta, ConsultaDetailsResponse } from '../../../core/models/consultas.model';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-remarcar-consulta',
   templateUrl: './remarcar-consulta.component.html',
   styleUrls: ['./remarcar-consulta.component.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterLink, HttpClientModule]
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, HttpClientModule, BotaoVoltarComponent]
 })
 export class RemarcarConsultaComponent implements OnInit {
   remarcarForm: FormGroup;

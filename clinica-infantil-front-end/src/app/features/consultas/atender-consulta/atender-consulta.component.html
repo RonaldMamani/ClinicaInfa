@@ -80,7 +80,7 @@
       </div>
 
       <div class="d-flex justify-content-between mt-4">
-        <a class="btn btn-secondary" [routerLink]="['/medico/agendados']">Cancelar</a>
+        <app-botao-voltar texto="Voltar para a Lista" routerLink="../.."></app-botao-voltar>
         <button type="submit" class="btn btn-success" [disabled]="atenderConsultaForm.invalid || isSubmitting">
           @if (isSubmitting) {
             <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>

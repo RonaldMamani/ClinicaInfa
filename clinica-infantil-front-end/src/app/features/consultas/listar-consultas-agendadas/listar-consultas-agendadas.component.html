@@ -1,5 +1,10 @@
 <div class="dashboard container my-5">
-  <h2>Consultas Agendadas</h2>
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Consultas Agendadas</h2>
+    <a class="btn btn-success fw-bold d-flex align-items-center" [routerLink]="['/secretaria/agendar']">
+      <i class="bi bi-plus-lg me-2"></i> Agendar Nova Consulta
+    </a>
+  </div>
 
   @if (successMessage) {
     <div class="alert alert-success mt-3">{{ successMessage }}</div>
@@ -14,103 +19,110 @@
   }
 
   @if (!isLoading && !error && consultas.length > 0) {
-    <table class="table table-striped mt-3">
-      <thead>
-        <tr>
-          <th>Paciente</th>
-          <th>Médico</th>
-          <th>Especialidade</th>
-          <th>Data</th>
-          <th>Horário de Início</th>
-          <th>Horário de Fim</th>
-          <th>Status</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (consulta of consultas; track consulta.id) {
+    <div class="table-responsive">
+      <table class="table table-striped mt-3 table-hover">
+        <thead class="table-dark">
           <tr>
-            <td>{{ consulta.paciente.cliente.nome }}</td>
-            <td>{{ consulta.medico.usuario.funcionario.nome }}</td>
-            <td>{{ consulta.medico.especialidade }}</td>
-            <td>{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
-            <td>{{ consulta.hora_inicio | slice:0:5 }}</td>
-            <td>{{ consulta.hora_fim | slice:0:5 }}</td>
-            <td>
-              <span class="badge rounded-pill text-uppercase p-2" [ngClass]="{
-                'bg-warning text-dark': consulta.status === 'agendada',
-                'bg-success': consulta.status === 'concluida',
-                'bg-danger text-white': consulta.status === 'cancelada'
-              }">
-                {{ consulta.status }}
-              </span>
-            </td>
-            <td>
-              <a class="btn btn-info btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id]" title="Ver Detalhes">
-                <i class="bi bi-info-circle"></i>
-                <span class="ms-2">Detalhes</span>
-              </a>
-              @if (consulta.status == 'concluida') {
-                <a class="btn btn-success btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'finalizar']" title="Finalizar Consulta">
-                  <i class="bi bi-clipboard2-check"></i>
-                  <span class="ms-2">Finalizar</span>
-                </a>
-              } @else {
-                <a class="btn btn-primary btn-sm me-2 align-items-center" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'remarcar']" title="Remarcar">
-                  <i class="bi bi-pencil"></i>
-                  <span class="ms-2">Remarcar</span>
-                </a>
-                <button class="btn btn-danger btn-sm align-items-center" title="Cancelar" (click)="openCancelModal(consulta.id)">
-                  <i class="bi bi-calendar-x"></i>
-                  <span class="ms-2">Cancelar</span>
-                </button>
-              }
-            </td>
+            <th class="d-none d-lg-table-cell">#</th>
+            <th>Paciente</th>
+            <th class="d-none d-md-table-cell">Médico</th>
+            <th class="d-none d-lg-table-cell">Especialidade</th>
+            <th class="d-none d-md-table-cell">Data</th>
+            <th class="d-none d-lg-table-cell">Horário</th>
+            <th>Status</th>
+            <th>Ações</th>
           </tr>
-        }
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          @for (consulta of consultas; track consulta.id; let i = $index) {
+            <tr>
+              <td class="d-none d-lg-table-cell">{{ (pagination!.current_page - 1) * pagination!.per_page + i + 1 }}</td>
+              <td>{{ consulta.paciente.cliente.nome }}</td>
+              <td class="d-none d-md-table-cell">{{ consulta.medico.usuario.funcionario.nome }}</td>
+              <td class="d-none d-lg-table-cell">{{ consulta.medico.especialidade }}</td>
+              <td class="d-none d-md-table-cell">{{ consulta.data_consulta | date:'dd/MM/yyyy' }}</td>
+              <td class="d-none d-lg-table-cell">{{ consulta.hora_inicio | slice:0:5 }} - {{ consulta.hora_fim | slice:0:5 }}</td>
+              <td>
+                <span class="badge rounded-pill text-uppercase p-2" [ngClass]="{
+                  'bg-warning text-dark': consulta.status === 'agendada',
+                  'bg-success text-white': consulta.status === 'concluida',
+                  'bg-danger text-white': consulta.status === 'cancelada'
+                }">
+                  {{ consulta.status }}
+                </span>
+              </td>
+              <td>
+                <div class="d-flex flex-wrap gap-2">
+                  <a class="btn btn-info btn-sm" [routerLink]="['/secretaria/consultas/agendadas', consulta.id]" title="Ver Detalhes">
+                    <i class="bi bi-info-circle"></i>
+                  </a>
+                  @if (consulta.status === 'agendada' || consulta.status === 'concluida') {
+                    @if (consulta.status === 'concluida') {
+                      <a class="btn btn-success btn-sm" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'finalizar']" title="Finalizar Consulta">
+                        <i class="bi bi-clipboard2-check"></i>
+                      </a>
+                    } @else {
+                      <a class="btn btn-primary btn-sm" [routerLink]="['/secretaria/consultas/agendadas', consulta.id, 'remarcar']" title="Remarcar">
+                        <i class="bi bi-pencil"></i>
+                      </a>
+                      <button class="btn btn-danger btn-sm" title="Cancelar" (click)="openCancelModal(consulta.id)">
+                        <i class="bi bi-calendar-x"></i>
+                      </button>
+                    }
+                  }
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
 
     <!-- Adição da Paginação -->
     @if (pagination && pagination.links.length > 0) {
-    <nav aria-label="Navegação da tabela de consultas agendadas" class="mt-4">
-      <ul class="pagination justify-content-center">
-        @for (link of pagination.links; track $index) {
-          <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
-            <button
-              type="button"
-              class="page-link"
-              (click)="onPageChange(link.url)"
-              [disabled]="!link.url">
-              @if (link.label === '&laquo; Previous') {
-                <span aria-hidden="true">&laquo; Anterior</span>
-              } @else if (link.label === 'Next &raquo;') {
-                <span aria-hidden="true">Próximo &raquo;</span>
-              } @else {
-                {{ link.label }}
-              }
-            </button>
-          </li>
-        }
-      </ul>
-    </nav>
+      <nav aria-label="Navegação da tabela de consultas agendadas" class="mt-4">
+        <ul class="pagination justify-content-center flex-wrap">
+          @for (link of pagination.links; track $index) {
+            <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
+              <button
+                type="button"
+                class="page-link"
+                (click)="onPageChange(link.url)"
+                [disabled]="!link.url">
+                @if (link.label === '&laquo; Previous') {
+                  <span aria-hidden="true">&laquo; Anterior</span>
+                } @else if (link.label === 'Next &raquo;') {
+                  <span aria-hidden="true">Próximo &raquo;</span>
+                } @else {
+                  {{ link.label }}
+                }
+              </button>
+            </li>
+          }
+        </ul>
+        <div class="text-center mt-2">
+          Página {{ pagination.current_page }} de {{ pagination.last_page }} (Total: {{ pagination.total }} consultas)
+        </div>
+      </nav>
     }
 
   } @else if (!isLoading && !error) {
     <div class="alert alert-warning mt-3">Nenhuma consulta agendada encontrada.</div>
   }
 
-  <a class="btn btn-secondary mt-4" [routerLink]="['/secretaria']">Voltar</a>
+  <div class="mt-4">
+    <app-botao-voltar texto="Voltar para a Lista" routerLink="../.."></app-botao-voltar>
+  </div>
 </div>
 
 <!-- Modal de Confirmação de Cancelamento -->
 @if (showCancelModal) {
-<div class="modal d-block" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
+<div class="modal d-block" tabindex="-1" role="dialog" style="background-color: rgba(0,0,0,0.5);">
+  <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header bg-danger text-white">
         <h5 class="modal-title">Confirmar Cancelamento</h5>
-        <button type="button" class="btn-close" aria-label="Close" (click)="closeCancelModal()"></button>
+        <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="closeCancelModal()"></button>
       </div>
       <div class="modal-body">
         <p>Tem certeza que deseja cancelar esta consulta? Esta ação não pode ser desfeita.</p>
@@ -122,5 +134,4 @@
     </div>
   </div>
 </div>
-<div class="modal-backdrop fade show"></div>
 }

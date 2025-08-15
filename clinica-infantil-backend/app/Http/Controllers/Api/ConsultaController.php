@@ -25,8 +25,12 @@ class ConsultaController extends Controller
     protected $relations = [
         'paciente.cliente',
         'paciente.responsavel',
-        'paciente.responsavel.cliente',
         'paciente.cliente.genero',
+        'paciente.cliente.cidade',
+        'paciente.cliente.cidade.estado',
+        'paciente.responsavel.cliente',
+        'paciente.responsavel.cliente.cidade',
+        'paciente.responsavel.cliente.cidade.estado',
         'medico',
         'medico.usuario.perfil', 
         'medico.usuario.funcionario',

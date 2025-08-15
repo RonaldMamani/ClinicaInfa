@@ -5,10 +5,11 @@ import { Usuario, UsuariosListResponse } from '../../../core/models/usuario.mode
 import { UsuariosService } from '../../../controllers/usuarios/usuarios.service';
 import { forkJoin, Observable } from 'rxjs';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-listar-funcionarios',
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './listar-funcionarios.component.html',
   styleUrl: './listar-funcionarios.component.css'
 })

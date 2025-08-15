@@ -5,26 +5,25 @@ import { Router, RouterModule } from '@angular/router';
 import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
 import { Paciente, PacientesPaginadosResponse } from '../../../core/models/paciente.model';
 import { HttpClientModule } from '@angular/common/http';
+import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-listar-pacientes',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './listar-pacientes.component.html',
   styleUrls: ['./listar-pacientes.component.css']
 })
 export class ListarPacientesComponent implements OnInit {
   pacientes: Paciente[] = [];
-  currentPage: number = 1;
-  totalPages: number = 0;
-  totalItems: number = 0;
+  pagination: PaginatedApiResponse<Paciente[]> | null = null;
   filtroAtivo: boolean | undefined = true;
 
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
 
-  // Variáveis para o modal de exclusão
   showModal = false;
   pacienteParaExcluirId: number | null = null;
 
@@ -41,21 +40,33 @@ export class ListarPacientesComponent implements OnInit {
     return this.router.url.startsWith('/administrador');
   }
 
-  carregarPacientes(): void {
+  // Refatorado para aceitar um URL completo ou um número de página
+  carregarPacientes(pageUrl: string | null = null): void {
     this.isLoading = true;
     this.error = null;
+    this.successMessage = null;
     this.pacientes = [];
+    let pageNumber = 1;
+    if (pageUrl) {
+      const url = new URL(pageUrl);
+      const pageParam = url.searchParams.get('page');
+      if (pageParam) {
+        pageNumber = parseInt(pageParam, 10);
+      }
+    } else if (this.pagination) {
+        pageNumber = this.pagination.current_page;
+    }
 
-    this.pacientesService.getPacientesPaginados(this.currentPage, this.filtroAtivo).subscribe({
+    // Chamamos o serviço com o número da página e o filtro
+    this.pacientesService.getPacientesPaginados(pageNumber, this.filtroAtivo).subscribe({
       next: (response: PacientesPaginadosResponse) => {
         if (response.status && response.pacientes) {
           this.pacientes = response.pacientes.data;
-          this.currentPage = response.pacientes.current_page;
-          this.totalPages = response.pacientes.last_page;
-          this.totalItems = response.pacientes.total;
+          this.pagination = response.pacientes;
           this.successMessage = response.message;
         } else {
           this.pacientes = [];
+          this.pagination = null;
           this.error = response.message || 'Nenhum paciente encontrado.';
         }
         this.isLoading = false;
@@ -87,7 +98,7 @@ export class ListarPacientesComponent implements OnInit {
         next: (response) => {
           if (response.status) {
             this.successMessage = response.message;
-            this.carregarPacientes();
+            this.carregarPacientes(this.pagination?.current_page.toString());
           } else {
             this.error = response.message;
           }
@@ -107,16 +118,15 @@ export class ListarPacientesComponent implements OnInit {
     this.router.navigate([`${routePrefix}/pacientes/editar`, id]);
   }
 
-  onPageChange(newPage: number): void {
-    if (newPage > 0 && newPage <= this.totalPages) {
-      this.currentPage = newPage;
-      this.carregarPacientes();
+  // Agora aceita um URL para a página
+  onPageChange(pageUrl: string | null): void {
+    if (pageUrl) {
+      this.carregarPacientes(pageUrl);
     }
   }
 
   aplicarFiltro(status: boolean | undefined): void {
     this.filtroAtivo = status;
-    this.currentPage = 1;
     this.carregarPacientes();
   }
 }

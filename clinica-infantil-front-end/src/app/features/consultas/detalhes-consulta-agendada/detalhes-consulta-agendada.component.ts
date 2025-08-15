@@ -4,10 +4,11 @@ import { ConsultasService } from '../../../controllers/consultas/consultas.servi
 import { Consulta, ConsultaDetailsResponse } from '../../../core/models/consultas.model';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-detalhes-consulta-agendada',
-  imports: [CommonModule, RouterLink, HttpClientModule],
+  imports: [CommonModule, RouterLink, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './detalhes-consulta-agendada.component.html',
   styleUrl: './detalhes-consulta-agendada.component.css'
 })

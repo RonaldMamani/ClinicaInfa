@@ -6,16 +6,17 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { PaginatedApiResponse } from '../../../core/models/Paginate.model';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-medico-consultas',
-  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule],
+  imports: [CommonModule, RouterModule, RouterLink, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './medico-consultas.component.html',
   styleUrl: './medico-consultas.component.css'
 })
 export class MedicoConsultasComponent {
-  consultas: Consulta[] = [];
   pagination: PaginatedApiResponse<Consulta[]> | null = null;
+  consultas: Consulta[] = [];
   isLoading = true;
   error: string | null = null;
   successMessage: string | null = null;
@@ -37,12 +38,13 @@ export class MedicoConsultasComponent {
     this.error = null;
     this.successMessage = null;
     
-    // O tipo de resposta esperado agora é ConsultasPaginationApiResponse
     this.consultasService.getConsultasDoMedico(pageUrl).subscribe({
       next: (response: ConsultasPaginationApiResponse) => {
         // Acessamos os dados da consulta de dentro do objeto de paginação
         this.consultas = response.consultas.data || [];
         // Armazenamos o objeto de paginação completo para uso no template
+        // Agora, a atribuição está correta, pois a variável 'pagination'
+        // espera um objeto do tipo PaginatedApiResponse<Consulta[]>.
         this.pagination = response.consultas;
         this.isLoading = false;
         

@@ -1,34 +1,42 @@
 <div class="dashboard container my-5">
-  <h2>Prontuários de Pacientes</h2>
+  <h2 class="fw-bold text-center mb-4">Prontuários de Pacientes</h2>
 
+  <!-- Mensagem de carregamento -->
   @if (isLoading) {
-    <div class="alert alert-info mt-3">Carregando prontuários...</div>
+    <div class="alert alert-info mt-3 text-center">
+      <div class="spinner-border spinner-border-sm me-2" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      Carregando prontuários...
+    </div>
   }
 
+  <!-- Mensagem de erro -->
   @if (hasError) {
-    <div class="alert alert-danger mt-3">{{ errorMessage }}</div>
+    <div class="alert alert-danger mt-3 text-center">{{ errorMessage }}</div>
   }
 
+  <!-- Mensagem de lista vazia -->
   @if (!isLoading && prontuarios.length === 0) {
-    <div class="alert alert-warning mt-3">Nenhum prontuário encontrado.</div>
+    <div class="alert alert-warning mt-3 text-center">Nenhum prontuário encontrado.</div>
   }
 
+  <!-- Exibição dos prontuários em um grid responsivo -->
   @if (!isLoading && prontuarios.length > 0) {
-    <div class="row">
+    <div class="row g-4 justify-content-center">
       @for (prontuario of prontuarios; track prontuario.id; let i = $index) {
-        <div class="col-12 col-sm-6 col-md-4 col-lg-3 my-4">
-          <div class="card h-100 shadow-sm prontuario-card">
+        <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+          <div class="card h-100 shadow-sm prontuario-card rounded-4">
             <div class="card-body d-flex flex-column align-items-center text-center">
-              <i class="bi bi-person-fill display-3"></i>
-              
-              <h5 class="card-title">{{ prontuario.paciente.cliente.nome }}</h5>
+              <i class="bi bi-person-fill display-3 text-primary mb-3"></i>
+              <h5 class="card-title fw-bold">{{ prontuario.paciente.cliente.nome }}</h5>
               <p class="card-text">
                 <strong>Idade:</strong> {{ calcularIdade(prontuario.paciente.data_nascimento) }} Anos <br>
-                <strong>Sexo:</strong> {{ getGenero(prontuario.paciente.cliente.id_genero) }}<br>
+                <strong>Sexo:</strong> {{ prontuario.paciente.cliente.genero.genero }}<br>
                 <strong>CPF:</strong> {{ prontuario.paciente.cliente.cpf }}
               </p>
-              <div class="my-auto w-100">
-                <button class="btn btn-outline-secondary w-100" [routerLink]="['/medico/prontuarios', prontuario.id]">
+              <div class="mt-auto w-100">
+                <button class="btn btn-outline-secondary w-100 mt-3" [routerLink]="['/medico/prontuarios', prontuario.id]">
                     <strong>Ver Detalhes</strong>
                 </button>
               </div>
@@ -38,30 +46,45 @@
       }
     </div>
 
-    <!-- Adição da Paginação -->
+    <!-- Componente de Paginação -->
     @if (pagination && pagination.links.length > 0) {
-      <nav aria-label="Navegação da tabela de prontuários" class="mt-4">
-        <ul class="pagination justify-content-center">
+      <nav aria-label="Navegação da tabela de prontuários" class="mt-5">
+        <ul class="pagination justify-content-center flex-wrap">
           @for (link of pagination.links; track $index) {
-            <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
-              <button
-                type="button"
-                class="page-link"
-                (click)="onPageChange(link.url)"
-                [disabled]="!link.url">
-                @if (link.label === '&laquo; Previous') {
-                  <span aria-hidden="true">&laquo; Anterior</span>
-                } @else if (link.label === 'Next &raquo;') {
-                  <span aria-hidden="true">Próximo &raquo;</span>
-                } @else {
+            <!-- O link do tipo 'Previous' ou 'Next' -->
+            @if (link.label === '&laquo; Previous' || link.label === 'Next &raquo;') {
+              <li class="page-item" [ngClass]="{'disabled': !link.url}">
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="onPageChange(link.url)"
+                  [disabled]="!link.url">
+                  @if (link.label === '&laquo; Previous') {
+                    <span>Anterior</span>
+                  } @else {
+                    <span>Próximo</span>
+                  }
+                </button>
+              </li>
+            } @else {
+              <!-- Links de números de página -->
+              <li class="page-item" [ngClass]="{'active': link.active}">
+                <button
+                  type="button"
+                  class="page-link"
+                  (click)="onPageChange(link.url)"
+                  [disabled]="!link.url">
                   {{ link.label }}
-                }
-              </button>
-            </li>
+                </button>
+              </li>
+            }
           }
         </ul>
       </nav>
     }
   }
-  <a class="btn btn-secondary mt-4" [routerLink]="['/medico']">Voltar</a>
+
+  <div class="mt-5">
+    <app-botao-voltar texto="Voltar para o Dashboard" routerLink="../"></app-botao-voltar>
+  </div>
 </div>

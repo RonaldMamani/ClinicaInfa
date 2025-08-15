@@ -1,28 +1,32 @@
 <div class="dashboard container my-5">
-  <h2>Adicionar Novo Cliente</h2>
-  <p class="lead">Selecione o tipo de cliente que você deseja adicionar.</p>
+  <h2 class="fw-bold text-center mb-2">Adicionar Novo Cliente</h2>
+  <p class="lead text-center mb-5">Selecione o tipo de cliente que você deseja adicionar.</p>
 
-  <div class="row">
-    <div class="col-lg-6">
-      <div class="card bg-primary align-items-center p-5 text-white">
-        <h5 class="card-title fs-1">Adicionar Paciente</h5>
-        <i class="bi bi-person-add display-1 py-5"></i>
-        <button class="btn btn-outline-light btn-lg" (click)="navigateTo('/secretaria/adicionar/paciente')">
+  <div class="row g-4 justify-content-center">
+    <!-- Card para adicionar Paciente -->
+    <div class="col-12 col-md-6">
+      <div class="card bg-primary text-white p-5 text-center shadow-lg rounded-4 h-100 d-flex flex-column justify-content-center align-items-center">
+        <h5 class="card-title fs-2 fw-bold">Adicionar Paciente</h5>
+        <i class="bi bi-person-add display-1 py-4"></i>
+        <button class="btn btn-outline-light btn-lg mt-auto" (click)="navigateTo('/secretaria/adicionar/paciente')">
           Adicionar Paciente
         </button>
       </div>
     </div>
 
-    <div class="col-lg-6">
-      <div class="card bg-secondary align-items-center p-5 text-white">
-        <h5 class="card-title fs-1">Adicionar Responsavel</h5>
-        <i class="bi bi-person-plus-fill display-1 py-5"></i>
-        <button class="btn btn-outline-light btn-lg" (click)="navigateTo('/secretaria/adicionar/responsavel')">
+    <!-- Card para adicionar Responsável -->
+    <div class="col-12 col-md-6">
+      <div class="card bg-secondary text-white p-5 text-center shadow-lg rounded-4 h-100 d-flex flex-column justify-content-center align-items-center">
+        <h5 class="card-title fs-2 fw-bold">Adicionar Responsável</h5>
+        <i class="bi bi-person-plus-fill display-1 py-4"></i>
+        <button class="btn btn-outline-light btn-lg mt-auto" (click)="navigateTo('/secretaria/adicionar/responsavel')">
           Adicionar Responsável
         </button>
       </div>
     </div>
   </div>
-
-  <a class="btn btn-secondary mt-4" [routerLink]="['../']">Volta para Dashboard</a>
+  
+  <div class="mt-5">
+    <app-botao-voltar texto="Voltar para o Dashboard" routerLink="../"></app-botao-voltar>
+  </div>
 </div>

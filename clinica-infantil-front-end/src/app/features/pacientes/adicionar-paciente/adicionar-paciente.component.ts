@@ -20,12 +20,13 @@ import { Responsavel } from '../../../core/models/responsavel.model';
 import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { Cidade } from '../../../core/models/cidades.model';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 
 @Component({
   selector: 'app-adicionar-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, RouterLink, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, RouterLink, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './adicionar-paciente.component.html',
   styleUrls: ['./adicionar-paciente.component.css']
 })
@@ -34,7 +35,7 @@ export class AdicionarPacienteComponent implements OnInit {
   isLoading = false;
   error: string | null = null;
   successMessage: string | null = null;
-  
+
   estados: Estado[] = [];
   cidades: Cidade[] = [];
   generos: Genero[] = [];
@@ -58,14 +59,14 @@ export class AdicionarPacienteComponent implements OnInit {
     this.pacienteForm = this.fb.group({
       nome: ['', Validators.required],
       cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
-      rg: [''],
+      rg: ['', Validators.pattern(/^(\d{2}\.\d{3}\.\d{3}-\d{1})?$/)],
       endereco: ['', Validators.required],
-      id_estado: ['', Validators.required],
-      id_cidade: ['', Validators.required],
-      id_genero: ['', Validators.required],
+      id_estado: [null, Validators.required],
+      id_cidade: [{ value: null, disabled: true }, Validators.required],
+      id_genero: [null, Validators.required],
       data_nascimento: ['', Validators.required],
       historico_medico: ['', Validators.required],
-      id_responsavel: ['', Validators.required],
+      id_responsavel: [null, Validators.required],
     });
 
     this.estadosService.getEstados().subscribe({
@@ -92,39 +93,36 @@ export class AdicionarPacienteComponent implements OnInit {
 
   onEstadoSelecionado(idEstado: number): void {
     this.cidades = [];
-    // Limpa a cidade se o estado for alterado
-    this.pacienteForm.get('id_cidade')?.setValue('');
+    this.pacienteForm.get('id_cidade')?.setValue(null);
+
     if (idEstado) {
+      // Habilita o campo de cidade quando um estado é selecionado
+      this.pacienteForm.get('id_cidade')?.enable();
       this.cidadesService.getCidadesPorEstado(idEstado).subscribe({
         next: (cidades) => this.cidades = cidades,
         error: (err) => this.error = 'Não foi possível carregar as cidades.'
       });
+    } else {
+      // Desabilita o campo de cidade quando nenhum estado é selecionado
+      this.pacienteForm.get('id_cidade')?.disable();
     }
   }
 
-  /**
-   * Preenche os campos de endereço, estado e cidade do paciente
-   * com base no responsável selecionado.
-   * @param idResponsavel O ID do responsável selecionado.
-   */
   onResponsavelSelecionado(idResponsavel: string): void {
-    // Busca o objeto de responsável completo
     const responsavel = this.responsaveis.find(r => r.id === Number(idResponsavel));
-    
+
     if (responsavel && responsavel.cliente) {
       const clienteDoResponsavel = responsavel.cliente;
 
-      // Preenche o endereço e o estado no formulário
       this.pacienteForm.patchValue({
         endereco: clienteDoResponsavel.endereco,
         id_estado: responsavel.cliente.cidade.id_estado
       });
-
-      // Carrega as cidades do estado do responsável
+      // Habilita o campo de cidade antes de buscar as cidades
+      this.pacienteForm.get('id_cidade')?.enable();
       this.cidadesService.getCidadesPorEstado(responsavel.cliente.cidade.id_estado).subscribe({
         next: (cidades) => {
           this.cidades = cidades;
-          // Preenche a cidade após a lista de cidades ser carregada
           this.pacienteForm.patchValue({
             id_cidade: clienteDoResponsavel.id_cidade
           });
@@ -141,8 +139,8 @@ export class AdicionarPacienteComponent implements OnInit {
     if (this.pacienteForm.valid) {
       this.isLoading = true;
       const formValue = this.pacienteForm.value;
-      
-      const payload: CreatePacientePayload = { 
+
+      const payload: CreatePacientePayload = {
         nome: formValue.nome,
         cpf: formValue.cpf,
         rg: formValue.rg,
@@ -166,6 +164,7 @@ export class AdicionarPacienteComponent implements OnInit {
         }
       });
     } else {
+      this.pacienteForm.markAllAsTouched();
       this.error = 'Por favor, preencha todos os campos corretamente.';
     }
   }

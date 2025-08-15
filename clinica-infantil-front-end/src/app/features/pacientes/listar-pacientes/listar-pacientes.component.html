@@ -1,21 +1,23 @@
 <div class="dashboard container my-5">
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <div class="d-flex flex-column flex-md-row align-items-md-center gap-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div>
       @if (filtroAtivo === true) {
-      @if (isAdministradorRoute) {
-      <h2 class="mb-0">Pacientes Ativos</h2>
-      } @else {
-      <h2 class="mb-0">Lista de Pacientes</h2>
-      }
+        @if (isAdministradorRoute) {
+          <h2 class="mb-0">Pacientes Ativos</h2>
+        } @else {
+          <h2 class="mb-0">Lista de Pacientes</h2>
+        }
       } @else if (filtroAtivo === false) {
-      <h2 class="mb-0">Pacientes Inativos</h2>
+        <h2 class="mb-0">Pacientes Inativos</h2>
       } @else {
-      <h2 class="mb-0">Todos os Pacientes</h2>
+        <h2 class="mb-0">Todos os Pacientes</h2>
       }
     </div>
-    @if (isAdministradorRoute) {
-    <div class="d-flex gap-3">
-      <div class="btn-group" role="group" aria-label="Filtros de Pacientes">
+
+    <!-- Filtros e Botão de Adicionar - Ajustado para telas pequenas -->
+    <div class="d-flex flex-column flex-md-row align-items-center gap-3">
+      <!-- Grupo de Botões de Filtro -->
+      <div class="btn-group w-100 w-md-auto" role="group" aria-label="Filtros de Pacientes">
         <button type="button" class="btn" [ngClass]="{'btn-primary': filtroAtivo === true, 'btn-outline-primary': filtroAtivo !== true}" (click)="aplicarFiltro(true)">
           Ativos
         </button>
@@ -26,111 +28,119 @@
           Todos
         </button>
       </div>
-      <a [routerLink]="['/administrador/pacientes/adicionar']" class="btn btn-primary fw-bold d-flex align-items-center">
-        <i class="bi bi-person-add me-2"></i>
-        Criar Paciente
-      </a>
+      <!-- Botão de Criação de Paciente -->
+       @if (isAdministradorRoute) {
+         <a [routerLink]="['./adicionar']" class="btn btn-primary fw-bold d-flex align-items-center justify-content-center w-100 w-md-auto">
+           <i class="bi bi-person-add me-2"></i>
+           Criar Paciente
+         </a>
+       }
     </div>
-    }
   </div>
 
   @if (isLoading) {
-  <div class="alert alert-info">Carregando pacientes...</div>
-  } @if (error) {
-  <div class="alert alert-danger">{{ error }}</div>
-  } @if (!isLoading && !error && pacientes.length > 0) {
-  <table class="table table-striped mt-3">
-    <thead>
-      <tr>
-        @if (isAdministradorRoute) {
-        <th>ID</th>
-        }
-        <th>Nome do Paciente</th>
-        <th>CPF</th>
-        <th>Data de Nascimento</th>
-        <th>Responsável</th>
-        <th>Grau Parentesco</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      @for (paciente of pacientes; track paciente.id; let i = $index) {
-      <tr>
-        @if (isAdministradorRoute) {
-        <td>{{ i + 1 }}</td>
-        }
-        <td>{{ paciente.cliente.nome }}</td>
-        <td>{{ paciente.cliente.cpf }}</td>
-        <td>{{ paciente.data_nascimento | date:'dd/MM/yyyy' }}</td>
-        <td>{{ paciente.responsavel.cliente.nome }}</td>
-        <td>{{ paciente.responsavel.grau_parentesco }}</td>
-        <td>
-          @if (isAdministradorRoute) {
-          <a class="btn btn-info btn-sm me-2" [routerLink]="['/administrador/pacientes', paciente.id]">
-            <i class="bi bi-info-circle"></i>
-          </a>
-          <a class="btn btn-warning btn-sm me-2" [routerLink]="['/administrador/pacientes', paciente.id, 'editar']">
-            <i class="bi bi-pencil"></i>
-          </a>
-          } @else {
-          <a class="btn btn-info btn-sm me-2" [routerLink]="['/secretaria/pacientes', paciente.id]">
-            <i class="bi bi-info-circle"></i>
-          </a>
-          <a class="btn btn-warning btn-sm me-2" [routerLink]="['/secretaria/pacientes/', paciente.id, 'editar']">
-            <i class="bi bi-pencil"></i>
-          </a>
-          }
-          <!-- Alterado o click para abrir o modal -->
-          <button class="btn btn-danger btn-sm" (click)="abrirModalExclusao(paciente.id)" [disabled]="!paciente.cliente.ativo" title="Desativar paciente">
-            <i class="bi bi-trash"></i>
-          </button>
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
-    <nav aria-label="Navegação de Página" class="mt-4">
-      <ul class="pagination justify-content-center">
-        <li class="page-item" [class.disabled]="currentPage === 1">
-          <a class="page-link" (click)="onPageChange(currentPage - 1)">Anterior</a>
-        </li>
-        @for (page of [].constructor(totalPages); track $index) {
-        <li class="page-item" [class.active]="currentPage === $index + 1">
-          <a class="page-link" (click)="onPageChange($index + 1)">{{
-              $index + 1
-              }}</a>
-        </li>
-        }
-        <li class="page-item" [class.disabled]="currentPage === totalPages">
-          <a class="page-link" (click)="onPageChange(currentPage + 1)">Próxima</a>
-        </li>
-      </ul>
-      <div class="text-center mt-2">
-        Página {{ currentPage }} de {{ totalPages }} (Total:
-        {{ totalItems }} pacientes)
+    <div class="alert alert-info text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
       </div>
-    </nav>
+      <p class="mt-2">Carregando pacientes...</p>
+    </div>
+  } @else if (error) {
+    <div class="alert alert-danger text-center">{{ error }}</div>
+  } @else if (pacientes.length === 0) {
+    <div class="alert alert-info text-center">Nenhum paciente encontrado com o filtro atual.</div>
+  } @else {
+    <!-- Tabela responsiva para todas as telas -->
+    <div class="table-responsive">
+      <table class="table table-striped mt-3">
+        <thead>
+          <tr>
+            <th class="d-none d-lg-table-cell">#</th>
+            <th>Nome do Paciente</th>
+            <th class="d-none d-md-table-cell">CPF</th>
+            <th class="d-none d-lg-table-cell">Data de Nascimento</th>
+            <th class="d-none d-sm-table-cell">Responsável</th>
+            <th class="d-none d-md-table-cell">Grau Parentesco</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (paciente of pacientes; track paciente.id; let i = $index) {
+            <tr>
+              <td class="d-none d-lg-table-cell">{{ (pagination!.current_page - 1) * pagination!.per_page + i + 1 }}</td>
+              <td>{{ paciente.cliente.nome }}</td>
+              <td class="d-none d-md-table-cell">{{ paciente.cliente.cpf }}</td>
+              <td class="d-none d-lg-table-cell">{{ paciente.data_nascimento | date:'dd/MM/yyyy' }}</td>
+              <td class="d-none d-sm-table-cell">{{ paciente.responsavel.cliente.nome }}</td>
+              <td class="d-none d-md-table-cell">{{ paciente.responsavel.grau_parentesco }}</td>
+              <td class="d-flex flex-wrap flex-sm-nowrap gap-1">
+                @if (isAdministradorRoute) {
+                  <a class="btn btn-info btn-sm" [routerLink]="['/administrador/pacientes', paciente.id]" title="Ver detalhes">
+                    <i class="bi bi-info-circle"></i>
+                  </a>
+                  <a class="btn btn-warning btn-sm" [routerLink]="['/administrador/pacientes', paciente.id, 'editar']" title="Editar paciente">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                } @else {
+                  <a class="btn btn-info btn-sm" [routerLink]="['/secretaria/pacientes', paciente.id]" title="Ver detalhes">
+                    <i class="bi bi-info-circle"></i>
+                  </a>
+                  <a class="btn btn-warning btn-sm" [routerLink]="['/secretaria/pacientes/', paciente.id, 'editar']" title="Editar paciente">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                }
+                <button class="btn btn-danger btn-sm" (click)="abrirModalExclusao(paciente.id)" [disabled]="!paciente.cliente.ativo" title="Desativar paciente">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginação -->
+    @if (pagination && pagination.links.length > 0) {
+      <nav aria-label="Navegação da tabela de pacientes" class="mt-4">
+        <ul class="pagination justify-content-center flex-wrap">
+          @for (link of pagination.links; track $index) {
+            <li class="page-item" [ngClass]="{'active': link.active, 'disabled': !link.url}">
+              <button
+                type="button"
+                class="page-link"
+                (click)="onPageChange(link.url)"
+                [disabled]="!link.url">
+                @if (link.label === '&laquo; Previous') {
+                  <span aria-hidden="true">&laquo; Anterior</span>
+                } @else if (link.label === 'Next &raquo;') {
+                  <span aria-hidden="true">Próximo &raquo;</span>
+                } @else {
+                  {{ link.label }}
+                }
+              </button>
+            </li>
+          }
+        </ul>
+        <div class="text-center mt-2">
+          Página {{ pagination.current_page }} de {{ pagination.last_page }} (Total: {{ pagination.total }} pacientes)
+        </div>
+      </nav>
+    }
   }
 
-  @else if (!isLoading && !error) {
-  <div class="alert alert-info mt-3">
-    Nenhum paciente @if (filtroAtivo === true) { ativo } @else if (filtroAtivo
-    === false) { inativo } encontrado.
-  </div>
-  }
+  <hr class="my-4"/>
 
-  <hr />
-
-  <a class="btn btn-secondary mt-4" [routerLink]="isAdministradorRoute ? ['/administrador'] : ['/secretaria']">Voltar</a>
+  <app-botao-voltar texto="Voltar para o Dashboard" routerLink="../"></app-botao-voltar>
 </div>
 
+<!-- Modal de Confirmação de Desativação -->
 @if(showModal) {
   <div class="modal d-block" tabindex="-1" role="dialog" style="background-color: rgba(0, 0, 0, 0.5);">
     <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
-        <div class="modal-header">
+        <div class="modal-header bg-danger text-white">
           <h5 class="modal-title">Confirmar Desativação</h5>
-          <button type="button" class="btn-close" aria-label="Close" (click)="fecharModal()"></button>
+          <button type="button" class="btn-close btn-close-white" aria-label="Close" (click)="fecharModal()"></button>
         </div>
         <div class="modal-body">
           <p>Tem certeza que deseja desativar este paciente?</p>

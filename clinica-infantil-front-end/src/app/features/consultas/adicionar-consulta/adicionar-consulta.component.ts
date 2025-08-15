@@ -9,6 +9,7 @@ import { forkJoin } from 'rxjs';
 import { PacientesService } from '../../../controllers/pacientes/pacientes.service';
 import { MedicosService } from '../../../controllers/medicos/medicos.service';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-adicionar-consulta',
@@ -18,8 +19,9 @@ import { HttpClientModule } from '@angular/common/http';
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterLink, HttpClientModule
-  ]
+    RouterLink, HttpClientModule,
+    BotaoVoltarComponent
+]
 })
 export class AdicionarConsultaComponent implements OnInit {
   criarForm!: FormGroup;

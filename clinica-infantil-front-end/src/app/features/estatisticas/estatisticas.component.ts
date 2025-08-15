@@ -12,15 +12,16 @@ import { EstatisticasMedicosComponent } from "../../components/estatisticas/esta
 import { EstatisticasResponsaveisComponent } from "../../components/estatisticas/estatisticas-responsaveis/estatisticas-responsaveis.component";
 import { EstatisticasPacienteConsultasComponent } from "../../components/estatisticas/estatisticas-paciente-consultas/estatisticas-paciente-consultas.component";
 import { RouterLink } from '@angular/router';
+import { BotaoVoltarComponent } from "../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-estatisticas',
-  imports: [CommonModule, 
-    RouterLink, EstatisticasPacientesComponent, 
-    EstatisticasReceitaComponent, EstatisticasEspecialidadesComponent, 
-    EstatisticasGeneroComponent, EstatisticasClientesComponent, 
-    EstatisticasMedicosComponent, EstatisticasResponsaveisComponent, 
-    EstatisticasPacienteConsultasComponent, EstatisticasConsultasComponent],
+  imports: [CommonModule,
+    RouterLink, EstatisticasPacientesComponent,
+    EstatisticasReceitaComponent, EstatisticasEspecialidadesComponent,
+    EstatisticasGeneroComponent, EstatisticasClientesComponent,
+    EstatisticasMedicosComponent, EstatisticasResponsaveisComponent,
+    EstatisticasPacienteConsultasComponent, EstatisticasConsultasComponent, BotaoVoltarComponent],
   providers: [ConsultasService, EstadosService],
   templateUrl: './estatisticas.component.html',
   styleUrl: './estatisticas.component.css'

@@ -11,10 +11,11 @@ import { InputMaskDirective } from '../../../shared/input-mask-directive';
 import { PerfisService } from '../../../controllers/perfis/perfis.service';
 import { FuncionariosService } from '../../../controllers/funcionarios/funcionarios.service';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-adicionar-funcionario',
-  imports: [CommonModule, RouterModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule],
+  imports: [CommonModule, RouterModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './adicionar-funcionario.component.html',
   styleUrl: './adicionar-funcionario.component.css'
 })

@@ -4,11 +4,12 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ResponsaveiPaginateResponse, Responsavel } from '../../../core/models/responsavel.model';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-listar-responsaveis',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './listar-responsaveis.component.html',
   styleUrl: './listar-responsaveis.component.css'
 })
@@ -20,7 +21,8 @@ export class ListarResponsaveisComponent {
   currentPage = 1;
   totalPages = 0;
   totalItems = 0;
-  filtroStatus: boolean | undefined = true; // 'true' para ativos por padrão
+  pageSize = 15;
+  filtroStatus: boolean | undefined = true;
   
   isLoading = true;
   error: string | null = null;
@@ -53,6 +55,7 @@ export class ListarResponsaveisComponent {
           this.currentPage = response.responsaveis.current_page;
           this.totalPages = response.responsaveis.last_page;
           this.totalItems = response.responsaveis.total;
+          this.pageSize = response.responsaveis.per_page;
         } else {
           this.responsaveis = [];
           this.error = response.message || 'Nenhum responsável encontrado.';
@@ -114,7 +117,7 @@ export class ListarResponsaveisComponent {
         next: (response) => {
           this.successMessage = response.message;
           this.closeConfirmModal();
-          this.carregarResponsaveis(); // Recarrega a lista para refletir a mudança
+          this.carregarResponsaveis();
           setTimeout(() => this.successMessage = null, 3000);
         },
         error: (err) => {

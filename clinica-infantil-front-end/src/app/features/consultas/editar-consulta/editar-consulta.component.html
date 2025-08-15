@@ -42,12 +42,12 @@
 
         @if (isSecretariaRoute) {
           <div class="d-flex justify-content-between">
-            <a class="btn btn-secondary" [routerLink]="['/secretaria/consultas/agendadas']">Voltar</a>
+            <app-botao-voltar texto="Voltar para a Lista" routerLink="../.."></app-botao-voltar>
             <button type="submit" class="btn btn-primary" [disabled]="formConsulta.invalid">Salvar Alterações</button>
           </div>
         } @else {
           <div class="d-flex justify-content-between">
-            <a class="btn btn-secondary" [routerLink]="['/administrador/consultas']">Voltar</a>
+            <app-botao-voltar texto="Voltar para a Lista" routerLink="../.."></app-botao-voltar>
             <button type="submit" class="btn btn-primary" [disabled]="formConsulta.invalid">Salvar Alterações</button>
           </div>
         }

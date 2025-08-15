@@ -6,10 +6,11 @@ import { ConsultasService } from '../../../controllers/consultas/consultas.servi
 import { ActivatedRoute, Router, RouterLink, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-finalizar-consulta',
-  imports: [CommonModule, RouterModule, RouterLink, ReactiveFormsModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, RouterLink, ReactiveFormsModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './finalizar-consulta.component.html',
   styleUrl: './finalizar-consulta.component.css'
 })

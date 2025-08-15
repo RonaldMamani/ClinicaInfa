@@ -1,37 +1,46 @@
 <div class="dashboard container my-5">
+  <!-- Exibição de mensagens de status -->
   @if (isLoading) {
-    <div class="alert alert-info mt-3">Carregando detalhes do responsável...</div>
+    <div class="alert alert-info text-center p-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Carregando...</span>
+      </div>
+      <p class="mt-2">Carregando detalhes do responsável...</p>
+    </div>
   }
 
   @if (error) {
-    <div class="alert alert-danger mt-3">{{ error }}</div>
+    <div class="alert alert-danger mt-3 text-center">{{ error }}</div>
   }
 
+  <!-- Conteúdo principal, exibido após o carregamento -->
   @if (!isLoading && responsavel) {
-    <div class="d-flex justify-content-between align-items-center mb-4">
-      <h2>Detalhes do Responsável: {{ responsavel.cliente.nome }}</h2>
-      <a class="btn btn-secondary" [routerLink]="['/administrador/responsaveis']">Voltar para a Lista</a>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+      <!-- Título principal com quebra de linha em telas pequenas -->
+      <h2 class="fw-bold fs-3 mb-0">Detalhes do Responsável: <span class="d-block d-md-inline">{{ responsavel.cliente.nome }}</span></h2>
+      <!-- Componente reutilizável do botão de voltar -->
+      <app-botao-voltar texto="Voltar para a Lista" routerLink="../"></app-botao-voltar>
     </div>
 
     <!-- Informações do Responsável -->
     <div class="card mb-4 shadow-sm">
-      <div class="card-header bg-secondary text-white">
+      <div class="card-header bg-secondary text-white fw-bold fs-5">
         Dados do Responsável
       </div>
       <div class="card-body">
-        <div class="row">
-          <div class="col-md-6">
-            <strong>Nome:</strong> {{ responsavel.cliente.nome || 'N/A' }}<br>
-            <strong>CPF:</strong> {{ responsavel.cliente.cpf || 'N/A' }}<br>
-            <strong>RG:</strong> {{ responsavel.cliente.rg || 'N/A' }}<br>
-            <strong>Grau de Parentesco:</strong> {{ responsavel.grau_parentesco || 'N/A' }}
+        <div class="row g-3">
+          <div class="col-12 col-md-6">
+            <p class="mb-1"><strong>Nome:</strong> {{ responsavel.cliente.nome || 'N/A' }}</p>
+            <p class="mb-1"><strong>CPF:</strong> {{ responsavel.cliente.cpf || 'N/A' }}</p>
+            <p class="mb-1"><strong>RG:</strong> {{ responsavel.cliente.rg || 'N/A' }}</p>
+            <p class="mb-1"><strong>Grau de Parentesco:</strong> {{ responsavel.grau_parentesco || 'N/A' }}</p>
           </div>
-          <div class="col-md-6">
-            <strong>Email:</strong> {{ responsavel.email || 'N/A' }}<br>
-            <strong>Telefone:</strong> {{ responsavel.telefone || 'N/A' }}<br>
-            <strong>Endereço:</strong> {{ responsavel.cliente.endereco || 'N/A' }}<br>
-            <strong>Cidade:</strong> {{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}<br>
-            <strong>Estado:</strong> {{ responsavel.cliente.cidade.estado.nome_estado }}
+          <div class="col-12 col-md-6">
+            <p class="mb-1"><strong>Email:</strong> {{ responsavel.email || 'N/A' }}</p>
+            <p class="mb-1"><strong>Telefone:</strong> {{ responsavel.telefone || 'N/A' }}</p>
+            <p class="mb-1"><strong>Endereço:</strong> {{ responsavel.cliente.endereco || 'N/A' }}</p>
+            <p class="mb-1"><strong>Cidade:</strong> {{ responsavel.cliente.cidade.nome_cidade || 'N/A' }}</p>
+            <p class="mb-1"><strong>Estado:</strong> {{ responsavel.cliente.cidade.estado.nome_estado }}</p>
           </div>
         </div>
       </div>
@@ -39,31 +48,33 @@
     
     <!-- Pacientes Associados -->
     <div class="card mb-4 shadow-sm">
-      <div class="card-header bg-primary text-white">
+      <div class="card-header bg-primary text-white fw-bold fs-5">
         Pacientes Associados
       </div>
       <div class="card-body">
         @if (responsavel.pacientes && responsavel.pacientes.length > 0) {
           <div class="table-responsive">
-            <table class="table table-striped table-hover">
-              <thead>
+            <table class="table table-striped table-hover align-middle">
+              <thead class="table-light">
                 <tr>
-                  <th>ID</th>
-                  <th>Nome do Paciente</th>
-                  <th>Data de Nascimento</th>
-                  <th>Histórico Médico</th>
-                  <th>Ações</th>
+                  <th scope="col">ID</th>
+                  <th scope="col">Nome do Paciente</th>
+                  <th scope="col">Data de Nascimento</th>
+                  <th scope="col">Histórico Médico</th>
+                  <th scope="col">Ações</th>
                 </tr>
               </thead>
               <tbody>
                 @for (paciente of responsavel.pacientes; track paciente.id) {
                   <tr>
-                    <td>{{ paciente.id }}</td>
-                    <td>{{ paciente.cliente.nome || 'N/A' }}</td>
-                    <td>{{ paciente.data_nascimento | date: 'dd/MM/yyyy' }}</td>
+                    <td class="text-nowrap">{{ paciente.id }}</td>
+                    <td class="text-nowrap">{{ paciente.cliente.nome || 'N/A' }}</td>
+                    <td class="text-nowrap">{{ paciente.data_nascimento | date: 'dd/MM/yyyy' }}</td>
                     <td>{{ paciente.historico_medico || 'N/A' }}</td>
-                    <td>
-                      <a [routerLink]="['/administrador/pacientes', paciente.id]" class="btn btn-sm btn-outline-primary">Ver Detalhes</a>
+                    <td class="text-nowrap">
+                      <a [routerLink]="['/administrador/pacientes', paciente.id]" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-eye"></i> Ver Detalhes
+                      </a>
                     </td>
                   </tr>
                 }
@@ -71,13 +82,13 @@
             </table>
           </div>
         } @else {
-          <div class="alert alert-warning">Nenhum paciente associado a este responsável.</div>
+          <div class="alert alert-warning text-center">Nenhum paciente associado a este responsável.</div>
         }
       </div>
     </div>
   }
 
   @if (!isLoading && !responsavel) {
-    <div class="alert alert-warning mt-3">Responsável não encontrado.</div>
+    <div class="alert alert-warning mt-3 text-center">Responsável não encontrado.</div>
   }
 </div>

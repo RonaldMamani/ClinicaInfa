@@ -5,11 +5,12 @@ import { CommonModule } from '@angular/common';
 import { Consulta } from '../../../core/models/consultas.model';
 import { ConsultasService, UpdateConsultaResponse } from '../../../controllers/consultas/consultas.service';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-editar-consulta',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './editar-consulta.component.html',
   styleUrls: ['./editar-consulta.component.css']
 })

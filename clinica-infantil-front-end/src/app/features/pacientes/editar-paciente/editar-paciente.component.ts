@@ -21,11 +21,12 @@ import { ResponsaveisService } from '../../../controllers/responsaveis/responsav
 import { Cidade } from '../../../core/models/cidades.model';
 import { Responsavel } from '../../../core/models/responsavel.model';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-editar-paciente',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule],
+  imports: [CommonModule, ReactiveFormsModule, InputMaskDirective, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './editar-paciente.component.html',
   styleUrls: ['./editar-paciente.component.css']
 })
@@ -36,13 +37,12 @@ export class EditarPacienteComponent implements OnInit {
   isSaving = false;
   error: string | null = null;
   successMessage: string | null = null;
-  
+
   estados: Estado[] = [];
   cidades: Cidade[] = [];
   generos: Genero[] = [];
   responsaveis: Responsavel[] = [];
 
-  // Armazena o objeto paciente para ter acesso ao status 'ativo'
   private pacienteAtual: Paciente | null = null;
 
   constructor(
@@ -62,19 +62,18 @@ export class EditarPacienteComponent implements OnInit {
 
   ngOnInit(): void {
     this.pacienteId = +this.route.snapshot.paramMap.get('id')!;
-    
+
     this.pacienteForm = this.fb.group({
       nome: ['', Validators.required],
       cpf: ['', [Validators.required, Validators.pattern(/^\d{3}\.\d{3}\.\d{3}-\d{2}$/)]],
-      rg: [''],
+      rg: ['', Validators.pattern(/^(\d{2}\.\d{3}\.\d{3}-\d{1})?$/)],
       endereco: ['', Validators.required],
-      id_estado: ['', Validators.required],
-      id_cidade: ['', Validators.required],
-      id_genero: ['', Validators.required],
+      id_estado: [null, Validators.required],
+      id_cidade: [{ value: null, disabled: true }, Validators.required],
+      id_genero: [null, Validators.required],
       data_nascimento: ['', Validators.required],
       historico_medico: ['', Validators.required],
-      id_responsavel: ['', Validators.required],
-      // O controle de 'ativo' foi removido daqui
+      id_responsavel: [null, Validators.required],
     });
 
     this.carregarDadosIniciais();
@@ -92,14 +91,15 @@ export class EditarPacienteComponent implements OnInit {
     }).subscribe({
       next: (results) => {
         const pacienteData = results.paciente.paciente;
-        this.pacienteAtual = pacienteData; // Armazena o paciente para uso posterior
+        this.pacienteAtual = pacienteData;
         this.estados = results.estados;
         this.generos = results.generos.generos;
         this.responsaveis = results.responsaveis.responsaveis;
-        
+
         this.cidadesService.getCidadesPorEstado(pacienteData.cliente.cidade.id_estado).subscribe(
           cidades => {
             this.cidades = cidades;
+            this.pacienteForm.get('id_cidade')?.enable();
             
             this.pacienteForm.patchValue({
               nome: pacienteData.cliente.nome,
@@ -128,11 +128,17 @@ export class EditarPacienteComponent implements OnInit {
   onEstadoSelecionado(idEstado: number): void {
     this.cidades = [];
     this.pacienteForm.get('id_cidade')?.setValue(null);
+    
     if (idEstado) {
+      // Habilita o campo de cidade quando um estado é selecionado
+      this.pacienteForm.get('id_cidade')?.enable();
       this.cidadesService.getCidadesPorEstado(idEstado).subscribe({
         next: (cidades) => this.cidades = cidades,
         error: (err) => this.error = 'Não foi possível carregar as cidades.'
       });
+    } else {
+      // Desabilita o campo de cidade quando nenhum estado é selecionado
+      this.pacienteForm.get('id_cidade')?.disable();
     }
   }
 
@@ -143,8 +149,8 @@ export class EditarPacienteComponent implements OnInit {
     if (this.pacienteForm.valid && this.pacienteAtual) {
       this.isSaving = true;
       const formValue = this.pacienteForm.value;
-      
-      const payload: UpdatePacientePayload = { 
+
+      const payload: UpdatePacientePayload = {
         nome: formValue.nome,
         cpf: formValue.cpf,
         rg: formValue.rg,
@@ -169,6 +175,7 @@ export class EditarPacienteComponent implements OnInit {
         }
       });
     } else {
+      this.pacienteForm.markAllAsTouched();
       this.error = 'Por favor, preencha todos os campos corretamente.';
     }
   }

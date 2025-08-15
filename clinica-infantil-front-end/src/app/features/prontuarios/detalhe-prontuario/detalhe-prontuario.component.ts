@@ -3,11 +3,12 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProntuariosService } from '../../../controllers/prontuarios/prontuarios.service';
 import { HttpClientModule } from '@angular/common/http';
+import { BotaoVoltarComponent } from "../../../components/botao-voltar/botao-voltar.component";
 
 @Component({
   selector: 'app-detalhe-prontuario',
   standalone: true,
-  imports: [CommonModule, RouterModule, HttpClientModule],
+  imports: [CommonModule, RouterModule, HttpClientModule, BotaoVoltarComponent],
   templateUrl: './detalhe-prontuario.component.html',
   styleUrl: './detalhe-prontuario.component.css'
 })
